@@ -1,0 +1,16 @@
+{
+  "name": "applications",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix admin-web install && npm install",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "backend:start": "npm --prefix backend run start:dev",
+    "admin:dev": "npm --prefix admin-web run dev",
+    "dev": "npm run db:up && concurrently -n backend,admin -c blue,magenta \"npm run backend:start\" \"npm run admin:dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
