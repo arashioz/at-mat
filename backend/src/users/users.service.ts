@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
@@ -30,6 +31,25 @@ export class UsersService implements OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     await this.ensureInitialAdmin();
+    await this.ensureInitialSuperAdmin();
+  }
+
+  private async ensureInitialSuperAdmin(): Promise<void> {
+    const email = this.configService.get<string>('SUPER_ADMIN_EMAIL')?.toLowerCase();
+    const password = this.configService.get<string>('SUPER_ADMIN_PASSWORD');
+    if (!email || !password) return;
+
+    const exists = await this.userModel.exists({ email });
+    if (exists) return;
+
+    await this.userModel.create({
+      fullName: this.configService.get<string>('SUPER_ADMIN_FULL_NAME') ?? 'Super Admin',
+      email,
+      passwordHash: await bcrypt.hash(password, SALT_ROUNDS),
+      role: Role.SUPER_ADMIN,
+      isActive: true,
+    });
+    this.logger.log(`Initial super admin created: ${email}`);
   }
 
   private async ensureInitialAdmin(): Promise<void> {
@@ -48,12 +68,13 @@ export class UsersService implements OnModuleInit {
     this.logger.log(`Initial admin created: ${email}`);
   }
 
-  async create(dto: CreateUserDto): Promise<UserDocument> {
+  async create(dto: CreateUserDto, actor: UserDocument): Promise<UserDocument> {
     const email = dto.email ? dto.email.toLowerCase().trim() : undefined;
     const phone = dto.phone ? normalizePhone(dto.phone) : undefined;
     if (!email && !phone) {
       throw new BadRequestException('حداقل ایمیل یا شماره موبایل باید وارد شود');
     }
+    this.assertCanAssignRole(actor, dto.role);
     await this.ensureUniqueContact({ email, phone });
 
     return this.userModel.create({
@@ -102,8 +123,9 @@ export class UsersService implements OnModuleInit {
     return user;
   }
 
-  async update(id: string, dto: UpdateUserDto, actorId: string): Promise<UserDocument> {
+  async update(id: string, dto: UpdateUserDto, actor: UserDocument): Promise<UserDocument> {
     const user = await this.findById(id);
+    const actorId = actor._id.toString();
     const isSelf = user._id.toString() === actorId;
 
     if (isSelf && user.role === Role.ADMIN) {
@@ -113,6 +135,12 @@ export class UsersService implements OnModuleInit {
       if (dto.role && dto.role !== Role.ADMIN) {
         throw new BadRequestException('ادمین نمی‌تواند نقش خودش را تغییر دهد');
       }
+    }
+    if (dto.role !== undefined) {
+      this.assertCanAssignRole(actor, dto.role);
+    }
+    if (user.role === Role.SUPER_ADMIN && actor.role !== Role.SUPER_ADMIN) {
+      throw new ForbiddenException('فقط سوپر ادمین می‌تواند سوپر ادمین دیگر را ویرایش کند');
     }
 
     const email = dto.email !== undefined ? dto.email.toLowerCase().trim() : user.email;
@@ -134,13 +162,23 @@ export class UsersService implements OnModuleInit {
     return user.save();
   }
 
-  async remove(id: string, actorId: string): Promise<void> {
-    if (id === actorId) {
+  async remove(id: string, actor: UserDocument): Promise<void> {
+    if (id === actor._id.toString()) {
       throw new BadRequestException('نمی‌توانید حساب خودتان را حذف کنید');
+    }
+    const target = await this.findById(id);
+    if (target.role === Role.SUPER_ADMIN && actor.role !== Role.SUPER_ADMIN) {
+      throw new ForbiddenException('فقط سوپر ادمین می‌تواند سوپر ادمین دیگر را حذف کند');
     }
     const result = await this.userModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException('کاربر پیدا نشد');
+    }
+  }
+
+  private assertCanAssignRole(actor: UserDocument, role: Role): void {
+    if (role === Role.SUPER_ADMIN && actor.role !== Role.SUPER_ADMIN) {
+      throw new ForbiddenException('فقط سوپر ادمین می‌تواند نقش سوپر ادمین را تخصیص دهد');
     }
   }
 

@@ -3,6 +3,7 @@ export const TOKEN_KEY = 'at_mat_access_token';
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api';
 
 export type Role =
+  | 'super_admin'
   | 'admin'
   | 'sales_manager'
   | 'marketer'
@@ -18,7 +19,17 @@ export interface AuthUser {
   isActive: boolean;
 }
 
+export interface FeatureFlag {
+  _id: string;
+  key: string;
+  label: string;
+  group: string;
+  description: string;
+  enabled: boolean;
+}
+
 export const ROLE_LABELS: Record<Role, string> = {
+  super_admin: 'سوپر ادمین',
   admin: 'ادمین',
   sales_manager: 'مدیر فروش',
   marketer: 'بازاریاب',
@@ -84,4 +95,19 @@ export interface Product {
 
 export function fetchMe(token: string): Promise<AuthUser> {
   return apiFetch<AuthUser>('/auth/me', token);
+}
+
+export function fetchMyFeatures(token: string): Promise<Record<string, boolean>> {
+  return apiFetch<Record<string, boolean>>('/features/me', token);
+}
+
+export function fetchAllFeatures(token: string): Promise<FeatureFlag[]> {
+  return apiFetch<FeatureFlag[]>('/features', token);
+}
+
+export function setFeatureEnabled(token: string, key: string, enabled: boolean): Promise<FeatureFlag> {
+  return apiFetch<FeatureFlag>(`/features/${encodeURIComponent(key)}`, token, {
+    method: 'PATCH',
+    body: JSON.stringify({ enabled }),
+  });
 }

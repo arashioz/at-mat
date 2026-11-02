@@ -33,8 +33,8 @@ export class UsersController {
 
   @ApiOperation({ summary: 'ایجاد کاربر جدید با هر نقش' })
   @Post()
-  create(@Body() dto: CreateUserDto): Promise<UserDocument> {
-    return this.usersService.create(dto);
+  create(@Body() dto: CreateUserDto, @CurrentUser() actor: UserDocument): Promise<UserDocument> {
+    return this.usersService.create(dto, actor);
   }
 
   @ApiOperation({ summary: 'لیست کاربران (با فیلتر نقش اختیاری)' })
@@ -56,13 +56,13 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
     @CurrentUser() actor: UserDocument,
   ): Promise<UserDocument> {
-    return this.usersService.update(id, dto, actor._id.toString());
+    return this.usersService.update(id, dto, actor);
   }
 
   @ApiOperation({ summary: 'حذف کاربر' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string, @CurrentUser() actor: UserDocument): Promise<void> {
-    return this.usersService.remove(id, actor._id.toString());
+    return this.usersService.remove(id, actor);
   }
 }

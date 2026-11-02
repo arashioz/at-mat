@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CustomersModule } from './customers/customers.module';
+import { FeaturesModule } from './features/features.module';
 import { ProductsModule } from './products/products.module';
 import { StorageModule } from './storage/storage.module';
 import { UsersModule } from './users/users.module';
@@ -23,6 +24,7 @@ import { UsersModule } from './users/users.module';
     StorageModule,
     CustomersModule,
     ProductsModule,
+    FeaturesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

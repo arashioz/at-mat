@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { RequireFeature } from '../common/decorators/require-feature.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
+import { FeatureGuard } from '../common/guards/feature.guard';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateCustomerDto } from './dto/create-customer.dto';
@@ -10,7 +12,8 @@ import { CustomerDocument } from './schemas/customer.schema';
 
 @ApiTags('CRM: Customers')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, FeatureGuard)
+@RequireFeature({ key: 'crm.customers', label: 'مشتریان (CRM)', group: 'CRM', description: 'ثبت و لیست مشتریان' })
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
