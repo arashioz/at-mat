@@ -2,12 +2,15 @@
 
 مخزن یکپارچهٔ سایت فارسی ات‌مت، پنل ادمین و API. هر سه برنامه از ریشهٔ همین مخزن نصب، build و اجرا می‌شوند. راهنمای کامل سایت و تحویل دارایی‌ها در [web/README.md](web/README.md) است.
 
+برای دپلوی سرور Ubuntu، از [راهنمای دپلوی](DEPLOYMENT.md) و فایل آمادهٔ `compose.server.yml` استفاده کنید. تنظیمات دامنه و env لازم است؛ سورس برنامه و Dockerfile نیاز به تغییر دستی ندارند.
+
 ## بخش‌ها و تکنولوژی‌ها
 
 - `web/`: سایت مصرف‌کننده با Next.js 16، React 19 و TypeScript؛ صفحات شش طعم محصول، رسپی‌ها و مجله. Three.js برای قوطی سه‌بعدی و GSAP / ScrollTrigger و Motion برای حرکت‌ها استفاده می‌شوند. طراحی فارسی و RTL است.
 - `admin-web/`: پنل مدیریت با Next.js 14، React 18، TypeScript و Tailwind CSS 3؛ مدیریت مشتری، محصول و مقالات.
 - `backend/`: NestJS 10، Mongoose / MongoDB 7، احراز هویت JWT و ذخیرهٔ تصاویر در MinIO با AWS SDK S3.
 - `docker-compose.yml`: سرویس‌های MongoDB و MinIO همراه volume پایدار؛ برنامه‌های Node روی میزبان اجرا می‌شوند.
+- `infra/minio/Dockerfile`: ساخت MinIO از revision ثابت سورس، بدون وابستگی به `minio/minio:latest` و بدون ارسال env و دارایی‌ها به context ساخت.
 
 نسخهٔ دقیق وابستگی‌های هر بخش در `package.json` و `package-lock.json` همان بخش ثبت شده است. وابستگی‌ها با npm نصب می‌شوند؛ پوشهٔ `node_modules` تحویل داده نمی‌شود.
 
@@ -34,7 +37,7 @@ npm run check:assets
 npm run dev
 ```
 
-`dev` ابتدا MongoDB و MinIO را اجرا می‌کند و سپس API، پنل و سایت را هم‌زمان بالا می‌آورد. در اجرای اول صبر کنید API به MongoDB متصل شود. آدرس‌های پیش‌فرض:
+`dev` ابتدا MongoDB و MinIO را build و اجرا می‌کند و منتظر healthcheck آن‌ها می‌ماند؛ سپس API، پنل و سایت را هم‌زمان بالا می‌آورد. build نخست MinIO از سورس زمان بیشتری می‌برد. پورت‌های دیتابیس و storage و پیش‌فرض `HOST` بک‌اند فقط روی loopback هستند. آدرس‌های پیش‌فرض:
 
 - سایت: <http://localhost:3002>
 - ادمین: <http://localhost:3001>
@@ -44,6 +47,10 @@ npm run dev
 - MinIO: <http://localhost:9000>؛ کنسول: <http://localhost:9001>
 
 برای محتوای مقالات، بکاپ MongoDB را جداگانه بازیابی کنید. روی دیتابیس خالی می‌توانید پس از آماده‌شدن API و دارایی‌ها، در ترمینال دیگری `npm run seed:articles` را اجرا کنید؛ این دستور با ادمین تعریف‌شده در `backend/.env` وارد می‌شود، مقالات نمونه را درج و منتشر می‌کند و موارد موجود را بازنویسی نمی‌کند. اگر رمز ادمین موجود در دیتابیس قبلاً تغییر کرده است، مقدار env باید با رمز فعلی تطبیق داشته باشد.
+
+برای بازیابی تصاویر از بستهٔ دپلوی، `ATMAT_ASSET_BUNDLE=/path/to/at-mat-deploy-assets npm run assets:restore` را اجرا کنید. برای خواندن snapshot مقالات همان بسته بدون تغییر سورس، `ATMAT_ARTICLE_SEED_FILE=/path/to/at-mat-deploy-assets/content/published-articles.json npm run seed:articles` قابل استفاده است. بازیابی storage اشیای هم‌کلید را بازنویسی می‌کند و مخصوص بازیابی اولیه یا بکاپ است.
+
+آدرس عمومی تصاویر در پاسخ API، از `MINIO_PUBLIC_URL` و bucket محیط فعلی تولید می‌شود؛ URLهای قدیمی manifest باعث باقی‌ماندن آدرس localhost در پنل نمی‌شوند. manifest دستی بازنویسی نمی‌شود. `npm run check:storage` این رفتار را با fixture موقت بررسی می‌کند.
 
 برای بررسی اتصال کامل، در حالی که هر سه برنامه فعال هستند:
 

@@ -22,9 +22,10 @@ async function bootstrap(): Promise<void> {
   SwaggerModule.setup('docs', app, document);
 
   const port = process.env.PORT ?? 3010;
-  await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}/api`);
-  console.log(`Swagger docs: http://localhost:${port}/docs`);
+  const host = process.env.HOST ?? '127.0.0.1';
+  await app.listen(port, host);
+  console.log(`Application is running on: http://${host}:${port}/api`);
+  console.log(`Swagger docs: http://${host}:${port}/docs`);
 }
 
 bootstrap();

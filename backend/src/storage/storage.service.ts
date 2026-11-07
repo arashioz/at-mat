@@ -37,7 +37,7 @@ export class StorageService implements OnModuleInit {
 
   constructor(private readonly configService: ConfigService) {
     this.bucket = this.configService.get<string>('MINIO_BUCKET', 'at-mat-assets');
-    this.publicBaseUrl = this.configService.get<string>('MINIO_PUBLIC_URL', 'http://localhost:9000');
+    this.publicBaseUrl = this.configService.get<string>('MINIO_PUBLIC_URL', 'http://localhost:9000').replace(/\/+$/, '');
     this.s3 = new S3Client({
       endpoint: this.configService.get<string>('MINIO_ENDPOINT', 'http://localhost:9000'),
       region: this.configService.get<string>('MINIO_REGION', 'us-east-1'),
@@ -126,7 +126,7 @@ export class StorageService implements OnModuleInit {
 
     const entry: ImageEntry = {
       key,
-      url: `${this.publicBaseUrl}/${this.bucket}/${key}`,
+      url: this.publicUrl(key),
       category,
       originalName: file.originalname,
       mimeType: file.mimetype,
@@ -143,7 +143,12 @@ export class StorageService implements OnModuleInit {
 
   async list(category?: ImageCategory): Promise<ImageEntry[]> {
     const manifest = await this.readManifest();
-    return category ? manifest.images.filter((img) => img.category === category) : manifest.images;
+    const images = category ? manifest.images.filter((img) => img.category === category) : manifest.images;
+    return images.map((image) => ({ ...image, url: this.publicUrl(image.key) }));
+  }
+
+  private publicUrl(key: string): string {
+    return `${this.publicBaseUrl}/${this.bucket}/${key.split('/').map(encodeURIComponent).join('/')}`;
   }
 
   async remove(key: string): Promise<void> {
