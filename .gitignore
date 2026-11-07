@@ -7,3 +7,60 @@ dist
 *.log
 next-env.d.ts
 *.tsbuildinfo
+
+# Raw brand sources stay outside Git. Packaging, generated originals, and archives
+# must not be committed if this folder is copied into the repo.
+Brand Assets/
+Brand Assets */
+**/Brand Assets/
+**/Brand Assets */
+
+# Assets are delivered separately, including the API-managed image manifest.
+/assets/
+/web/src/fonts/
+/artifacts/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.avif
+*.ico
+*.svg
+*.woff
+*.woff2
+*.ttf
+*.otf
+*.glb
+*.gltf
+*.hdr
+*.mp4
+*.mov
+*.mp3
+*.wav
+*.zip
+*.7z
+*.tar
+*.gz
+*.psd
+*.ai
+
+# Local state, exports, caches and credentials.
+.DS_Store
+.idea/
+.vscode/
+.vercel/
+.turbo/
+.cache/
+coverage/
+/backups/
+/uploads/
+/storage/
+/data/
+*.dump
+*.bak
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc

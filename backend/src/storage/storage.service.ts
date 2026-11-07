@@ -1,4 +1,4 @@
-import { CopyObjectCommand, DeleteObjectCommand, PutBucketPolicyCommand, S3Client, CreateBucketCommand, HeadBucketCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { CopyObjectCommand, DeleteObjectCommand, PutBucketCorsCommand, PutBucketPolicyCommand, S3Client, CreateBucketCommand, HeadBucketCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { BadRequestException, Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
@@ -42,6 +42,8 @@ export class StorageService implements OnModuleInit {
       endpoint: this.configService.get<string>('MINIO_ENDPOINT', 'http://localhost:9000'),
       region: this.configService.get<string>('MINIO_REGION', 'us-east-1'),
       forcePathStyle: true,
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
       credentials: {
         accessKeyId: this.configService.getOrThrow<string>('MINIO_ACCESS_KEY'),
         secretAccessKey: this.configService.getOrThrow<string>('MINIO_SECRET_KEY'),
@@ -80,6 +82,26 @@ export class StorageService implements OnModuleInit {
         }),
       }),
     );
+    try {
+      await this.s3.send(
+        new PutBucketCorsCommand({
+          Bucket: this.bucket,
+          CORSConfiguration: {
+            CORSRules: [
+              {
+                AllowedOrigins: ['http://localhost:3002', 'http://127.0.0.1:3002'],
+                AllowedMethods: ['GET', 'HEAD'],
+                AllowedHeaders: ['*'],
+                ExposeHeaders: ['ETag'],
+                MaxAgeSeconds: 3600,
+              },
+            ],
+          },
+        }),
+      );
+    } catch {
+      this.logger.warn('CORS سطل MinIO روی این نسخه پیاده نشده؛ تصاویر عمومی از مسیر همان‌مبدأ سرو می‌شوند.');
+    }
     this.logger.log(`MinIO bucket آماده است: ${this.bucket}`);
   }
 

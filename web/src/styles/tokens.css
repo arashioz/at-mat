@@ -1,0 +1,19 @@
+:root {
+  /* Working samples from the brine label and the logo heart.
+     These are not official brand HEX values. */
+  --brine-blue: #2d85cd;
+  --brine-deep: #1a4b6c;
+  --brine-navy: #082438;
+  --brine-cyan: #05a8e9;
+  --brine-ink: #041e2d;
+  --brine-foam: #f4fbfe;
+  --brine-green: #0a7821;
+  --brine-yellow: #fbc001;
+  --brine-ice: #e9f2f8;
+  --brine-cream: #f8f4ec;
+  --brine-red: #d7322c;
+  --font-persian: var(--font-peyda, "Peyda"), system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+  --font-latin: "Arial Black", "Arial Narrow", Arial, sans-serif;
+  --header-h: 4.5rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

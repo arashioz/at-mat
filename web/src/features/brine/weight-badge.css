@@ -1,0 +1,44 @@
+.b-weight {
+  position: relative;
+  display: grid;
+  align-content: center;
+  place-items: center;
+  gap: 0.32rem;
+  inline-size: clamp(96px, 8.5vw, 118px);
+  aspect-ratio: 1;
+  padding: 1rem;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--brine-deep) 20%, white);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 20%, #fff 10%, var(--brine-ice, #f8f4ec) 100%);
+  color: var(--brine-navy, #041e2d);
+  box-shadow: inset 0 1px 0 white, 0 2px 3px rgb(4 30 45 / 0.06), 0 12px 28px -14px rgb(4 30 45 / 0.4);
+  rotate: -4deg;
+  direction: rtl;
+  text-align: center;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.b-weight__seal {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  stroke: var(--brine-deep, #1a4b6c);
+  stroke-width: 0.65;
+  opacity: 0.4;
+}
+.b-weight__seal circle:nth-child(2) { stroke-dasharray: 0.6 3; stroke-linecap: round; }
+.b-weight__seal path { stroke-width: 1; }
+.b-weight__value { display: grid; justify-items: center; gap: 0.06rem; }
+.b-weight__value b { font-size: clamp(2.05rem, 2.7vw, 2.6rem); font-weight: 900; font-variant-numeric: tabular-nums; line-height: 0.95; }
+.b-weight__value > span { font-size: 0.6rem; font-weight: 500; line-height: 1.2; margin-block-start: 0.16rem; }
+.b-weight__label { font-size: 0.56rem; font-weight: 600; color: var(--brine-deep); line-height: 1.3; }
+
+/* Position and entrance have separate wrappers so scrolling never lags the can. */
+.b-can__badge { position: absolute; left: 0; top: 0; z-index: 1; translate: -50% -50%; pointer-events: none; }
+.b-can__badge-motion { opacity: 0; visibility: hidden; }
+.b-page:not([data-can='live']) .b-can__badge, .b-can.is-gone .b-can__badge { display: none; }
+.b-detail__badge { position: absolute; left: 85%; top: 70%; translate: -50% -50%; z-index: 1; }
+.b-page:not([data-can='poster']) .b-detail__badge { display: none; }

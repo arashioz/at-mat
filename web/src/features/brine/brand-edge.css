@@ -1,0 +1,9 @@
+.b-brand-edge {
+  position: absolute;
+  block-size: 40px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Section colours must win regardless of the order route CSS is loaded. */
+:where(.b-brand-edge) { color: var(--brine-ice); }

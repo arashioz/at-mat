@@ -7,7 +7,7 @@ export class LoginDto {
   @IsNotEmpty()
   identifier: string;
 
-  @ApiProperty({ example: 'ChangeMe@12345' })
+  @ApiProperty({ example: 'replace-with-your-password' })
   @IsString()
   @IsNotEmpty()
   password: string;

@@ -1,6 +1,6 @@
 export const TOKEN_KEY = 'at_mat_access_token';
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '/api';
 
 export type Role =
   | 'super_admin'

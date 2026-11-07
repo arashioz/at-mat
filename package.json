@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "install:all": "npm --prefix backend install && npm --prefix admin-web install && npm install",
+    "install:all": "npm ci && npm --prefix backend ci && npm --prefix admin-web ci && npm --prefix web ci",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "backend:start": "npm --prefix backend run start:dev",
     "admin:dev": "npm --prefix admin-web run dev",
-    "dev": "npm run db:up && concurrently -n backend,admin -c blue,magenta \"npm run backend:start\" \"npm run admin:dev\""
+    "web:dev": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "check:assets": "node scripts/check-assets.mjs",
+    "check:integration": "node scripts/check-integration.mjs",
+    "predev": "npm run check:assets",
+    "dev": "npm run db:up && concurrently --kill-others-on-fail -n backend,admin,web -c blue,magenta,green \"npm run backend:start\" \"npm run admin:dev\" \"npm run web:dev\"",
+    "prebuild": "npm run check:assets",
+    "build": "npm --prefix backend run build && npm --prefix admin-web run build && npm --prefix web run build",
+    "start": "concurrently --kill-others-on-fail -n backend,admin,web -c blue,magenta,green \"npm --prefix backend run start:prod\" \"npm --prefix admin-web run start\" \"npm --prefix web run start\"",
+    "seed:articles": "node --env-file=backend/.env backend/scripts/seed-articles.mjs"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
