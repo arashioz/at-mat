@@ -24,9 +24,7 @@ export function RecipeMotion({ children, className = '', style }: { children: Re
       if (lines.length) intro.from(lines, { yPercent: 115, duration: 1, stagger: 0.1 }, 0.1);
       if (photos.length) intro.from(photos, { y: 24, opacity: 0, duration: 1.1 }, 0.18);
       animateBrandEdges(page);
-      const nav = page.querySelector('.r-nav');
-      ScrollTrigger.create({ start: 0, end: 'max', onUpdate: self => nav?.classList.toggle('is-hidden', self.direction > 0 && self.scroll() > 180) });
-      const logo = page.querySelector('.r-footer__brand img');
+      const logo = page.querySelector('.b-footer__logo img');
       if (logo) {
         const pulse = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2.2 })
           .to(logo, { scale: 1.05, duration: 0.24, ease: 'power2.out' })
@@ -43,7 +41,7 @@ export function RecipeMotion({ children, className = '', style }: { children: Re
     });
     let alive = true;
     document.fonts.ready.then(() => { if (alive) ScrollTrigger.refresh(); });
-    return () => { alive = false; media.revert(); page.querySelector('.r-nav')?.classList.remove('is-hidden'); };
+    return () => { alive = false; media.revert(); };
   }, { scope: root, dependencies: [pathname], revertOnUpdate: true });
 
   useEffect(() => {

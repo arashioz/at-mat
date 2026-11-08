@@ -21,24 +21,6 @@
 .r-kicker { display: inline-flex; align-items: center; gap: .75rem; color: var(--r-accent); font-weight: 700; font-size: .92rem; }
 .r-kicker b { display: inline-grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; flex: none; border-radius: 50%; background: var(--r-accent); color: #f4fbfe; font-size: .82rem; }
 .r-eyebrow { font-size: .8rem; font-weight: 500; }
-.r-nav {
-  position: fixed; z-index: 50; inset-block-start: 1rem; inset-inline: 0;
-  margin-inline: auto; inline-size: min(calc(100% - 2rem), 44rem);
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: .4rem .9rem; border-radius: 999px;
-  background: rgb(244 251 254 / .83); backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  box-shadow: inset 0 1px 0 #ffffffa6, 0 14px 40px -20px #041e2d80;
-  transition: translate .7s var(--ease-out);
-}
-.r-nav.is-hidden { translate: 0 calc(-100% - 1.5rem); }
-.r-nav__logo { display: block; inline-size: 64px; flex: none; }
-.r-nav__logo img { inline-size: 100%; block-size: 2.5rem; object-fit: contain; }
-.r-nav nav { display: flex; gap: .2rem; font-size: .88rem; font-weight: 600; }
-.r-nav nav a { display: inline-flex; align-items: center; gap: .4rem; min-block-size: 2.7rem; padding-inline: 1.1rem; border-radius: 2rem; }
-.r-nav nav a[aria-current='page'] { background: var(--r-ink); color: #f4fbfe; }
-.r-nav nav a:hover { background: var(--r-accent); color: white; }
-.r-nav__caption { display: none; }
 .r-index-hero, .r-detail-hero {
   position: relative; isolation: isolate; overflow: clip;
   color: #f4fbfe;
@@ -188,16 +170,6 @@
 .r-related [data-stacked] .r-related-card:nth-child(3) { inset-block-start: calc(var(--stack-top) + 2 * var(--stack-step)); }
 .r-related [data-stacked] .r-card { min-block-size: 0; aspect-ratio: 1 / 1.08; }
 .r-related [data-stacked]::after { content: ''; block-size: 1.5rem; }
-.r-footer { position: relative; background: #041e2d; color: #f4fbfe; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 5rem var(--r-gutter) 1.6rem; }
-.r-footer__edge { inset-block-start: -39px; inset-inline: 0; inline-size: 100%; color: #041e2d; }
-.r-footer__brand > img { inline-size: 120px; block-size: auto; object-fit: contain; margin-block-end: 1.8rem; }
-.r-footer__brand p { font-size: clamp(2.8rem, 4.5vw, 5rem); font-weight: 900; line-height: 1.15; }
-.r-footer__brand p span { color: #fbc001; }
-.r-footer__links { justify-self: end; align-self: end; inline-size: min(100%, 400px); }
-.r-footer__links a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1rem; border-block-end: 1px solid #ffffff26; font-size: 1rem; font-weight: 400; }
-.r-footer__links svg { opacity: .6; inline-size: 20px; }
-.r-footer__bottom { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 1rem; padding-block-start: 1.5rem; border-block-start: 1px solid #ffffff26; color: #b2c5d0; font-size: .75rem; }
-
 @media (min-width: 1600px) {
   .r-site { --r-gutter: max(5rem, calc((100vw - 1440px) / 2)); }
 }
@@ -214,10 +186,6 @@
   .r-detail-meta dd { font-size: .8rem; }
 }
 @media (max-width: 759px) {
-  .r-nav { gap: .5rem; padding-inline: .8rem .4rem; }
-  .r-nav__logo { inline-size: 59px; }
-  .r-nav nav { font-size: .78rem; }
-  .r-nav nav a { padding-inline: .9rem; min-block-size: 2.5rem; }
   .r-kicker { font-size: .84rem; gap: .6rem; }
   .r-kicker b { inline-size: 2.1rem; block-size: 2.1rem; font-size: .76rem; }
   .r-index-hero { grid-template-columns: 1fr; min-block-size: 0; gap: 2rem; padding-block: 6.5rem 4.5rem; }
@@ -288,11 +256,6 @@
   .r-related__head { flex-direction: column; align-items: start; gap: 1.3rem; margin-block-end: 2rem; }
   .r-related h2 { font-size: 2.9rem; }
   .r-related .r-card { min-block-size: 330px; }
-  .r-footer { grid-template-columns: 1fr; gap: 2.8rem; padding-block: 3.5rem 1.5rem; }
-  .r-footer__brand > img { inline-size: 110px; }
-  .r-footer__brand p { font-size: 3rem; }
-  .r-footer__links { inline-size: 100%; }
-  .r-footer__links a { font-size: .95rem; }
 }
 @media (max-width: 389px) {
   .r-index-hero h1 { font-size: 14vw; }
@@ -324,8 +287,7 @@
 .r-detail-hero--text { min-block-size: 0; }
 .r-detail-hero--text .r-detail-hero__layout { grid-template-columns: 1fr; max-inline-size: 58rem; }
 .r-detail-hero--text .r-detail-hero__intro { max-inline-size: 65ch; }
-.r-recipe-nav { position: sticky; z-index: 30; inset-block-start: 5.3rem; display: flex; justify-content: center; gap: 2.5rem; padding-inline: var(--r-gutter); background: color-mix(in srgb, var(--r-paper) 94%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-block-end: 1px solid var(--r-line); transition: inset-block-start .4s var(--ease-out); }
-.r-site:has(.r-nav.is-hidden) .r-recipe-nav { inset-block-start: 0; }
+.r-recipe-nav { position: sticky; z-index: 30; inset-block-start: 0; display: flex; justify-content: center; gap: 2.5rem; padding-inline: var(--r-gutter); background: color-mix(in srgb, var(--r-paper) 94%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-block-end: 1px solid var(--r-line); transition: inset-block-start .4s var(--ease-out); }
 .r-recipe-nav a { position: relative; padding: 1rem .25rem; min-block-size: 52px; font-size: .86rem; color: var(--r-muted); }
 .r-recipe-nav a[aria-current] { color: var(--r-ink); font-weight: 600; }
 .r-recipe-nav a[aria-current]::after { content: ''; position: absolute; inset-inline: 0; inset-block-end: 0; block-size: 2px; background: var(--r-accent); }
@@ -354,7 +316,7 @@
 }
 @media print {
   .r-site { background: white; color: black; --r-gutter: 0; --r-paper: white !important; }
-  .r-nav, .r-footer, .r-related, .r-recipe-nav, .r-recipe-gallery, .r-detail-hero__visual, .r-ingredients__photo, .r-product-link, .r-breadcrumb, .r-detail-actions, .b-brand-edge { display: none !important; }
+  .site-nav, .b-footer, .r-related, .r-recipe-nav, .r-recipe-gallery, .r-detail-hero__visual, .r-ingredients__photo, .r-product-link, .r-breadcrumb, .r-detail-actions, .b-brand-edge { display: none !important; }
   .r-detail-hero { background: white; color: black; padding: 0; min-block-size: 0; }
   .r-detail-hero__layout, .r-cook-layout, .r-nutrition, .r-faq { display: block; padding: 1rem 0; }
   .r-detail-hero h1 { font-size: 26pt; }

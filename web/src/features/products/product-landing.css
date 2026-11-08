@@ -99,84 +99,6 @@ html.is-grabbing, html.is-grabbing * { cursor: grabbing; user-select: none; }
 .b-can__canvas { position: absolute; inset: 0; }
 .b-can__canvas canvas { display: block; inline-size: 100%; block-size: 100%; }
 
-/* Nav */
-.b-nav {
-  position: fixed;
-  z-index: 50;
-  inset-block-start: 1rem;
-  inset-inline: 0;
-  margin-inline: auto;
-  inline-size: min(calc(100% - 2rem), 44rem);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.4rem;
-  padding-inline-start: 0.9rem;
-  border-radius: 999px;
-  background: rgb(244 251 254 / 0.72);
-  backdrop-filter: blur(18px) saturate(1.5);
-  -webkit-backdrop-filter: blur(18px) saturate(1.5);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.65), 0 14px 40px -20px rgb(4 30 45 / 0.5);
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: translate 0.7s var(--ease-out), background-color 0.5s var(--ease-out);
-}
-.b-nav.is-hidden { translate: 0 calc(-100% - 1.5rem); }
-.b-page[data-can='loading'] .b-nav { visibility: hidden; }
-.b-nav.is-solid { background: rgb(244 251 254 / 0.9); }
-.b-nav__logo { display: block; padding-block: 0.1rem; }
-.b-nav__logo img { display: block; block-size: 2.5rem; inline-size: auto; }
-.b-nav__links { display: flex; gap: 0.2rem; }
-.b-nav__links a {
-  display: inline-flex;
-  align-items: center;
-  min-block-size: 2.7rem;
-  padding-inline: 1.1rem;
-  border-radius: 999px;
-  transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
-}
-.b-nav__links a:hover { background: rgb(4 30 45 / 0.07); }
-.b-nav__links a[aria-current='true'] { background: var(--brine-blue); color: var(--brine-foam); }
-.b-nav a:active { scale: 0.96; }
-
-/* A native disclosure keeps all six products reachable, including on mobile. */
-.b-flavors { position: relative; color: #082438; }
-.b-flavors summary {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-block-size: 2.7rem;
-  padding-inline: 0.9rem;
-  border-radius: 999px;
-  list-style: none;
-  cursor: pointer;
-  background: rgb(255 255 255 / 0.65);
-}
-.b-flavors summary::-webkit-details-marker { display: none; }
-.b-flavors summary:hover { background: white; }
-.b-flavors__current { font-size: 0.75rem; font-weight: 500; opacity: 0.65; }
-.b-flavors__chevron { transition: rotate 0.2s; }
-.b-flavors[open] .b-flavors__chevron { rotate: 180deg; }
-.b-flavors__menu {
-  position: absolute;
-  inset-block-start: calc(100% + 0.8rem);
-  inset-inline-end: 0;
-  inline-size: 19rem;
-  max-inline-size: calc(100vw - 2.25rem);
-  padding: 0.8rem;
-  border: 1px solid rgb(4 30 45 / 0.08);
-  border-radius: 1.5rem;
-  background: #fafbf7;
-  box-shadow: 0 18px 45px -15px rgb(4 30 45 / 0.28);
-}
-.b-flavors__menu p { padding: 0.5rem 0.7rem 0.9rem; font-size: 1.25rem; font-weight: 800; }
-.b-flavors__menu p span { display: block; margin-block-start: 0.2rem; font-size: 0.8rem; font-weight: 500; opacity: 0.65; }
-.b-flavors__menu a { display: flex; align-items: center; gap: 0.7rem; min-block-size: 2.8rem; padding-inline: 0.7rem; border-radius: 0.7rem; }
-.b-flavors__menu a:hover, .b-flavors__menu a[aria-current='page'] { background: rgb(4 30 45 / 0.06); }
-.b-flavors__dot { inline-size: 0.7rem; block-size: 0.7rem; border-radius: 50%; background: var(--flavor-swatch); }
-.b-flavors__arrow { margin-inline-start: auto; }
-
 /* Hero */
 .b-hero {
   position: relative;
@@ -374,85 +296,10 @@ html.is-grabbing, html.is-grabbing * { cursor: grabbing; user-select: none; }
   .b-page[data-static='false'] .b-card:hover .b-card__media::before { opacity: 1; }
 }
 
-/* Footer */
-.b-footer {
-  position: relative;
-  overflow: clip;
-  background: var(--brine-ink);
-  color: var(--brine-foam);
-  padding: clamp(3rem, 9svh, 6rem) var(--gutter) 1.75rem;
-}
-.b-footer__top {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: clamp(1.5rem, 4vw, 4rem);
-  padding-block-end: clamp(2.5rem, 7svh, 4.5rem);
-}
-.b-footer__logo img { display: block; inline-size: clamp(7.5rem, 13vw, 11.5rem); block-size: auto; }
-.b-footer__line { display: grid; font-size: clamp(1.9rem, 3.8vw, 3.6rem); font-weight: 900; line-height: 1.1; }
-.b-footer__line span:last-child { color: var(--brine-yellow); }
-.b-footer__up {
-  display: grid;
-  place-items: center;
-  inline-size: clamp(4rem, 6vw, 5.25rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1.5px rgb(244 251 254 / 0.3);
-  transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
-}
-.b-footer__up:hover { background: var(--brine-yellow); color: var(--brine-ink); box-shadow: none; }
-.b-footer__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 2rem var(--gutter);
-  padding-block: 2.5rem;
-  border-block: 1px solid rgb(244 251 254 / 0.12);
-}
-.b-footer__col { display: grid; align-content: start; justify-items: start; gap: 0.7rem; }
-.b-footer__col h2 { margin: 0 0 0.4rem; font-size: 0.86rem; font-weight: 700; color: rgb(244 251 254 / 0.67); }
-.b-footer__pages {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.6rem 1rem;
-  inline-size: min(100%, 24rem);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 1rem;
-  font-weight: 400;
-  color: rgb(244 251 254 / 0.86);
-}
-.b-footer__icons { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.65rem; }
-.b-footer__icons a, .b-footer__icons span {
-  display: grid;
-  place-items: center;
-  inline-size: 3rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  color: rgb(244 251 254 / 0.83);
-  box-shadow: inset 0 0 0 1.5px rgb(244 251 254 / 0.25);
-  transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out), box-shadow 0.4s;
-}
-.b-footer__icons a:hover { background: var(--brine-foam); color: var(--brine-ink); box-shadow: none; }
-.b-footer__icons span { color: rgb(244 251 254 / 0.6); }
-.b-footer__legal {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-block-start: 1.25rem;
-  font-size: 0.85rem;
-  color: rgb(244 251 254 / 0.55);
-}
-
 /* Compact layouts */
 @media (max-width: 899px), (max-height: 639px) {
   .b-page { --header-h: 4.25rem; }
   .b-loader { --ld: min(60vw, 34svh, 320px); }
-  .b-nav { inset-block-start: 0.75rem; inset-inline: 0.75rem; inline-size: auto; padding-inline: 0.65rem; }
-  .b-nav__links { display: none; }
-  .b-nav__logo img { block-size: 2.2rem; }
 
   .b-hero__title { inset-block-start: calc(var(--header-h) + 2.5rem); font-size: clamp(2.7rem, 13vw, 5rem); }
   .b-hero__can { top: 61%; inline-size: min(78vw, 46svh); }
@@ -462,10 +309,6 @@ html.is-grabbing, html.is-grabbing * { cursor: grabbing; user-select: none; }
   .b-cards { grid-template-columns: 1fr; gap: 3rem; }
   .b-card:nth-child(n) { margin-block-start: 0; }
 
-  .b-footer__top { grid-template-columns: auto 1fr; }
-  .b-footer__up { grid-column: 2; grid-row: 1; justify-self: end; }
-  .b-footer__line { grid-column: 1 / -1; }
-  .b-footer__grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -492,8 +335,7 @@ html.is-grabbing, html.is-grabbing * { cursor: grabbing; user-select: none; }
 }
 
 /* Shared logo contours at the remaining section transitions. */
-.b-recipes__edge, .b-footer__edge { inset-block-start: -1px; inset-inline: 0; inline-size: 100%; }
-.b-footer__edge { color: var(--brine-cream); }
+.b-recipes__edge { inset-block-start: -1px; inset-inline: 0; inline-size: 100%; }
 
 /* Product facts stay in normal flow; only the visitor changes the active ingredient. */
 .b-detail { position: relative; background: var(--brine-ice); }
@@ -525,7 +367,6 @@ html.is-grabbing, html.is-grabbing * { cursor: grabbing; user-select: none; }
   .b-detail__title { font-size: clamp(1.5rem, 3vw, 2.3rem); }
   .b-detail__can { inline-size: min(36vw, 54svh); }
 }
-@media (prefers-reduced-motion: reduce) { .b-nav { transition: none; } }
 
 /* The notes field carries the lighter packaging colour for each flavour. */
 .b-notes { background: var(--product-notes, #91c7e3); color: var(--brine-ink); }
@@ -533,7 +374,6 @@ html.is-grabbing, html.is-grabbing * { cursor: grabbing; user-select: none; }
 .b-note__text { color: var(--brine-ink); font-weight: 400; }
 .b-notes__small { color: var(--brine-deep); }
 .b-recipes__edge { color: var(--product-notes, #91c7e3); }
-.b-footer__icons { gap: 0.55rem; }
 
 .b-page .brine-current {
   background:

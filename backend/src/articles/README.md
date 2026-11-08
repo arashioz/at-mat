@@ -14,7 +14,7 @@
 
 ## نگهداری محلی
 
-پنل مدیریت در `/articles` برنامهٔ `admin-web` است. پیش‌فرض سایت ۳۰۰۲، API ۳۰۱۰ و ادمین ۳۰۰۱ است؛ در صورت اشغال پورت ادمین: `npm exec next dev -- -p 3003` را از `admin-web` اجرا کنید. مقصد API از `ATMAT_API_URL` و مقصد مشاهدهٔ سایت از `NEXT_PUBLIC_SITE_URL` قابل تنظیم‌اند.
+پنل مدیریت در `/articles` برنامهٔ `admin-web` است. پیش‌فرض سایت ۳۰۰۲، API ۳۰۱۰ و ادمین ۳۰۰۱ است؛ در صورت اشغال پورت ادمین: `npm exec next dev -- --hostname 127.0.0.1 -p 3004` را از `admin-web` اجرا کنید. مقصد API از `ATMAT_API_URL` و مقصد مشاهدهٔ سایت از `NEXT_PUBLIC_SITE_URL` قابل تنظیم‌اند.
 
 از ریشهٔ مخزن `npm run seed:articles` ده مقاله را بدون بازنویسی موارد موجود درج می‌کند؛ فایل seed در `backend/seeds/articles.json` است و به اشیای MinIO موجود نیاز دارد. این دستور جایگزین بکاپ نیست: MongoDB، MinIO و manifest باید با هم نگهداری شوند.
 

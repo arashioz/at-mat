@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
 import { BrineCurrent } from '@/features/brine/brine-current';
-import { brineSocial } from '@/features/brine/content';
 import { WeightBadge } from '@/features/brine/weight-badge';
 import { IngredientTabs } from '@/features/brine/ingredient-tabs';
 import { BrandEdge } from '@/features/brine/brand-edge';
@@ -9,17 +8,14 @@ import { BrineMotion } from '@/features/brine/brine-motion';
 import { CanStage } from '@/features/brine/can-stage';
 import { getFlavorMedia } from './media';
 import type { FlavorDefinition } from './types';
-import { flavors } from './catalog';
-import { ArrowUpIcon, InstagramIcon, LinkedinIcon, MailIcon, PhoneIcon, XIcon } from '@/features/brine/icons';
+import { SiteNavigation } from '@/features/site/site-navigation';
+import { SiteFooter } from '@/features/site/site-footer';
 import './product-landing.css';
-
-const SOCIAL_ICONS = { instagram: InstagramIcon, linkedin: LinkedinIcon, x: XIcon } as const;
-const SITE_SECTIONS = ['صفحهٔ اصلی', 'محصولات', 'رسپی‌ها', 'بلاگ', 'دربارهٔ ما', 'همکاری با ات‌مت'];
 
 export async function ProductLanding({ product, staticMode }: { product: FlavorDefinition; staticMode: boolean }) {
   const copy = product.copy;
   const media = await getFlavorMedia(product.mediaPrefix, copy.recipes.items);
-  const { recipes, contact } = copy;
+  const { recipes } = copy;
   const theme = product.theme;
   const style = {
     '--brine-blue': theme.accent, '--brine-deep': theme.deep, '--brine-navy': theme.navy,
@@ -34,30 +30,7 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
       <noscript><style>{'.b-loader{display:none!important}html.is-loading{overflow:auto!important}'}</style></noscript>
       <CanStage wrap={media.wrap} wrapSmall={media.wrapSmall} lid={media.lid} staticMode={staticMode} netWeight={copy.netWeight} lightColor={theme.light} />
 
-      <header className="b-nav" data-nav>
-        <a className="b-nav__logo" href="#main-content" aria-label="ات‌مت، بالای صفحه">
-          <img src={media.logo.url} alt="" width={media.logo.width} height={media.logo.height} />
-        </a>
-        <nav className="b-nav__links" aria-label="بخش‌های صفحه">
-          <a href="#details" data-nav-link="details" data-magnetic>مشخصات</a>
-          <a href="#recipes" data-nav-link="recipes" data-magnetic>ایده سرو</a>
-          <a href="/recipes" data-magnetic>رسپی‌ها</a>
-          <a href="/articles" data-magnetic>مقالات</a>
-        </nav>
-        <details className="b-flavors">
-          <summary>طعم‌ها <span className="b-flavors__current">{product.label}</span><span className="b-flavors__chevron" aria-hidden="true">⌄</span></summary>
-          <nav className="b-flavors__menu" aria-label="طعم‌های ات‌مت">
-            <p>یه دنیا مزه.<span>طعم تو کدومه؟</span></p>
-            {flavors.map(flavor => (
-              <a key={flavor.slug} href={`/flavors/${flavor.slug}`} aria-current={flavor.slug === product.slug ? 'page' : undefined} style={{ '--flavor-swatch': flavor.theme.heroTop } as CSSProperties}>
-                <span className="b-flavors__dot" aria-hidden="true" />
-                <span>{flavor.label}</span>
-                <span className="b-flavors__arrow" aria-hidden="true">{flavor.slug === product.slug ? '✓' : '↖'}</span>
-              </a>
-            ))}
-          </nav>
-        </details>
-      </header>
+      <SiteNavigation logo={media.logo.url} flavor={product.slug} />
 
       <main id="main-content" tabIndex={-1}>
         <section className="b-hero" aria-labelledby="brine-title">
@@ -147,63 +120,7 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
         </section>
       </main>
 
-      <footer className="b-footer" id="site-footer">
-        <BrandEdge id="footer-logo-start" className="b-footer__edge" />
-        <div className="b-footer__top">
-          <a className="b-footer__logo" href="#main-content" aria-label="ات‌مت، بالای صفحه">
-            <img src={media.logo.url} alt="" width={media.logo.width} height={media.logo.height} loading="lazy" />
-          </a>
-          <p className="b-footer__line">
-            {copy.headline.map((line) => <span key={line}>{line}</span>)}
-          </p>
-          <a className="b-footer__up" href="#main-content" data-magnetic aria-label="بالای صفحه">
-            <ArrowUpIcon />
-          </a>
-        </div>
-
-        <div className="b-footer__grid">
-          <div className="b-footer__col">
-            <h2>دسترسی راحت</h2>
-            <ul className="b-footer__pages">
-              {SITE_SECTIONS.map((title) => <li key={title}>{title === 'رسپی‌ها' ? <a href="/recipes">{title}</a> : title === 'بلاگ' ? <a href="/articles">مقالات</a> : title}</li>)}
-            </ul>
-          </div>
-          <div className="b-footer__col">
-            <h2>طعم‌های ات‌مت</h2>
-            <ul className="b-footer__pages">
-              {flavors.map(flavor => <li key={flavor.slug}><a href={`/flavors/${flavor.slug}`} aria-current={flavor.slug === product.slug ? 'page' : undefined}>{flavor.label}</a></li>)}
-            </ul>
-          </div>
-          <div className="b-footer__col">
-            <h2>ارتباط با ما</h2>
-            <ul className="b-footer__icons">
-              <li>
-                <a href={contact.phone.href} aria-label={`تماس تلفنی، ${contact.phone.label}`} title={contact.phone.label}><PhoneIcon /></a>
-              </li>
-              <li>
-                <a href={contact.email.href} aria-label={`ایمیل، ${contact.email.label}`} title={contact.email.label}><MailIcon /></a>
-              </li>
-              {brineSocial.map((item) => {
-                const Icon = SOCIAL_ICONS[item.id];
-                return (
-                  <li key={item.id}>
-                    {item.href ? (
-                      <a href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.label} data-magnetic><Icon /></a>
-                    ) : (
-                      <span aria-label={`${item.label} (به‌زودی)`} role="img" title="به‌زودی"><Icon /></span>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-
-        <div className="b-footer__legal">
-          <span>© ۱۴۰۵ ات‌مت</span>
-          <span>{copy.origin}</span>
-        </div>
-      </footer>
+      <SiteFooter logo={media.logo.url} flavor={product.slug} headline={copy.headline} />
     </BrineMotion>
   );
 }

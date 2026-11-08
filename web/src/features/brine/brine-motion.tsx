@@ -45,8 +45,7 @@ export function BrineMotion({ children, staticMode = false, className = '', styl
     media.add(MOTION, () => {
       /* hero intro, played once the can hands off from the loader */
       const intro = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } })
-        .from(select('.b-hero [data-line]'), { yPercent: 115, duration: 1.5, stagger: 0.1 }, 0)
-        .from(select('.b-nav'), { yPercent: -160, duration: 1.2 }, 0.2);
+        .from(select('.b-hero [data-line]'), { yPercent: 115, duration: 1.5, stagger: 0.1 }, 0);
       const play = (delay: number) => { if (alive) intro.delay(delay).play(); };
       const pending = page.dataset.intro;
       const onIntro = (event: Event) => play((event as CustomEvent<{ delay: number }>).detail?.delay ?? 0);
@@ -91,33 +90,6 @@ export function BrineMotion({ children, staticMode = false, className = '', styl
         });
       }
 
-      /* nav: hide on the way down, return on the way up, mark the active section */
-      const nav = select('[data-nav]')[0] as HTMLElement | undefined;
-      if (nav) {
-        ScrollTrigger.create({
-          start: 0,
-          end: 'max',
-          onUpdate: (self) => {
-            const hide = self.direction === 1 && self.scroll() > window.innerHeight * 0.6;
-            nav.classList.toggle('is-hidden', hide);
-            nav.classList.toggle('is-solid', self.scroll() > window.innerHeight * 0.5);
-          },
-        });
-        for (const id of ['details', 'recipes']) {
-          const link = nav.querySelector<HTMLElement>(`[data-nav-link="${id}"]`);
-          const section = document.getElementById(id);
-          if (!link || !section) continue;
-          ScrollTrigger.create({
-            trigger: section,
-            start: 'top 55%',
-            end: 'bottom 55%',
-            onToggle: ({ isActive }) => {
-              if (isActive) link.setAttribute('aria-current', 'true');
-              else link.removeAttribute('aria-current');
-            },
-          });
-        }
-      }
 
       return () => {
         window.removeEventListener(INTRO_EVENT, onIntro);
