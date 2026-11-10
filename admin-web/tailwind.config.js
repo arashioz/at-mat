@@ -5,15 +5,15 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          500: '#2563eb',
-          600: '#1d4ed8',
-          700: '#1e40af',
+          50: '#e9f2f8',
+          100: '#c8e2f2',
+          500: '#2d85cd',
+          600: '#1a4b6c',
+          700: '#082438',
         },
       },
       fontFamily: {
-        sans: ['Vazirmatn', 'Tahoma', 'sans-serif'],
+        sans: ['Peyda', 'Tahoma', 'sans-serif'],
       },
     },
   },

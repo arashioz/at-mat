@@ -10,12 +10,20 @@ import { getFlavorMedia } from './media';
 import type { FlavorDefinition } from './types';
 import { SiteNavigation } from '@/features/site/site-navigation';
 import { SiteFooter } from '@/features/site/site-footer';
+import { getPublishedRecipes } from '@/features/recipes/data';
 import './product-landing.css';
 
 export async function ProductLanding({ product, staticMode }: { product: FlavorDefinition; staticMode: boolean }) {
   const copy = product.copy;
-  const media = await getFlavorMedia(product.mediaPrefix, copy.recipes.items);
+  const [media, published] = await Promise.all([getFlavorMedia(product.mediaPrefix), getPublishedRecipes().catch(() => [])]);
   const { recipes } = copy;
+  const publishedBySlug = new Map(published.map(recipe => [recipe.slug, recipe]));
+  const ideas = recipes.items.flatMap(recipe => {
+    const live = publishedBySlug.get(recipe.href.slice('/recipes/'.length));
+    if (!live) return [];
+    const image = media.ideas[recipe.image] ?? live.photos['cover-a'];
+    return image ? [{ recipe, image }] : [];
+  });
   const theme = product.theme;
   const style = {
     '--brine-blue': theme.accent, '--brine-deep': theme.deep, '--brine-navy': theme.navy,
@@ -44,7 +52,7 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
             <figure className="b-poster" style={posterStyle}>
               <span className="b-poster__body" />
               <span className="b-poster__lid" />
-              <figcaption className="sr-only">{copy.name} ات‌مت با طرح واقعی بسته‌بندی</figcaption>
+              <figcaption className="sr-only">بسته‌بندی ات‌مت، {copy.name}</figcaption>
             </figure>
           </div>
         </section>
@@ -53,7 +61,7 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
           <BrandEdge id="details-logo-start" className="b-detail__edge" fillBelow />
           <div className="b-detail__stage">
             <header className="b-detail__head">
-              <p className="b-kicker"><b>۰۱</b>محتویات محصول</p>
+              <p className="b-kicker"><b>۰۱</b>ترکیبات قوطی</p>
               <h2 id="details-title" className="b-detail__title">{copy.name}</h2>
               <p className="b-detail__description">{copy.description}</p>
               <p className="sr-only">{copy.netWeight} گرم، وزن خالص</p>
@@ -86,7 +94,7 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
         <section className="b-recipes" id="recipes" aria-labelledby="recipes-title">
           <BrandEdge id="recipes-logo-start" className="b-recipes__edge" />
           <header className="b-recipes__head">
-            <p className="b-kicker" data-reveal><b>۰۳</b>ایده سرو</p>
+            <p className="b-kicker" data-reveal><b>۰۳</b>پیشنهاد سرو</p>
             <h2 id="recipes-title">
               {recipes.title.map((line) => (
                 <span className="b-mask" key={line}><span data-line>{line}</span></span>
@@ -94,9 +102,8 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
             </h2>
             <p className="b-recipes__note" data-reveal>{recipes.note}</p>
           </header>
-          <ol className="b-cards">
-            {recipes.items.map((recipe) => {
-              const image = media.ideas[recipe.image];
+          {ideas.length ? <ol className="b-cards">
+            {ideas.map(({ recipe, image }) => {
               return (
                 <li key={recipe.id} className="b-card" data-card>
                   <div className="b-card__scroll">
@@ -116,7 +123,7 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
                 </li>
               );
             })}
-          </ol>
+          </ol> : <p className="b-recipes__note"><a href="/recipes" className="r-text-link">همهٔ دستورهای پخت ←</a></p>}
         </section>
       </main>
 

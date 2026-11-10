@@ -1,6 +1,10 @@
 'use client';
 import { useEffect, useRef } from 'react';
-export function ArticleReaderNav({ sections }: { sections: { id: string; title: string }[] }) {
+export function ArticleReaderNav({ sections, questionsTitle, sourcesTitle }: {
+  sections: { id: string; title: string }[];
+  questionsTitle?: string;
+  sourcesTitle: string;
+}) {
   const progress = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const update = () => {
@@ -13,5 +17,17 @@ export function ArticleReaderNav({ sections }: { sections: { id: string; title: 
     update(); window.addEventListener('scroll', update, { passive: true }); window.addEventListener('resize', update);
     return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
   }, []);
-  return <aside className="a-toc"><div className="a-reading-track" aria-hidden="true"><div ref={progress} /></div><details open><summary>توی این مقاله <span aria-hidden="true">↓</span></summary><nav aria-label="فهرست مقاله"><ol>{sections.map(s => <li key={s.id}><a href={`#${s.id}`}>{s.title}</a></li>)}<li><a href="#article-faq">پرسش‌های رایج</a></li><li><a href="#article-sources">منابع</a></li></ol></nav></details></aside>;
+  return (
+    <aside className="a-toc">
+      <div className="a-reading-track" aria-hidden="true"><div ref={progress} /></div>
+      <details open>
+        <summary>توی این مقاله <span aria-hidden="true">↓</span></summary>
+        <nav aria-label="فهرست مقاله"><ol>
+          {sections.map(section => <li key={section.id}><a href={`#${section.id}`}>{section.title}</a></li>)}
+          {questionsTitle && <li><a href="#article-faq">{questionsTitle}</a></li>}
+          <li><a href="#article-sources">{sourcesTitle}</a></li>
+        </ol></nav>
+      </details>
+    </aside>
+  );
 }

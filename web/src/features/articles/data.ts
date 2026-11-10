@@ -5,7 +5,7 @@ import path from 'node:path';
 import type { Article, ArticleCardData, ArticlePhoto } from './types';
 export const articleApi = process.env.ATMAT_API_URL ?? 'http://127.0.0.1:3010/api';
 export const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3002';
-const media = (photo: ArticlePhoto | null) => photo ? { ...photo, url: `/media/${photo.key.split('/').map(encodeURIComponent).join('/')}` } : null;
+const media = (photo?: ArticlePhoto | null) => photo ? { ...photo, url: `/media/${photo.key.split('/').map(encodeURIComponent).join('/')}` } : null;
 async function request<T>(route: string): Promise<T | null> {
   const res = await fetch(`${articleApi}/public/articles${route}`, { cache: 'no-store', signal: AbortSignal.timeout(6000) });
   if (res.status === 404) return null;
@@ -19,7 +19,12 @@ export const getArticles = cache(async (): Promise<ArticleCardData[]> => {
 export const getArticle = cache(async (slug: string): Promise<Article | null> => {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
   const item = await request<Article>(`/${encodeURIComponent(slug)}`);
-  return item ? { ...item, cover: media(item.cover), bodyImage: media(item.bodyImage) } : null;
+  return item ? {
+    ...item,
+    cover: media(item.cover),
+    bodyImage: media(item.bodyImage),
+    sections: item.sections.map(section => ({ ...section, image: media(section.image) })),
+  } : null;
 });
 export const getArticleLogo = cache(async () => {
   const manifest = JSON.parse(await readFile(path.join(process.cwd(), '..', 'assets/image-manifest.json'), 'utf8')) as { images: { key: string; url: string; description?: string }[] };

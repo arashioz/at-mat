@@ -7,7 +7,7 @@
 ## بخش‌ها و تکنولوژی‌ها
 
 - `web/`: سایت مصرف‌کننده با Next.js 16، React 19 و TypeScript؛ صفحات شش طعم محصول، رسپی‌ها و مجله. Three.js برای قوطی سه‌بعدی و GSAP / ScrollTrigger و Motion برای حرکت‌ها استفاده می‌شوند. طراحی فارسی و RTL است.
-- `admin-web/`: پنل مدیریت با Next.js 14، React 18، TypeScript و Tailwind CSS 3؛ مدیریت مشتری، محصول و مقالات.
+- `admin-web/`: میز کار ات‌مت با Next.js 14، React 18، TypeScript و Tailwind CSS 3؛ مدیریت مشتری، محصول، مقالات، رسپی‌ها و کتابخانهٔ رسانه.
 - `backend/`: NestJS 10، Mongoose / MongoDB 7، احراز هویت JWT و ذخیرهٔ تصاویر در MinIO با AWS SDK S3.
 - `docker-compose.yml`: سرویس‌های MongoDB و MinIO همراه volume پایدار؛ برنامه‌های Node روی میزبان اجرا می‌شوند.
 - `infra/minio/Dockerfile`: ساخت MinIO از revision ثابت سورس، بدون وابستگی به `minio/minio:latest` و بدون ارسال env و دارایی‌ها به context ساخت.
@@ -47,6 +47,8 @@ npm run dev
 - MinIO: <http://localhost:9000>؛ کنسول: <http://localhost:9001>
 
 برای محتوای مقالات، بکاپ MongoDB را جداگانه بازیابی کنید. روی دیتابیس خالی می‌توانید پس از آماده‌شدن API و دارایی‌ها، در ترمینال دیگری `npm run seed:articles` را اجرا کنید؛ این دستور با ادمین تعریف‌شده در `backend/.env` وارد می‌شود، مقالات نمونه را درج و منتشر می‌کند و موارد موجود را بازنویسی نمی‌کند. اگر رمز ادمین موجود در دیتابیس قبلاً تغییر کرده است، مقدار env باید با رمز فعلی تطبیق داشته باشد.
+
+در میز کار، ادمین می‌تواند مقاله یا رسپی را باز کند، پیش‌نویس را ذخیره و پیش‌نمایش کند و سپس نسخهٔ جدید را منتشر کند. ۳۰ رسپی اولیه از `web/src/features/recipes/content.json` می‌آیند و با همان نشانی‌ها در سایت و پنل در دسترس‌اند؛ ویرایش‌ها و رسپی‌های تازه در MongoDB ذخیره می‌شوند. برای انتقال ویرایش‌ها، از MongoDB و دارایی‌های MinIO بکاپ بگیرید. تصاویر از کتابخانهٔ رسانه انتخاب یا از طریق همان کتابخانه بارگذاری می‌شوند.
 
 برای بازیابی تصاویر از بستهٔ دپلوی، `ATMAT_ASSET_BUNDLE=/path/to/at-mat-deploy-assets npm run assets:restore` را اجرا کنید. برای خواندن snapshot مقالات همان بسته بدون تغییر سورس، `ATMAT_ARTICLE_SEED_FILE=/path/to/at-mat-deploy-assets/content/published-articles.json npm run seed:articles` قابل استفاده است. بازیابی storage اشیای هم‌کلید را بازنویسی می‌کند و مخصوص بازیابی اولیه یا بکاپ است.
 

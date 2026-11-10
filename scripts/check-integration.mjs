@@ -27,19 +27,27 @@ try {
     throw new Error('No published articles: restore the MongoDB backup or run npm run seed:articles after restoring assets.');
   }
   await check(api, 'articles', { status: 401 });
+  await check(api, 'recipes', { status: 401 });
+  await check(api, 'collaboration', { status: 401 });
+  const recipes = await check(api, 'public/recipes', { json: true });
+  if (!Array.isArray(recipes)) throw new Error('The public recipe catalog is not an array.');
   await check(admin, '/api/health');
   await check(admin, '/api/articles', { status: 401 });
-  for (const route of ['/login', '/articles']) await check(admin, route);
-  for (const route of ['/', '/recipes', '/articles', ...['brine', 'sunflower', 'olive-oil', 'pepper', 'smoked', 'dill'].map(slug => `/flavors/${slug}`)]) {
+  await check(admin, '/api/recipes', { status: 401 });
+  await check(admin, '/api/collaboration', { status: 401 });
+  for (const route of ['/login', '/articles', '/recipes', '/library', '/collaboration']) await check(admin, route);
+  for (const route of ['/', '/recipes', '/articles', '/about', '/collaboration', ...['brine', 'sunflower', 'olive-oil', 'pepper', 'smoked', 'dill'].map(slug => `/flavors/${slug}`)]) {
     await check(site, route);
   }
-  const recipes = JSON.parse(await readFile(new URL('../web/src/features/recipes/content.json', import.meta.url), 'utf8'));
   for (const recipe of recipes) await check(site, `/recipes/${recipe.slug}`);
   for (const article of articles) {
     await check(api, `public/articles/${article.slug}`, { json: true });
     await check(site, `/articles/${article.slug}`);
   }
   const manifest = JSON.parse(await readFile(new URL('../assets/image-manifest.json', import.meta.url), 'utf8'));
+  const logo = manifest.images.findLast(entry => entry.description === 'atmat-logo-fa');
+  if (!logo) throw new Error('The uploaded Persian logo is missing from the manifest.');
+  await check(admin, `/media/${logo.key.split('/').map(encodeURIComponent).join('/')}`, { method: 'HEAD', image: true });
   const missingUnused = [];
   let requiredImages = 0;
   for (const { key } of manifest.images) {

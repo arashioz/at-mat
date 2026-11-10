@@ -1,10 +1,11 @@
 import { flavors } from '@/features/products/catalog';
 import { getFlavorMedia } from '@/features/products/media';
 import { BottomNavigation } from './bottom-navigation';
+import type { SiteSection } from './site-links';
 import './site-chrome.css';
 
 export async function SiteNavigation({ logo, flavor, section }: {
-  logo: string; flavor?: string; section?: 'recipes' | 'articles';
+  logo: string; flavor?: string; section?: SiteSection;
 }) {
   const products = await Promise.all(flavors.map(async product => {
     const media = await getFlavorMedia(product.mediaPrefix);

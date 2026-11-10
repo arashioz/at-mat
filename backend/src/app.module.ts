@@ -10,6 +10,8 @@ import { ProductsModule } from './products/products.module';
 import { StorageModule } from './storage/storage.module';
 import { UsersModule } from './users/users.module';
 import { ArticlesModule } from './articles/articles.module';
+import { RecipesModule } from './recipes/recipes.module';
+import { CollaborationModule } from './collaboration/collaboration.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { ArticlesModule } from './articles/articles.module';
     ProductsModule,
     FeaturesModule,
     ArticlesModule,
+    RecipesModule,
+    CollaborationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 
-const sections = [
+const cookingSections = [
   ['ingredients', 'مواد لازم'], ['method', 'طرز تهیه'],
   ['recipe-nutrition', 'ارزش غذایی'], ['recipe-questions', 'پرسش‌ها'],
 ] as const;
 
-export function RecipeSectionNav() {
+export function RecipeSectionNav({ hasExtraSections = false }: { hasExtraSections?: boolean }) {
   const [active, setActive] = useState<string>('ingredients');
+  const sections = hasExtraSections ? extraSections : cookingSections;
   useEffect(() => {
     const visible = new Map<string, Element>();
     const observer = new IntersectionObserver(entries => {
@@ -22,6 +23,8 @@ export function RecipeSectionNav() {
     }, { rootMargin: '-15% 0px -60% 0px' });
     sections.forEach(([id]) => { const element = document.getElementById(id); if (element) observer.observe(element); });
     return () => observer.disconnect();
-  }, []);
+  }, [sections]);
   return <nav className="r-recipe-nav" aria-label="بخش‌های دستور پخت">{sections.map(([id, label]) => <a key={id} href={`#${id}`} aria-current={active === id ? 'location' : undefined} onClick={() => setActive(id)}>{label}</a>)}</nav>;
 }
+
+const extraSections = [...cookingSections.slice(0, 2), ['recipe-extra', 'تکمیلی'] as const, ...cookingSections.slice(2)];

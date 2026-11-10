@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   async rewrites() {
     const api = (process.env.ATMAT_API_URL ?? 'http://127.0.0.1:3010/api').replace(/\/$/, '');
     return [{ source: '/api/:path*', destination: `${api}/:path*` }];

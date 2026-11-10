@@ -16,13 +16,12 @@ const commonCopy = {
   warning: brineCopy.warning,
   origin: brineCopy.origin,
   contact: brineCopy.contact,
-  recipes: brineCopy.recipes,
 };
 const legend = brineCopy.nutrition.legend;
 const oilNotes = [
-  { figure: '۲۰', unit: 'دقیقه', text: 'قوطی را پیش از مصرف به مدت ۲۰ دقیقه در آب بجوشانید.' },
-  { figure: '۱۸۰', unit: 'گرم', text: 'وزن خالص محتویات قوطی، شامل ماهی و مایع همراه آن.' },
-  { figure: '۷۲٪', unit: 'وزن آبکش', text: 'وزن ماهی پس از جداکردن مایع، حدود ۱۳۰ گرم از هر قوطی است.' },
+  brineCopy.notes[0],
+  { figure: '۱۸۰', unit: 'گرم', text: 'وزن ماهی و مایع داخل قوطی.' },
+  { figure: '۷۲٪', unit: 'وزن آبکش', text: 'پس از آبکش کردن، حدود ۱۳۰ گرم ماهی در هر قوطی می‌ماند.' },
 ] as const;
 
 /**
@@ -58,20 +57,20 @@ export const pepperFlavor: FlavorDefinition = {
   metadataTitle: 'تن ماهی فلفلی در روغن آفتابگردان',
   copy: {
     ...commonCopy,
-    headline: ['یه کم تندتر.', 'یه دنیا مزه.'],
+    headline: ['فلفل قرمز.', 'لقمهٔ تندتر.'],
     giant: 'CHILI',
     name: 'کنسرو ماهی تن در روغن آفتابگردان با طعم فلفل',
-    description: 'برای وقتی که دلت کمی تندی می‌خواهد. فیلهٔ روشن ماهی تن، روغن آفتابگردان و فلفل قرمز، همراه آب و نمک؛ یک قوطی ۱۸۰ گرمی برای کسادیای پنیری، برنج تابه‌ای یا املتی به سلیقهٔ خودت.',
-    steps: [...flavoredOilSteps, { id: 'pepper', title: 'فلفل قرمز', fact: 'فلفل قرمز، مطابق ترکیبات روی بسته‌بندی.' }],
+    description: 'فلفل قرمز به فیلهٔ روشن تن ماهی ات‌مت در روغن آفتابگردان تندی می‌دهد. آن را با ذرت و چدار لای نان تورتیلای برشته امتحان کن.',
+    steps: [...flavoredOilSteps, { id: 'pepper', title: 'فلفل قرمز', fact: 'فلفل قرمز چاشنی این طعم است.' }],
     nutrition: flavoredNutrition('۱۶۷٫۲۲', '۱۱٫۱۲', '۱٫۱۹'),
     notes: oilNotes,
     recipes: {
-      title: ['یه کم تندی،', 'کلی ایده.'],
-      note: 'سه ایده با تن فلفلی؛ دستور هر کدام را ببین.',
+      title: ['یک تابه،', 'چند لقمهٔ تند.'],
+      note: 'تن فلفلی را با پنیر در نان برشته کن یا به برنج و املت تابه‌ای اضافه کن.',
       items: [
-        { id: 'quesadilla', numeral: '۰۱', title: 'کسادیا', line: 'تن فلفلی، ذرت و پنیر کش‌دار.', href: '/recipes/chili-tuna-corn-quesadilla', image: 'recipe-chili-tuna-corn-quesadilla-cover-a' },
-        { id: 'rice', numeral: '۰۲', title: 'برنج تابه‌ای', line: 'برنج، تخم‌مرغ و یک طعم تند.', href: '/recipes/chili-tuna-egg-fried-rice', image: 'recipe-chili-tuna-egg-fried-rice-cover-a' },
-        { id: 'eggs', numeral: '۰۳', title: 'املت فلفلی', line: 'گوجه، تخم‌مرغ، تن فلفلی.', href: '/recipes/chili-tuna-tomato-eggs', image: 'recipe-chili-tuna-tomato-eggs-cover-a' },
+        { id: 'quesadilla', numeral: '۰۱', title: 'کسادیای تن فلفلی', line: 'تورتیلای برشته با ذرت و چدارِ آب‌شده.', href: '/recipes/chili-tuna-corn-quesadilla', image: 'recipe-chili-tuna-corn-quesadilla-cover-a' },
+        { id: 'rice', numeral: '۰۲', title: 'برنج تابه‌ای', line: 'تن فلفلی، تخم‌مرغ و پیازچه با چاشنی سویا.', href: '/recipes/chili-tuna-egg-fried-rice', image: 'recipe-chili-tuna-egg-fried-rice-cover-a' },
+        { id: 'eggs', numeral: '۰۳', title: 'املت گوجه', line: 'تخم‌مرغ و تن فلفلی در سس گوجه و فلفل دلمه‌ای.', href: '/recipes/chili-tuna-tomato-eggs', image: 'recipe-chili-tuna-tomato-eggs-cover-a' },
       ],
     },
   },
@@ -89,20 +88,20 @@ export const smokedFlavor: FlavorDefinition = {
   metadataTitle: 'تن ماهی با طعم طبیعی دود',
   copy: {
     ...commonCopy,
-    headline: ['یه طعم دودی.', 'یه حس متفاوت.'],
+    headline: ['طعم دود،', 'روی نان برشته.'],
     giant: 'SMOKY',
     name: 'کنسرو ماهی تن در روغن آفتابگردان با طعم طبیعی دود',
-    description: 'این بار، طعم آشنای ماهی با حال‌وهوای دودی. فیلهٔ روشن ماهی تن در روغن آفتابگردان با طعم‌دهندهٔ طبیعی دود، همراه آب و نمک؛ برای یک ساندویچ گرم، پیتزای لواش یا یک کاسه سوپ.',
-    steps: [...flavoredOilSteps, { id: 'smoke', title: 'طعم دود', fact: 'طعم‌دهندهٔ طبیعی دود، مطابق ترکیبات روی بسته‌بندی.' }],
+    description: 'فیلهٔ روشن تن ماهی ات‌مت در روغن آفتابگردان با طعم‌دهندهٔ طبیعی دود. با چدارِ آب‌شده در نان برشته سرو کن یا به سوپ ذرت و سیب‌زمینی اضافه‌اش کن.',
+    steps: [...flavoredOilSteps, { id: 'smoke', title: 'طعم دود', fact: 'طعم‌دهندهٔ طبیعی دود، طبق برچسب قوطی.' }],
     nutrition: flavoredNutrition('۱۷۴٫۰۶', '۱۱٫۹۴', '۱٫۰۶'),
     notes: oilNotes,
     recipes: {
-      title: ['طعم دودی،', 'ایده‌های گرم.'],
-      note: 'سه ایده با تن دودی؛ دستور هر کدام را ببین.',
+      title: ['شام گرم', 'با طعم دود.'],
+      note: 'تن دودی کنار چدار و نان برشته یک ساندویچ گرم می‌شود. برای شامی که با قاشق می‌خوری، سوپ ذرت را ببین.',
       items: [
-        { id: 'melt', numeral: '۰۱', title: 'ساندویچ چدار', line: 'نان برشته، چدار و تن دودی.', href: '/recipes/smoked-tuna-cheddar-melt', image: 'recipe-smoked-tuna-cheddar-melt-cover-a' },
-        { id: 'pizza', numeral: '۰۲', title: 'پیتزای لواش', line: 'قارچ، موزارلا و یک نان ترد.', href: '/recipes/smoked-tuna-mushroom-lavash-pizza', image: 'recipe-smoked-tuna-mushroom-lavash-pizza-cover-a' },
-        { id: 'soup', numeral: '۰۳', title: 'سوپ ذرت', line: 'یک کاسه گرم با طعم دود.', href: '/recipes/smoked-tuna-corn-potato-soup', image: 'recipe-smoked-tuna-corn-potato-soup-cover-a' },
+        { id: 'melt', numeral: '۰۱', title: 'ساندویچ چدار', line: 'تن دودی و چدارِ آب‌شده میان نان برشته.', href: '/recipes/smoked-tuna-cheddar-melt', image: 'recipe-smoked-tuna-cheddar-melt-cover-a' },
+        { id: 'pizza', numeral: '۰۲', title: 'پیتزای لواش', line: 'تن دودی، قارچ و موزارلا روی لواش ترد.', href: '/recipes/smoked-tuna-mushroom-lavash-pizza', image: 'recipe-smoked-tuna-mushroom-lavash-pizza-cover-a' },
+        { id: 'soup', numeral: '۰۳', title: 'سوپ ذرت', line: 'ذرت و سیب‌زمینی با شیر، پیازچه و تن دودی.', href: '/recipes/smoked-tuna-corn-potato-soup', image: 'recipe-smoked-tuna-corn-potato-soup-cover-a' },
       ],
     },
   },
@@ -120,23 +119,23 @@ export const dillFlavor: FlavorDefinition = {
   metadataTitle: 'تن ماهی در روغن آفتابگردان با شوید',
   copy: {
     ...commonCopy,
-    headline: ['عطر شوید.', 'مزهٔ یه حال خوب.'],
+    headline: ['عطر شوید.', 'امشب کوکو؟'],
     giant: 'DILL',
     name: 'کنسرو ماهی تن در روغن آفتابگردان با شوید',
-    description: 'عطر شوید، کنار طعم ماهی. فیلهٔ روشن ماهی تن در روغن آفتابگردان، همراه شوید، آب و نمک؛ یک قوطی ۱۸۰ گرمی برای سالاد ماکارونی، کوکو سبزی یا کدوی شکم‌پر به سلیقهٔ تو.',
-    steps: [...flavoredOilSteps, { id: 'dill', title: 'شوید', fact: 'شوید، مطابق ترکیبات روی بسته‌بندی.' }],
+    description: 'شوید به فیلهٔ روشن تن ماهی ات‌مت در روغن آفتابگردان عطر می‌دهد. این طعم به کوکو سبزی می‌آید و با ماکارونی، خیار و نخودفرنگی هم یک سالاد سرد می‌سازد.',
+    steps: [...flavoredOilSteps, { id: 'dill', title: 'شوید', fact: 'عطر این طعم از شوید می‌آید.' }],
     nutrition: flavoredNutrition('۱۶۷٫۸۵', '۱۲٫۷۶', '۱٫۱۸'),
     notes: [
       oilNotes[0], oilNotes[1],
-      { figure: '۷۴٪', unit: 'وزن آبکش', text: 'وزن آبکش درج‌شده روی این بسته‌بندی، معادل حدود ۱۳۳ گرم در هر قوطی است.' },
+      { figure: '۷۴٪', unit: 'وزن آبکش', text: 'پس از آبکش کردن، حدود ۱۳۳ گرم ماهی در هر قوطی می‌ماند.' },
     ],
     recipes: {
-      title: ['عطر سبز،', 'سر سفرهٔ تو.'],
-      note: 'سه ایده با تن شویدی؛ دستور هر کدام را ببین.',
+      title: ['از سالاد سرد', 'تا کوکوی گرم.'],
+      note: 'سالاد ماکارونی را سرد سرو کن. برای شام، کوکو سبزی یا کدوی شکم‌پر را با تن شویدی امتحان کن.',
       items: [
-        { id: 'pasta-salad', numeral: '۰۱', title: 'سالاد ماکارونی', line: 'ماکارونی، نخودفرنگی و تن شویدی.', href: '/recipes/dill-tuna-pea-pasta-salad', image: 'recipe-dill-tuna-pea-pasta-salad-cover-a' },
-        { id: 'kuku', numeral: '۰۲', title: 'کوکو سبزی', line: 'سبزی، تخم‌مرغ و عطر شوید.', href: '/recipes/dill-tuna-herb-kuku', image: 'recipe-dill-tuna-herb-kuku-cover-a' },
-        { id: 'zucchini', numeral: '۰۳', title: 'کدوی شکم‌پر', line: 'کدو، پنیر و تکه‌های تن شویدی.', href: '/recipes/dill-tuna-stuffed-zucchini', image: 'recipe-dill-tuna-stuffed-zucchini-cover-a' },
+        { id: 'pasta-salad', numeral: '۰۱', title: 'سالاد ماکارونی', line: 'خیار و نخودفرنگی با تن شویدی و سس ماست.', href: '/recipes/dill-tuna-pea-pasta-salad', image: 'recipe-dill-tuna-pea-pasta-salad-cover-a' },
+        { id: 'kuku', numeral: '۰۲', title: 'کوکو سبزی', line: 'جعفری، گشنیز و اسفناج با تخم‌مرغ و تن شویدی.', href: '/recipes/dill-tuna-herb-kuku', image: 'recipe-dill-tuna-herb-kuku-cover-a' },
+        { id: 'zucchini', numeral: '۰۳', title: 'کدوی شکم‌پر', line: 'کدوهای پرشده با تن شویدی و رویهٔ موزارلا.', href: '/recipes/dill-tuna-stuffed-zucchini', image: 'recipe-dill-tuna-stuffed-zucchini-cover-a' },
       ],
     },
   },
@@ -154,10 +153,10 @@ export const sunflowerFlavor: FlavorDefinition = {
   metadataTitle: 'تن ماهی در روغن آفتابگردان',
   copy: {
     ...commonCopy,
-    headline: ['طلایی و آشنا.', 'برای سفرهٔ تو.'],
+    headline: ['یک طعم آشنا.', 'از پلو تا نودل.'],
     giant: 'SUNFLOWER',
     name: 'کنسرو ماهی تن در روغن آفتابگردان',
-    description: 'طعم آشنای ماهی، همراه روغن آفتابگردان. فیلهٔ روشن ماهی تن در یک قوطی ۱۸۰ گرمی، با آب آشامیدنی و محلول نمک؛ برای کنار یک سالاد رنگی، میان ساندویچ یا همراه پاستایی به سلیقهٔ خودت.',
+    description: 'فیلهٔ روشن تن ماهی ات‌مت در روغن آفتابگردان، همان طعم آشنای کنار پلو. این بار آن را با نودل کنجدی یا زیر یک لایه پورهٔ سیب‌زمینی امتحان کن.',
     steps: [
       { id: 'fish', title: 'ماهی', fact: 'فیلهٔ روشن ماهی هوور یا گیدر.' },
       { id: 'oil', title: 'روغن آفتابگردان', fact: 'روغن گیاهی آفتابگردان، همراه ماهی.' },
@@ -175,6 +174,15 @@ export const sunflowerFlavor: FlavorDefinition = {
       legend,
     },
     notes: oilNotes,
+    recipes: {
+      title: ['سالاد خنک', 'یا نودل تابه‌ای؟'],
+      note: 'تن آفتابگردان را با آووکادو و ذرت در سالاد سرو کن. اگر غذای گرم می‌خواهی، نودل کنجدی یا پای سیب‌زمینی را ببین.',
+      items: [
+        { id: 'avocado-salad', numeral: '۰۱', title: 'سالاد تن و آووکادو', line: 'آووکادو، ذرت و خیار با چاشنی لیمو و گشنیز.', href: '/recipes/sunflower-tuna-avocado-corn-salad', image: 'recipe-sunflower-tuna-avocado-corn-salad-cover-a' },
+        { id: 'sesame-noodles', numeral: '۰۲', title: 'نودل کنجدی با تن', line: 'کلم و هویج تابه‌ای با کنجد بوداده و سس سویا.', href: '/recipes/sunflower-tuna-sesame-vegetable-noodles', image: 'recipe-sunflower-tuna-sesame-vegetable-noodles-cover-a' },
+        { id: 'potato-pie', numeral: '۰۳', title: 'پای تن و سیب‌زمینی', line: 'تن، هویج و نخودفرنگی زیر پورهٔ برشته.', href: '/recipes/sunflower-tuna-potato-pie', image: 'recipe-sunflower-tuna-potato-pie-cover-a' },
+      ],
+    },
   },
   theme: {
     accent: '#9b7100',
@@ -197,10 +205,10 @@ export const oliveOilFlavor: FlavorDefinition = {
   metadataTitle: 'تن ماهی در روغن زیتون',
   copy: {
     ...commonCopy,
-    headline: ['با روغن زیتون.', 'با سلیقهٔ تو.'],
+    headline: ['روغن زیتون.', 'طعم مدیترانه.'],
     giant: 'OLIVE OIL',
     name: 'کنسرو ماهی تن در روغن زیتون',
-    description: 'ماهی و روغن زیتون، کنار هم. فیلهٔ روشن ماهی تن در یک قوطی ۱۸۰ گرمی، همراه آب آشامیدنی و محلول نمک؛ ترکیبی برای وقتی که می‌خواهی سالاد یا ساندویچت را به سلیقهٔ خودت بسازی.',
+    description: 'فیلهٔ روشن تن ماهی ات‌مت در روغن زیتون را با لیمو و لوبیا سبز در سالاد نیشواز امتحان کن. برای یک بشقاب گرم، سراغ اسپاگتی با گوجه و زیتون برو.',
     steps: [
       { id: 'fish', title: 'ماهی', fact: 'فیلهٔ روشن ماهی هوور یا گیدر.' },
       { id: 'oil', title: 'روغن زیتون', fact: 'روغن زیتون، همراه فیلهٔ روشن ماهی.' },
@@ -218,6 +226,15 @@ export const oliveOilFlavor: FlavorDefinition = {
       legend,
     },
     notes: oilNotes,
+    recipes: {
+      title: ['سالاد نیشواز', 'یا اسپاگتی؟'],
+      note: 'لیمو و خردل چاشنی سالاد نیشوازند. اگر پاستا دوست داری، زیتون و کیپر کنار تن در روغن زیتون خوب می‌نشینند.',
+      items: [
+        { id: 'nicoise', numeral: '۰۱', title: 'سالاد نیشواز با تن', line: 'لوبیا سبز، سیب‌زمینی و تخم‌مرغ با چاشنی لیمو و خردل.', href: '/recipes/olive-tuna-nicoise', image: 'recipe-olive-tuna-nicoise-cover-a' },
+        { id: 'caper-spaghetti', numeral: '۰۲', title: 'اسپاگتی تن و زیتون', line: 'سس گوجه و سیر با زیتون و کیپر.', href: '/recipes/olive-tuna-caper-spaghetti', image: 'recipe-olive-tuna-caper-spaghetti-cover-a' },
+        { id: 'warm-lentils', numeral: '۰۳', title: 'سالاد گرم عدس', line: 'تن و عدس سبز با هویج و چاشنی سرکهٔ سیب.', href: '/recipes/olive-tuna-warm-lentils-carrot', image: 'recipe-olive-tuna-warm-lentils-carrot-cover-a' },
+      ],
+    },
   },
   theme: {
     accent: '#647400',

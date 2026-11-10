@@ -1,80 +1,539 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { AppShell } from '../../components/AppShell';
-import { apiFetch, fetchMe, TOKEN_KEY } from '../../lib/api';
-import recipes from '../../../web/src/features/recipes/content.json';
 
-type Photo = { key: string; alt: string };
-type Media = { key: string; url: string; description?: string; originalName: string };
-type Article = {
-  _id?: string; slug: string; title: string; category: string; excerpt: string; intro: string; author: string;
-  seoTitle: string; metaDescription: string; tags: string[]; takeaways: string[];
-  sections: { id: string; title: string; paragraphs: string[] }[];
-  faq: { question: string; answer: string }[]; sources: { title: string; url: string }[];
-  cover: Photo | null; bodyImage: Photo | null; relatedArticleSlugs: string[]; relatedRecipeSlugs: string[]; productSlugs: string[];
-  status?: 'draft' | 'published'; publishedAt?: string; wordCount?: number;
-};
-const categories = ['تغذیه', 'سلامتی', 'هلث فود و سبک زندگی', 'ورزش', 'دنیای آبزیان'];
-const products = [['brine', 'آب‌نمک'], ['sunflower', 'روغن آفتابگردان'], ['olive-oil', 'روغن زیتون'], ['pepper', 'فلفلی'], ['smoked', 'دودی'], ['dill', 'شوید']];
-const empty = (): Article => ({ slug: '', title: '', category: categories[0], excerpt: '', intro: '', author: 'تحریریهٔ ات‌مت', seoTitle: '', metaDescription: '', tags: [], takeaways: [], sections: [], faq: [], sources: [], cover: null, bodyImage: null, relatedArticleSlugs: [], relatedRecipeSlugs: [], productSlugs: [] });
-const input = 'w-full rounded-lg border border-slate-300 bg-white p-2 text-sm focus:border-brand-600 focus:outline-none';
-const button = 'rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:opacity-40';
-function Field({ label, value, onChange, area = false, disabled = false, dir }: { label: string; value: string; onChange: (value: string) => void; area?: boolean; disabled?: boolean; dir?: string }) {
-  return <label className="block space-y-1 text-sm"><span>{label}</span>{area ? <textarea className={input} rows={5} value={value} onChange={e => onChange(e.target.value)} disabled={disabled} dir={dir} /> : <input className={input} value={value} onChange={e => onChange(e.target.value)} disabled={disabled} dir={dir} />}</label>;
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import { AppShell, useAdminWorkspace } from '../../components/AppShell';
+import { AdminSearch } from '../../components/AdminForms';
+import { AdminIcon } from '../../components/AdminIcon';
+import { CmsEditorToolbar, CmsPublishChecklist, CmsSections, focusCmsPanel, showCmsChecklist } from '../../components/CmsEditor';
+import {
+  ArticleBody, ArticleDetails, ArticleIntro, ArticleMedia, ArticleQuestions, ArticleRelations, ArticleSeo, ArticleSources,
+} from '../../components/articles/ArticleFields';
+import { ArticlePreview } from '../../components/articles/ArticlePreview';
+import { apiFetch } from '../../lib/api';
+import { newCmsSlug } from '../../lib/cms';
+import { mediaHref, uploadMedia } from '../../lib/media';
+import {
+  articleCategories, articleStatus, articleWordCount, blankArticle, editableArticle,
+  formatNumber, normalizeSearch, publishChecklist, siteOrigin, slugPattern,
+  type ArticleFields, type ArticleMediaTarget, type ArticleRecord, type ArticleSummary,
+  type ArticleTab, type RecipeChoice,
+} from '../../lib/articles';
+import './articles-admin.css';
+
+type LoadState = 'idle' | 'loading' | 'ready' | 'error';
+type Filter = 'all' | 'published' | 'draft' | 'staged';
+type Editor = { saved: ArticleRecord | null; fields: ArticleFields; baseline: ArticleFields };
+const unsavedArticles = new Map<string, Editor>();
+
+const tabs: ReadonlyArray<{ id: ArticleTab; label: string }> = [
+  { id: 'details', label: 'مشخصات' },
+  { id: 'intro', label: 'مقدمه و نکته‌ها' },
+  { id: 'body', label: 'بدنهٔ مقاله' },
+  { id: 'media', label: 'تصاویر' },
+  { id: 'faq', label: 'پرسش‌ها' },
+  { id: 'sources', label: 'منابع' },
+  { id: 'seo', label: 'سئو' },
+  { id: 'relations', label: 'محتوای مرتبط' },
+];
+const statuses: ReadonlyArray<{ id: Filter; label: string }> = [
+  { id: 'all', label: 'همه' },
+  { id: 'published', label: 'منتشرشده' },
+  { id: 'draft', label: 'پیش‌نویس' },
+  { id: 'staged', label: 'در انتظار انتشار' },
+];
+
+const versionHeader = (article: ArticleRecord) => ({ 'If-Match': JSON.stringify(article.updatedAt) });
+const errorMessage = (error: unknown, fallback: string) => error instanceof Error ? error.message : fallback;
+
+function editorFor(record: ArticleRecord | null): Editor {
+  const fields = record ? editableArticle(record) : blankArticle();
+  return { saved: record, fields, baseline: fields };
 }
-const count = (a: Article) => [a.intro, ...a.sections.flatMap(s => s.paragraphs), ...a.faq.flatMap(q => [q.question, q.answer])].join(' ').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').trim().split(/\s+/u).filter(Boolean).length;
-export default function ArticlesAdmin() {
-  const [items, setItems] = useState<Article[]>([]), [media, setMedia] = useState<Media[]>([]), [draft, setDraft] = useState<Article | null>(null);
-  const [ready, setReady] = useState(false), [allowed, setAllowed] = useState(false), [busy, setBusy] = useState(false);
-  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [search, setSearch] = useState('');
-  const token = () => localStorage.getItem(TOKEN_KEY) ?? '';
-  const load = async () => { const [rows, images] = await Promise.all([apiFetch<Article[]>('/articles', token()), apiFetch<Media[]>('/storage/images', token())]); setItems(rows); setMedia(images); };
-  useEffect(() => { fetchMe(token()).then(async user => { const access = ['admin', 'super_admin'].includes(user.role); setAllowed(access); if (access) await load(); }).catch(e => setError(e.message)).finally(() => setReady(true)); }, []);
-  const change = <K extends keyof Article>(key: K, value: Article[K]) => setDraft(d => d && ({ ...d, [key]: value }));
-  function select(item: Article | null) { if (draft && !window.confirm('ویرایش‌های ذخیره‌نشده کنار گذاشته شوند؟')) return; setDraft(item ? structuredClone(item) : empty()); setError(''); setNotice(''); }
-  async function act(action: () => Promise<void>) { setBusy(true); setError(''); setNotice(''); try { await action(); } catch (e) { setError(e instanceof Error ? e.message : 'خطا در ذخیره'); } finally { setBusy(false); } }
-  async function save(publish = false) {
-    if (!draft) return;
-    await act(async () => {
-      const payload = Object.fromEntries(Object.keys(empty()).map(key => [key, draft[key as keyof Article]]));
-      const saved = await apiFetch<Article>(draft._id ? `/articles/${draft._id}` : '/articles', token(), { method: draft._id ? 'PATCH' : 'POST', body: JSON.stringify(payload) });
-      setDraft(saved);
-      if (publish) setDraft(await apiFetch<Article>(`/articles/${saved._id}/status`, token(), { method: 'PATCH', body: JSON.stringify({ status: 'published' }) }));
-      await load(); setNotice(publish ? 'مقاله منتشر شد.' : 'تغییرات ذخیره شد.');
+
+function StatusChip({ article }: { article: Pick<ArticleSummary, 'status' | 'hasUnpublishedChanges'> }) {
+  const variant = article.status === 'published' && !article.hasUnpublishedChanges ? 'live' : 'draft';
+  return <span className={'admin-chip admin-chip--' + variant}>{articleStatus(article)}</span>;
+}
+
+function ArticleArchive({ items, loadState, loadError, busy, onSelect, onRetry, onNew, archive }: {
+  items: ArticleSummary[];
+  loadState: LoadState;
+  loadError: string;
+  archive: RefObject<HTMLElement>;
+  busy: boolean;
+  onSelect: (article: ArticleSummary) => void;
+  onRetry: () => void;
+  onNew: () => void;
+}) {
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('');
+  const [status, setStatus] = useState<Filter>('all');
+  const term = normalizeSearch(search);
+  const results = items.filter(article =>
+    (!category || article.category === category)
+    && (status === 'all' || (status === 'staged' ? article.hasUnpublishedChanges : article.status === status))
+    && normalizeSearch([article.title, article.category, article.slug].join(' ')).includes(term),
+  );
+
+  return (
+    <section ref={archive} className="admin-panel article-library" aria-labelledby="article-library-title">
+      <header className="article-library-heading">
+        <div>
+          <h2 id="article-library-title" tabIndex={-1}>آرشیو مجله</h2>
+          <a className="cms-edit-action" href={siteOrigin + '/articles'} target="_blank" rel="noreferrer">
+            مشاهدهٔ مجله <AdminIcon name="external" size={15} />
+          </a>
+        </div>
+        <button type="button" className="admin-button admin-button--primary" data-article-open="new"
+          onClick={onNew} disabled={busy || loadState !== 'ready'}>
+          <AdminIcon name="plus" size={17} />مقالهٔ جدید
+        </button>
+      </header>
+      <div className="article-library-filters">
+        <AdminSearch value={search} onChange={setSearch} label="جست‌وجو در آرشیو" placeholder="عنوان یا نشانی مقاله" />
+        <label className="admin-field">
+          <span>دسته‌بندی</span>
+          <select className="admin-input" value={category} onChange={event => setCategory(event.target.value)}>
+            <option value="">همهٔ دسته‌ها</option>
+            {articleCategories.map(name => <option key={name}>{name}</option>)}
+          </select>
+        </label>
+        <div className="admin-filter-pills article-filters" role="group" aria-label="وضعیت مقاله">
+          {statuses.map(option => (
+            <button key={option.id} type="button" className="at-pill" aria-pressed={status === option.id} onClick={() => setStatus(option.id)}>{option.label}</button>
+          ))}
+        </div>
+      </div>
+      {loadState === 'loading' && <p role="status" className="article-library-message">در حال دریافت مقالات…</p>}
+      {loadState === 'error' && (
+        <div role="alert" className="admin-alert admin-alert--error">
+          <p>{loadError}</p>
+          <button type="button" className="admin-button admin-button--secondary" onClick={onRetry}>تلاش دوباره</button>
+        </div>
+      )}
+      {loadState === 'ready' && <p className="article-library-message" aria-live="polite">{formatNumber(results.length)} مقاله</p>}
+      {loadState === 'ready' && (results.length ? (
+        <ul className="article-library-results">
+          {results.map(article => (
+            <li key={article._id}>
+              <button type="button" className="article-library-item" data-article-open={article._id}
+                disabled={busy} onClick={() => onSelect(article)}>
+                <span className="article-library-thumb">
+                  {article.cover ? <img src={mediaHref(article.cover.key)} alt="" loading="lazy" /> : <AdminIcon name="article" size={22} />}
+                </span>
+                <span className="article-library-copy">
+                  <strong>{article.title}</strong>
+                  <span className="article-library-meta">{article.category} · {formatNumber(article.wordCount ?? 0)} کلمه</span>
+                </span>
+                <StatusChip article={article} />
+                <span className="cms-edit-action" aria-hidden="true">ویرایش <AdminIcon name="arrow" size={16} /></span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="admin-empty article-library-message">
+          <p>{items.length ? 'مقاله‌ای با این فیلترها پیدا نشد.' : 'هنوز مقاله‌ای ثبت نشده است.'}</p>
+          {(search || category || status !== 'all') && <button type="button" className="admin-button admin-button--secondary" onClick={() => {
+            setSearch(''); setCategory(''); setStatus('all');
+          }}>پاک‌کردن فیلترها</button>}
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function ArticleWorkspace() {
+  const { token, user } = useAdminWorkspace();
+  const [items, setItems] = useState<ArticleSummary[]>([]);
+  const [recipes, setRecipes] = useState<RecipeChoice[]>([]);
+  const [editor, setEditor] = useState<Editor | null>(null);
+  const [recovery, setRecovery] = useState(() => unsavedArticles.get(user._id));
+  const [tab, setTab] = useState<ArticleTab>('details');
+  const [preview, setPreview] = useState(false);
+  const [loadState, setLoadState] = useState<LoadState>('loading');
+  const [recipeState, setRecipeState] = useState<LoadState>('idle');
+  const [loadError, setLoadError] = useState('');
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [busy, setBusy] = useState(false);
+  const inFlight = useRef(false);
+  const editorHeading = useRef<HTMLHeadingElement>(null);
+  const requirements = useRef<HTMLDetailsElement>(null);
+  const archive = useRef<HTMLElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const lastOpened = useRef<string | null>(null);
+  const suggestedSlug = useRef('');
+  const dirty = editor !== null && JSON.stringify(editor.fields) !== JSON.stringify(editor.baseline);
+  const record = editor?.saved;
+  const fields = editor?.fields;
+  const words = fields ? articleWordCount(fields) : 0;
+  const editingKey = editor ? record?._id ?? 'new' : null;
+
+  const loadArchive = useCallback(async (signal?: AbortSignal) => {
+    setLoadState('loading');
+    try {
+      const rows = await apiFetch<ArticleSummary[]>('/articles?summary=1', token, { signal });
+      if (signal?.aborted) return;
+      setItems(rows);
+      setLoadState('ready');
+    } catch (problem) {
+      if (signal?.aborted) return;
+      setLoadError(errorMessage(problem, 'آرشیو مقالات بارگذاری نشد.'));
+      setLoadState('error');
+    }
+  }, [token]);
+
+  useEffect(() => {
+    const request = new AbortController();
+    void loadArchive(request.signal);
+    return () => request.abort();
+  }, [loadArchive]);
+
+  useEffect(() => {
+    if (editingKey) {
+      editorHeading.current?.focus();
+    } else if (lastOpened.current) {
+      const item = archive.current?.querySelector<HTMLButtonElement>(`[data-article-open="${CSS.escape(lastOpened.current)}"]`);
+      (item ?? archive.current?.querySelector('h2'))?.focus();
+      lastOpened.current = null;
+    }
+  }, [editingKey]);
+
+  useEffect(() => {
+    if (!editor) return;
+    if (dirty) unsavedArticles.set(user._id, editor);
+    else unsavedArticles.delete(user._id);
+  }, [dirty, editor, user._id]);
+
+  useEffect(() => {
+    if (!dirty && !busy) return;
+    function confirmLeave() {
+      return !busy && window.confirm('تغییرات این مقاله هنوز ذخیره نشده‌اند. از ویرایش خارج می‌شوید؟');
+    }
+    function beforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+    function beforeLeave(event: Event) {
+      if (!confirmLeave()) event.preventDefault();
+      else unsavedArticles.delete(user._id);
+    }
+    function beforeLink(event: MouseEvent) {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = (event.target instanceof Element ? event.target : null)?.closest<HTMLAnchorElement>('a[href]');
+      if (!link || (link.target && link.target !== '_self')) return;
+      const destination = new URL(link.href);
+      if (destination.origin !== location.origin || destination.pathname === location.pathname) return;
+      if (!confirmLeave()) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        unsavedArticles.delete(user._id);
+      }
+    }
+    window.addEventListener('beforeunload', beforeUnload);
+    window.addEventListener('atmat:before-leave', beforeLeave);
+    document.addEventListener('click', beforeLink, true);
+    return () => {
+      window.removeEventListener('beforeunload', beforeUnload);
+      window.removeEventListener('atmat:before-leave', beforeLeave);
+      document.removeEventListener('click', beforeLink, true);
+    };
+  }, [dirty, busy, user._id]);
+
+  const loadRecipes = useCallback(async () => {
+    setRecipeState('loading');
+    try {
+      const choices = await apiFetch<RecipeChoice[]>('/recipes', token);
+      setRecipes(choices);
+      setRecipeState('ready');
+    } catch {
+      setRecipeState('error');
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if ((tab === 'relations' || preview) && recipeState === 'idle') void loadRecipes();
+  }, [tab, preview, recipeState, loadRecipes]);
+
+  function canClose() {
+    return !inFlight.current && ((!dirty && !recovery) || window.confirm('تغییرات ذخیره نشده‌اند. ویرایش این مقاله کنار گذاشته شود؟'));
+  }
+
+  function change<K extends keyof ArticleFields>(key: K, value: ArticleFields[K]) {
+    setEditor(previous => previous && { ...previous, fields: { ...previous.fields, [key]: value } });
+    setError('');
+    setNotice('');
+  }
+
+  function goToSection(section: ArticleTab) {
+    setTab(section);
+    setPreview(false);
+    focusCmsPanel(panel);
+  }
+
+  function openEditor(saved: ArticleRecord | null) {
+    discardRecovery();
+    lastOpened.current = saved?._id ?? 'new';
+    suggestedSlug.current = '';
+    setEditor(editorFor(saved));
+    setTab('details');
+    setPreview(false);
+    if (requirements.current) requirements.current.open = false;
+    setError('');
+    setNotice('');
+  }
+
+  function discardRecovery() {
+    unsavedArticles.delete(user._id);
+    setRecovery(undefined);
+  }
+
+  async function perform(action: () => Promise<void>) {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      await action();
+    } catch (problem) {
+      setError(errorMessage(problem, 'درخواست انجام نشد. دوباره تلاش کنید.'));
+    } finally {
+      inFlight.current = false;
+      setBusy(false);
+    }
+  }
+
+  function acceptSaved(saved: ArticleRecord, unsaved?: ArticleFields) {
+    const next = editorFor(saved);
+    setEditor(unsaved ? { ...next, fields: unsaved } : next);
+    setItems(current => [saved, ...current.filter(item => item._id !== saved._id)]);
+  }
+
+  function select(article: ArticleSummary, reload = false) {
+    if ((!reload && record?._id === article._id) || !canClose()) return;
+    void perform(async () => {
+      const saved = await apiFetch<ArticleRecord>('/articles/' + article._id, token);
+      openEditor(saved);
+      setItems(current => current.map(item => item._id === saved._id ? saved : item));
     });
   }
-  async function upload(file: File | undefined, slot: 'cover' | 'bodyImage') {
-    if (!file || !draft) return;
-    await act(async () => { const form = new FormData(); form.append('file', file); form.append('category', 'general'); form.append('description', `article-${draft.slug || 'draft'}-${slot}`); const result = await apiFetch<Media>('/storage/images', token(), { method: 'POST', body: form }); setMedia(m => [...m, result]); change(slot, { key: result.key, alt: draft[slot]?.alt || draft.title }); setNotice('تصویر آپلود شد؛ مقاله را ذخیره کنید.'); });
+
+  function validateDraft(payload: ArticleFields) {
+    if (!payload.title || !slugPattern.test(payload.slug)) {
+      goToSection('details');
+      return !payload.title ? 'عنوان مقاله را وارد کنید.' : 'نشانی را با حروف کوچک انگلیسی، عدد و خط تیره بنویسید.';
+    }
+    if (payload.tags.length > 10 || payload.tags.some(tag => tag.length > 60)) {
+      goToSection('details');
+      return 'تا ۱۰ برچسب و برای هر برچسب تا ۶۰ نویسه وارد کنید.';
+    }
+    if (payload.takeaways.length > 5 || payload.takeaways.some(takeaway => takeaway.length > 350)) {
+      goToSection('intro');
+      return 'تا ۵ نکتهٔ کلیدی و برای هر نکته تا ۳۵۰ نویسه وارد کنید.';
+    }
+    const ids = payload.sections.map(section => section.id);
+    if (ids.some(id => !slugPattern.test(id)) || new Set(ids).size !== ids.length) {
+      goToSection('body');
+      return 'برای هر بخش یک شناسهٔ انگلیسی یکتا وارد کنید.';
+    }
+    if (payload.bodyImage && payload.bodyImageAfter && !ids.includes(payload.bodyImageAfter)) {
+      goToSection('media');
+      return 'محل نمایش تصویر داخل مقاله را دوباره انتخاب کنید.';
+    }
   }
-  const words = draft ? count(draft) : 0;
-  const toggle = (key: 'relatedArticleSlugs' | 'relatedRecipeSlugs' | 'productSlugs', slug: string) => draft && change(key, draft[key].includes(slug) ? draft[key].filter(x => x !== slug) : [...draft[key], slug]);
-  return <AppShell title="مدیریت مقالات">
-    {!ready ? <p>در حال بارگذاری مقالات…</p> : !allowed ? <p role="alert">مدیریت مقالات فقط برای ادمین در دسترس است.</p> : <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-slate-600">{items.length.toLocaleString('fa-IR')} مقاله · {items.filter(x => x.status === 'published').length.toLocaleString('fa-IR')} منتشرشده</p><button className="rounded-lg bg-brand-600 px-4 py-2 text-white" onClick={() => select(null)} disabled={busy}>مقالهٔ جدید</button></div>
-      {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-red-800">{error}</p>}{notice && <p role="status" className="rounded-lg bg-green-50 p-3 text-green-800">{notice}</p>}
-      <div className="grid items-start gap-5 xl:grid-cols-[280px_1fr]">
-        <aside className="space-y-3 rounded-xl border bg-white p-4"><Field label="جست‌وجو در مقالات" value={search} onChange={setSearch} /><ul className="max-h-[65vh] space-y-2 overflow-auto">{items.filter(a => `${a.title} ${a.category} ${a.slug}`.includes(search)).map(a => <li key={a._id}><button onClick={() => select(a)} disabled={busy} className={`w-full rounded-lg border p-3 text-right text-sm ${draft?._id === a._id ? 'border-brand-600 bg-brand-50' : ''}`}><strong className="block">{a.title}</strong><span className="mt-2 block text-xs text-slate-500">{a.status === 'published' ? 'منتشرشده' : 'پیش‌نویس'} · {a.wordCount?.toLocaleString('fa-IR')} کلمه</span></button></li>)}</ul></aside>
-        {!draft ? <p className="rounded-xl border bg-white p-8 text-slate-500">برای ویرایش یک مقاله انتخاب کنید یا مقالهٔ جدید بسازید.</p> : <fieldset disabled={busy} className="min-w-0 space-y-5 rounded-xl border bg-white p-4 md:p-6">
-          <div className="flex flex-wrap items-center gap-3"><h2 className="text-lg font-bold">{draft._id ? 'ویرایش مقاله' : 'مقالهٔ جدید'}</h2><span className={words >= 700 && words <= 1500 ? 'text-green-700' : 'text-amber-700'}>{words.toLocaleString('fa-IR')} / ۷۰۰ تا ۱۵۰۰ کلمه</span><span className="text-xs text-slate-500">{draft.status === 'published' ? 'منتشرشده؛ ذخیره نسخهٔ سایت را به‌روز می‌کند.' : 'پیش‌نویس'}</span></div>
-          {(['title', 'slug', 'excerpt', 'intro', 'author', 'seoTitle', 'metaDescription'] as const).map((key, i) => <Field key={key} label={['عنوان', 'آدرس انگلیسی (slug)', 'خلاصهٔ کارت', 'مقدمه', 'نویسنده', 'عنوان سئو (حداکثر ۱۰۰ نویسه)', 'توضیح متا (حداکثر ۲۰۰ نویسه)'][i]} value={draft[key]} onChange={v => change(key, v)} area={['excerpt', 'intro', 'metaDescription'].includes(key)} disabled={key === 'slug' && !!draft.publishedAt} dir={key === 'slug' ? 'ltr' : undefined} />)}
-          <label className="block text-sm">دسته‌بندی<select className={input} value={draft.category} onChange={e => change('category', e.target.value)}>{categories.map(c => <option key={c}>{c}</option>)}</select></label>
-          {(['takeaways', 'tags'] as const).map(key => <Field key={key} label={key === 'tags' ? 'برچسب‌ها؛ هر مورد در یک خط' : 'نکته‌های کلیدی؛ هر مورد در یک خط'} value={draft[key].join('\n')} onChange={v => change(key, v.split('\n'))} area />)}
-          <section className="space-y-4 border-t pt-5"><h3 className="font-bold">بخش‌های مقاله</h3><p className="text-xs text-slate-500">پاراگراف‌ها را با یک خط خالی جدا کنید. پیوند داخلی: [عنوان](/articles/label-reading) یا /recipes/ و /flavors/.</p>
-            {draft.sections.map((s, i) => <div key={i} className="space-y-3 rounded-lg border p-3">
-              <Field label={`عنوان بخش ${(i + 1).toLocaleString('fa-IR')}`} value={s.title} onChange={v => change('sections', draft.sections.map((x, n) => n === i ? { ...x, title: v } : x))} />
-              <Field label="شناسهٔ بخش (انگلیسی، بدون فاصله)" value={s.id} onChange={v => change('sections', draft.sections.map((x, n) => n === i ? { ...x, id: v } : x))} dir="ltr" />
-              <Field label="متن بخش" value={s.paragraphs.join('\n\n')} onChange={v => change('sections', draft.sections.map((x, n) => n === i ? { ...x, paragraphs: v.split(/\n\s*\n/) } : x))} area />
-              <div className="flex gap-2"><button className={button} disabled={!i} onClick={() => { const rows = [...draft.sections]; [rows[i - 1], rows[i]] = [rows[i], rows[i - 1]]; change('sections', rows); }}>بالاتر</button><button className={button} disabled={i === draft.sections.length - 1} onClick={() => { const rows = [...draft.sections]; [rows[i + 1], rows[i]] = [rows[i], rows[i + 1]]; change('sections', rows); }}>پایین‌تر</button><button className={button} onClick={() => change('sections', draft.sections.filter((_, n) => n !== i))}>حذف بخش</button></div>
-            </div>)}<button className={button} onClick={() => change('sections', [...draft.sections, { id: `section-${Date.now()}`, title: '', paragraphs: [''] }])}>افزودن بخش</button>
-          </section>
-          <section className="space-y-3 border-t pt-5"><h3 className="font-bold">تصاویر مقاله</h3>{(['cover', 'bodyImage'] as const).map(slot => <div key={slot} className="space-y-3 rounded-lg border p-3"><h4>{slot === 'cover' ? 'تصویر کاور' : 'تصویر داخل مقاله'}</h4><label className="block text-sm">انتخاب از مخزن<select className={input} value={draft[slot]?.key ?? ''} onChange={e => change(slot, e.target.value ? { key: e.target.value, alt: draft[slot]?.alt || draft.title } : null)}><option value="">بدون تصویر</option>{media.filter(m => /^(general|products|branding)\//.test(m.key)).map(m => <option key={m.key} value={m.key}>{m.description || m.originalName}</option>)}</select></label><label className="block text-sm">آپلود تصویر جدید<input type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block w-full" onChange={e => { void upload(e.target.files?.[0], slot); e.target.value = ''; }} /></label>{draft[slot] && <><img className="max-h-48 rounded-lg object-contain" src={media.find(m => m.key === draft[slot]?.key)?.url} alt={draft[slot]?.alt} /><Field label="توضیح تصویر" value={draft[slot]?.alt ?? ''} onChange={v => change(slot, { key: draft[slot]!.key, alt: v })} /></>}</div>)}</section>
-          <section className="space-y-3 border-t pt-5"><h3 className="font-bold">پرسش‌های متداول</h3>{draft.faq.map((q, i) => <div key={i} className="space-y-2 rounded-lg border p-3"><Field label="پرسش" value={q.question} onChange={v => change('faq', draft.faq.map((x, n) => i === n ? { ...x, question: v } : x))} /><Field label="پاسخ" value={q.answer} onChange={v => change('faq', draft.faq.map((x, n) => i === n ? { ...x, answer: v } : x))} area /><button className={button} onClick={() => change('faq', draft.faq.filter((_, n) => n !== i))}>حذف پرسش</button></div>)}<button className={button} onClick={() => change('faq', [...draft.faq, { question: '', answer: '' }])}>افزودن پرسش</button></section>
-          <section className="space-y-3 border-t pt-5"><h3 className="font-bold">منابع</h3>{draft.sources.map((s, i) => <div key={i} className="space-y-2 rounded-lg border p-3"><Field label="عنوان منبع" value={s.title} onChange={v => change('sources', draft.sources.map((x, n) => i === n ? { ...x, title: v } : x))} /><Field label="آدرس منبع" value={s.url} onChange={v => change('sources', draft.sources.map((x, n) => i === n ? { ...x, url: v } : x))} dir="ltr" /><button className={button} onClick={() => change('sources', draft.sources.filter((_, n) => n !== i))}>حذف منبع</button></div>)}<button className={button} onClick={() => change('sources', [...draft.sources, { title: '', url: '' }])}>افزودن منبع</button></section>
-          <section className="space-y-3 border-t pt-5"><h3 className="font-bold">لینک‌سازی داخلی (حداکثر ۶ در هر گروه)</h3>{(['relatedArticleSlugs', 'relatedRecipeSlugs', 'productSlugs'] as const).map(key => <div key={key}><h4 className="mb-2 text-sm">{key === 'relatedArticleSlugs' ? 'مقالات مرتبط' : key === 'relatedRecipeSlugs' ? 'رسپی‌های مرتبط؛ پیوند دوطرفه' : 'محصولات'}</h4><div className="grid gap-2 md:grid-cols-2">{(key === 'relatedArticleSlugs' ? items.filter(x => x.slug !== draft.slug).map(a => [a.slug, a.title]) : key === 'relatedRecipeSlugs' ? recipes.map(r => [r.slug, r.title]) : products).map(([slug, label]) => <label key={slug} className="flex gap-2 text-sm"><input type="checkbox" checked={draft[key].includes(slug)} onChange={() => toggle(key, slug)} />{label}</label>)}</div></div>)}</section>
-          <div className="sticky bottom-16 z-10 flex flex-wrap gap-2 rounded-xl border bg-white/95 p-3 shadow-sm md:bottom-2"><button className="rounded-lg bg-brand-600 px-4 py-2 text-sm text-white" onClick={() => void save()}>{busy ? 'در حال انجام…' : 'ذخیرهٔ تغییرات'}</button>{draft.status !== 'published' && <button className={button} disabled={words < 700 || words > 1500} onClick={() => void save(true)}>ذخیره و انتشار</button>}{draft._id && draft.status === 'published' && <button className={button} onClick={() => void act(async () => { setDraft(await apiFetch<Article>(`/articles/${draft._id}/status`, token(), { method: 'PATCH', body: JSON.stringify({ status: 'draft' }) })); await load(); setNotice('مقاله به پیش‌نویس برگشت.'); })}>بازگردانی به پیش‌نویس</button>}{draft.status === 'published' && <a className={button} href={`${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3002'}/articles/${draft.slug}`} target="_blank" rel="noreferrer">مشاهده در سایت</a>}{draft._id && draft.status === 'draft' && <button className={`${button} text-red-700`} onClick={() => { if (window.confirm('این پیش‌نویس حذف شود؟')) void act(async () => { await apiFetch(`/articles/${draft._id}`, token(), { method: 'DELETE' }); setDraft(null); await load(); setNotice('پیش‌نویس حذف شد.'); }); }}>حذف پیش‌نویس</button>}</div>
-        </fieldset>}
+
+  function save(publish = false) {
+    if (!fields || (!dirty && !publish)) return;
+    const title = fields.title.trim();
+    if (!record && title && !fields.slug.trim() && !suggestedSlug.current) {
+      suggestedSlug.current = newCmsSlug('article', title);
+    }
+    const cleanLines = (values: string[]) => values.map(value => value.trim()).filter(Boolean);
+    const payload = {
+      ...fields,
+      slug: fields.slug.trim() || (!record ? suggestedSlug.current : ''),
+      title,
+      tags: cleanLines(fields.tags),
+      takeaways: cleanLines(fields.takeaways),
+      sections: fields.sections.map(section => ({ ...section, id: section.id.trim() })),
+      bodyImageAfter: (fields.bodyImageAfter ?? fields.sections[1]?.id ?? '').trim(),
+      sources: fields.sources.map(source => ({ ...source, url: source.url.trim() })),
+    };
+    const problem = validateDraft(payload);
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    if (publish && publishChecklist(payload, words).length) {
+      setError('');
+      setNotice('');
+      showCmsChecklist(requirements);
+      return;
+    }
+    void perform(async () => {
+      let saved = record;
+      if (!saved || dirty) {
+        saved = await apiFetch<ArticleRecord>(saved ? '/articles/' + saved._id : '/articles', token, {
+          method: saved ? 'PATCH' : 'POST',
+          headers: saved ? versionHeader(saved) : undefined,
+          body: JSON.stringify(payload),
+        });
+        acceptSaved(saved);
+        setNotice(saved.status === 'published' ? 'ویرایش در پیش‌نویس ذخیره شد.' : 'پیش‌نویس ذخیره شد.');
+      }
+      if (publish) {
+        const published = await apiFetch<ArticleRecord>('/articles/' + saved._id + '/status', token, {
+          method: 'PATCH', headers: versionHeader(saved), body: JSON.stringify({ status: 'published' }),
+        });
+        acceptSaved(published);
+        setNotice('مقاله در سایت منتشر شد.');
+        if (requirements.current) requirements.current.open = false;
+      }
+    });
+  }
+
+  function withdraw() {
+    if (!record || !window.confirm('نمایش این مقاله در سایت متوقف شود؟ متن در پیش‌نویس می‌ماند.')) return;
+    void perform(async () => {
+      const saved = await apiFetch<ArticleRecord>('/articles/' + record._id + '/status', token, {
+        method: 'PATCH', headers: versionHeader(record), body: JSON.stringify({ status: 'draft' }),
+      });
+      acceptSaved(saved, dirty ? fields : undefined);
+      setNotice('نمایش مقاله در سایت متوقف شد.');
+    });
+  }
+
+  function remove() {
+    if (!record || record.status !== 'draft' || !window.confirm('این پیش‌نویس برای همیشه حذف شود؟')) return;
+    void perform(async () => {
+      await apiFetch('/articles/' + record._id, token, { method: 'DELETE', headers: versionHeader(record) });
+      discardRecovery();
+      setItems(current => current.filter(article => article._id !== record._id));
+      setEditor(null);
+      setNotice('پیش‌نویس حذف شد.');
+    });
+  }
+
+  function upload(slot: ArticleMediaTarget, file: File) {
+    if (!fields) return;
+    void perform(async () => {
+      const slotName = typeof slot === 'string' ? slot : `section-${slot.sectionIndex + 1}`;
+      const asset = await uploadMedia(token, file, 'general', ['article', fields.slug || 'draft', slotName].join('-'));
+      const image = { key: asset.key, alt: '' };
+      if (typeof slot === 'string') {
+        change(slot, image);
+      } else {
+        change('sections', fields.sections.map((section, index) =>
+          index === slot.sectionIndex ? { ...section, image } : section));
+      }
+      setNotice('تصویر به مخزن اضافه شد. متن جایگزین آن را بنویسید و پیش‌نویس را ذخیره کنید.');
+    });
+  }
+
+  function addArticle() {
+    if (canClose()) openEditor(null);
+  }
+
+  return (
+    <div className="article-cms">
+      {recovery && (
+        <div className="admin-alert article-inline-alert">
+          <p>ویرایش ذخیره‌نشدهٔ «{recovery.fields.title.trim() || 'مقالهٔ جدید'}» در این تب باقی مانده است.</p>
+          <div className="admin-actions">
+            <button type="button" className="admin-button admin-button--secondary" disabled={busy} onClick={() => {
+              lastOpened.current = recovery.saved?._id ?? 'new';
+              setEditor(recovery);
+              setRecovery(undefined);
+              setTab('details');
+              setPreview(false);
+            }}>ادامهٔ ویرایش</button>
+            <button type="button" className="admin-button admin-button--danger" disabled={busy} onClick={() => {
+              if (canClose()) discardRecovery();
+            }}>کنار گذاشتن</button>
+          </div>
+        </div>
+      )}
+      {!fields && error && <p className="admin-alert admin-alert--error" role="alert">{error}</p>}
+      {!fields && notice && <p className="admin-alert" role="status">{notice}</p>}
+      <div className="article-workspace" aria-busy={busy}>
+        <div hidden={!!fields}>
+          <ArticleArchive items={items} loadState={loadState} loadError={loadError} archive={archive}
+            busy={busy} onSelect={select} onRetry={() => void loadArchive()} onNew={addArticle} />
+        </div>
+        {fields && (
+          <div className="article-editor">
+            <button type="button" className="cms-workspace-back" disabled={busy} onClick={() => {
+              if (!canClose()) return;
+              discardRecovery();
+              setEditor(null);
+              setError('');
+              setNotice('');
+            }}><AdminIcon name="arrow" size={17} /> فهرست مقالات</button>
+            <header className="admin-panel article-editor-header">
+              <div>
+                <p className="article-kicker">{record ? 'ویرایش مقاله' : 'مقالهٔ جدید'}</p>
+                <h2 ref={editorHeading} tabIndex={-1}>{fields.title.trim() || 'مقالهٔ بدون عنوان'}</h2>
+                <div className="article-editor-meta">
+                  <StatusChip article={record ?? { status: 'draft', hasUnpublishedChanges: false }} />
+                  <span>{formatNumber(words)} کلمه</span>
+                </div>
+              </div>
+              <div className="admin-actions">
+                {record?.status === 'published' && <a className="admin-button admin-button--secondary"
+                  href={siteOrigin + '/articles/' + record.slug} target="_blank" rel="noreferrer">
+                  نسخهٔ سایت <AdminIcon name="external" size={16} />
+                </a>}
+                <button type="button" className="admin-button admin-button--secondary" aria-pressed={preview}
+                  disabled={busy} onClick={() => setPreview(current => !current)}>
+                  <AdminIcon name={preview ? 'eye-off' : 'eye'} size={17} />{preview ? 'بازگشت به ویرایش' : 'پیش‌نمایش پیش‌نویس'}
+                </button>
+              </div>
+            </header>
+
+            <fieldset className="article-editor-controls" disabled={busy}>
+              <CmsPublishChecklist issues={publishChecklist(fields, words, !record)} sections={tabs} detailsRef={requirements} onSelect={goToSection} />
+              <div hidden={preview}>
+                <CmsSections sections={tabs} current={tab} onSelect={setTab} label="بخش‌های ویرایشگر مقاله" panel={panel} disabled={busy}>
+                  {tab === 'details' && <ArticleDetails fields={fields} change={change} lockedSlug={!!record?.publishedAt} isNew={!record} />}
+                  {tab === 'intro' && <ArticleIntro fields={fields} change={change} />}
+                  {tab === 'body' && <ArticleBody fields={fields} change={change} onUpload={upload} />}
+                  {tab === 'media' && <ArticleMedia fields={fields} change={change} onUpload={upload} />}
+                  {tab === 'faq' && <ArticleQuestions fields={fields} change={change} />}
+                  {tab === 'sources' && <ArticleSources fields={fields} change={change} />}
+                  {tab === 'seo' && <ArticleSeo fields={fields} change={change} />}
+                  {tab === 'relations' && <ArticleRelations fields={fields} change={change} articles={items} recipes={recipes}
+                    recipeStatus={recipeState} onRetryRecipes={() => void loadRecipes()} />}
+                </CmsSections>
+              </div>
+              {preview && <ArticlePreview fields={fields} words={words} articles={items} recipes={recipes} />}
+              {record && (
+                <details className="cms-manage">
+                  <summary>مدیریت نسخه</summary>
+                  <div className="admin-actions">
+                    <button type="button" className="admin-button admin-button--secondary" onClick={() => select(record, true)}>بارگیری نسخهٔ ذخیره‌شده</button>
+                    {record.status === 'published'
+                      ? <button type="button" className="admin-button admin-button--danger" onClick={withdraw}>برداشتن از سایت</button>
+                      : <button type="button" className="admin-button admin-button--danger" onClick={remove}>حذف پیش‌نویس</button>}
+                  </div>
+                </details>
+              )}
+              <CmsEditorToolbar record={record} dirty={dirty} working={busy} error={error} notice={notice}
+                onSave={() => save()} onPublish={() => save(true)} />
+            </fieldset>
+          </div>
+        )}
       </div>
-    </div>}
-  </AppShell>;
+    </div>
+  );
+}
+
+export default function ArticlesAdmin() {
+  return (
+    <AppShell title="مقالات">
+      <ArticleWorkspace />
+    </AppShell>
+  );
 }

@@ -1,0 +1,31 @@
+.collaboration-inbox__filters {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem;
+  min-inline-size: min(100%, 18rem);
+}
+.collaboration-inbox__list { display: grid; gap: .65rem; }
+.collaboration-inbox__request { min-inline-size: 0; border: 1px solid var(--admin-line); border-radius: 1rem; }
+.collaboration-inbox__request summary {
+  display: flex; align-items: center; justify-content: space-between; gap: .55rem;
+  padding: .65rem .85rem; min-block-size: 54px; cursor: pointer; border-radius: inherit;
+}
+.collaboration-inbox__request summary::after {
+  content: ''; flex: none; inline-size: .48rem; block-size: .48rem; margin-inline: .25rem;
+  border-inline-end: 2px solid var(--admin-accent); border-block-end: 2px solid var(--admin-accent); rotate: 45deg;
+}
+.collaboration-inbox__request[open] summary::after { rotate: 225deg; }
+.collaboration-inbox__request summary > span:first-child { flex: 1; min-inline-size: 0; }
+.collaboration-inbox__request summary:hover, .collaboration-inbox__request[open] summary { background: #e8efe5; }
+.collaboration-inbox__request summary strong, .collaboration-inbox__request summary small { display: block; overflow-wrap: anywhere; }
+.collaboration-inbox__request summary small { color: var(--admin-muted); font-size: .78rem; }
+.collaboration-inbox__request summary .admin-chip { flex: none; }
+.collaboration-inbox__details { display: grid; justify-items: start; gap: .85rem; padding: .85rem; }
+.collaboration-inbox__details dl {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .65rem 1rem; inline-size: 100%;
+}
+.collaboration-inbox__details dt { color: var(--admin-muted); font-size: .78rem; }
+.collaboration-inbox__details :is(dd, p) { overflow-wrap: anywhere; }
+.collaboration-inbox__details a { color: var(--admin-accent); text-decoration: underline; text-underline-offset: .2em; }
+.collaboration-inbox__details h3 { font-size: .9rem; font-weight: 800; }
+.collaboration-inbox__details p { white-space: pre-wrap; }
+.collaboration-inbox__pager { margin-block-start: .85rem; }
+.collaboration-inbox__pager span { font-size: .8rem; color: var(--admin-muted); }

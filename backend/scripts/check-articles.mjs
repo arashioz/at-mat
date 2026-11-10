@@ -9,16 +9,19 @@ const send = async (path, method = 'GET', body, auth = true) => {
 const login = await send('/auth/login', 'POST', { identifier: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD }, false);
 assert.equal(login.status, 200); token = login.data.accessToken;
 assert.equal((await send('/articles', 'GET', undefined, false)).status, 401);
-const list = (await send('/public/articles')).data; assert.equal(list.length, 10);
+const seeds = JSON.parse(await readFile(new URL('../seeds/articles.json', import.meta.url)));
+const list = (await send('/public/articles')).data;
 const recipes = JSON.parse(await readFile(new URL('../../web/src/features/recipes/content.json', import.meta.url)));
-for (const a of list) {
+for (const { slug } of seeds) {
+ const a = list.find(item => item.slug === slug);
+ assert(a, `Missing published seed: ${slug}`);
  assert(a.wordCount >= 700 && a.wordCount <= 1500); assert(a.cover?.url && a.cover?.alt);
  const detail = (await send('/public/articles/' + a.slug)).data; assert(detail.bodyImage?.url && detail.sources.length);
  for (const slug of detail.relatedRecipeSlugs) assert(recipes.some(r => r.slug === slug));
  const text = [detail.intro, ...detail.sections.flatMap(s => s.paragraphs), ...detail.faq.map(q => q.answer)].join(' ');
  for (const [, type, slug] of text.matchAll(/\]\(\/(articles|recipes|flavors)\/([a-z0-9-]+)/g)) assert(type === 'articles' ? list.some(x => x.slug === slug) : type === 'recipes' ? recipes.some(x => x.slug === slug) : ['brine','sunflower','olive-oil','pepper','smoked','dill'].includes(slug));
 }
-const seed = JSON.parse(await readFile(new URL('../seeds/articles.json', import.meta.url)))[0];
+const seed = seeds[0];
 const slug = `qa-article-${Date.now()}`; let id;
 try {
  let r = await send('/articles', 'POST', { ...seed, slug, intro: 'متن کوتاه', sections: [], faq: [] }); assert.equal(r.status, 201); id = r.data._id;
@@ -34,5 +37,5 @@ try {
  assert.equal((await send(`/articles/${id}/status`, 'PATCH', { status: 'draft' })).status, 200);
  assert.equal((await send('/public/articles/' + slug)).status, 404);
 } finally { if (id) { await send(`/articles/${id}/status`, 'PATCH', {status:'draft'}); assert.equal((await send(`/articles/${id}`, 'DELETE')).status, 200); } }
-assert.equal((await send('/public/articles')).data.length, 10);
+assert.equal((await send('/public/articles')).data.length, list.length);
 console.log('PASS: content/cross-links, authentication, draft isolation, word limits, null/unsafe-link/image/section validation, publish/withdraw/delete, stable URLs. Temporary record removed.');

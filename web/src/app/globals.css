@@ -1,5 +1,6 @@
 @import "../styles/tokens.css";
 @import "../styles/fonts.css";
+@import "../styles/controls.css";
 
 * { box-sizing: border-box; }
 html { scroll-padding-block-start: calc(var(--header-h) + 0.5rem); }

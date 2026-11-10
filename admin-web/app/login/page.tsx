@@ -1,62 +1,92 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { login, TOKEN_KEY } from '../../lib/api';
+import { BrandEdge } from '../../../web/src/features/brine/brand-edge';
+import { AdminIcon } from '../../components/AdminIcon';
+import { BrandLogo, useBrand } from '../../components/Brand';
+import { ApiError, fetchMe, login, TOKEN_KEY } from '../../lib/api';
+import { SITE_URL } from '../../lib/media';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { cover } = useBrand();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(false);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) return;
+    let active = true;
+    setChecking(true);
+    fetchMe(token).then(() => {
+      if (active) router.replace('/dashboard');
+    }).catch(() => {
+      if (active) setChecking(false);
+    });
+    return () => { active = false; };
+  }, [router]);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
     setLoading(true);
     try {
-      const { accessToken } = await login(identifier.trim(), password);
-      localStorage.setItem(TOKEN_KEY, accessToken);
-      router.push('/dashboard');
+      const result = await login(identifier.trim(), password);
+      localStorage.setItem(TOKEN_KEY, result.accessToken);
+      router.replace('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'خطا در ورود');
-    } finally {
+      setError(err instanceof ApiError ? err.message : 'ارتباط با پنل برقرار نشد. دوباره تلاش کنید.');
       setLoading(false);
     }
   }
 
-  const inputClass =
-    'mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100';
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-50 to-slate-100 p-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg sm:p-8">
-        <div className="mb-6 text-center">
-          <div className="text-2xl font-bold text-brand-700">At-Mat</div>
-          <p className="mt-1 text-sm text-slate-500">ورود به پنل مدیریت</p>
+    <div className="admin-login">
+      <aside className="admin-login-hero" aria-label="ات‌مت">
+        {cover && <img className="admin-login-photo" src={cover} alt="" fetchPriority="high" />}
+        <div className="admin-login-brand-copy">
+          <a className="admin-login-logo" href={SITE_URL} aria-label="صفحهٔ اصلی ات‌مت"><BrandLogo decorative /></a>
+          <div>
+            <p className="admin-kicker"><span /> استودیوی ات‌مت</p>
+            <p className="admin-login-headline">از آشپزخانه<br /><em>تا مجله.</em></p>
+            <p className="admin-login-tagline">میز کار تیم ات‌مت برای مدیریت محتوا و عملیات.</p>
+          </div>
         </div>
+        <BrandEdge id="atmat-login-edge" className="admin-login-edge" fillBelow />
+      </aside>
 
-        <label className="mb-4 block text-sm font-medium text-slate-700">
-          ایمیل یا شماره موبایل
-          <input type="text" dir="ltr" value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="admin@example.com" required className={inputClass} />
-        </label>
+      <main className="admin-login-entry">
+        <div className="admin-login-inner">
+          <p className="admin-login-kicker"><span><AdminIcon name="lock" size={19} /></span> پنل مدیریت ات‌مت</p>
+          <h1>ورود به میز کار</h1>
+          <p className="admin-description">با حساب کاربری ات‌مت وارد شوید.</p>
 
-        <label className="mb-5 block text-sm font-medium text-slate-700">
-          رمز عبور
-          <input type="password" dir="ltr" value={password} onChange={(e) => setPassword(e.target.value)} required className={inputClass} />
-        </label>
+          <form className="admin-login-form" onSubmit={submit} aria-busy={checking || loading}>
+            <label className="admin-field">
+              <span>ایمیل یا شماره موبایل</span>
+              <input className="admin-input" name="username" type="text" dir="ltr" autoComplete="username" value={identifier} onChange={e => setIdentifier(e.target.value)} placeholder="name@example.com" required disabled={checking || loading} />
+            </label>
+            <div className="admin-field">
+              <label htmlFor="admin-password">رمز عبور</label>
+              <div className="at-search-control admin-password">
+                <input id="admin-password" name="password" type={visible ? 'text' : 'password'} dir="ltr" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required disabled={checking || loading} />
+                <button className="admin-icon-button" type="button" onClick={() => setVisible(value => !value)} aria-label={visible ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'} aria-controls="admin-password" title={visible ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'}><AdminIcon name={visible ? 'eye-off' : 'eye'} /></button>
+              </div>
+            </div>
+            {error && <p className="admin-alert admin-alert--error" role="alert">{error}</p>}
+            <button className="admin-button admin-button--primary admin-login-submit" type="submit" disabled={checking || loading}>
+              {checking ? 'در حال بررسی حساب…' : loading ? 'در حال ورود…' : 'ورود به پنل'} <AdminIcon name="arrow" />
+            </button>
+          </form>
 
-        {error && <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-brand-600 py-2.5 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
-        >
-          {loading ? 'در حال ورود...' : 'ورود'}
-        </button>
-      </form>
-    </main>
+          <a className="admin-login-site" href={SITE_URL}><AdminIcon name="external" size={16} /> بازگشت به سایت ات‌مت</a>
+        </div>
+      </main>
+    </div>
   );
 }

@@ -37,6 +37,19 @@ export const ROLE_LABELS: Record<Role, string> = {
   distribution_agent: 'عامل پخش',
 };
 
+export class ApiError extends Error {
+  constructor(message: string, public readonly status: number) { super(message); }
+}
+
+async function readResponse<T>(res: Response, fallback: string): Promise<T> {
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const message = Array.isArray(data?.message) ? data.message.join('، ') : data?.message;
+    throw new ApiError(typeof message === 'string' ? message : fallback, res.status);
+  }
+  return data as T;
+}
+
 export async function login(
   identifier: string,
   password: string,
@@ -46,12 +59,7 @@ export async function login(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ identifier, password }),
   });
-  const data = await res.json();
-  if (!res.ok) {
-    const message = Array.isArray(data.message) ? data.message.join('، ') : data.message;
-    throw new Error(message ?? 'خطا در ورود');
-  }
-  return data;
+  return readResponse(res, 'ورود انجام نشد. دوباره تلاش کنید.');
 }
 
 export async function apiFetch<T>(path: string, token: string, init: RequestInit = {}): Promise<T> {
@@ -63,12 +71,11 @@ export async function apiFetch<T>(path: string, token: string, init: RequestInit
       ...(init.headers ?? {}),
     },
   });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const message = Array.isArray(data.message) ? data.message.join('، ') : data.message;
-    throw new Error(message ?? 'خطا در درخواست');
+  if (res.status === 401 && typeof window !== 'undefined' && token && localStorage.getItem(TOKEN_KEY) === token) {
+    localStorage.removeItem(TOKEN_KEY);
+    window.dispatchEvent(new Event('atmat:session-expired'));
   }
-  return data as T;
+  return readResponse(res, 'ارتباط با سرور برقرار نشد. دوباره تلاش کنید.');
 }
 
 export interface Customer {

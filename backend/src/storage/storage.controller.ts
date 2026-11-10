@@ -56,10 +56,11 @@ export class StorageController {
 
   @ApiOperation({ summary: 'لیست عکس‌ها (با فیلتر دسته‌بندی اختیاری)' })
   @ApiQuery({ name: 'category', required: false, enum: ['products', 'customers', 'branding', 'general'] })
+  @ApiQuery({ name: 'available', required: false, enum: ['1'], description: 'فقط تصویرهایی که فایلشان در مخزن موجود است' })
   @Get()
   @UseGuards(JwtAuthGuard)
-  list(@Query('category') category?: ImageCategory): Promise<ImageEntry[]> {
-    return this.storageService.list(category);
+  list(@Query('category') category?: ImageCategory, @Query('available') available?: string): Promise<ImageEntry[]> {
+    return this.storageService.list(category, available === '1');
   }
 
   @ApiOperation({ summary: 'حذف عکس (فقط ادمین)' })

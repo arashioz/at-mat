@@ -1,0 +1,47 @@
+/* Form and filter primitives from the site libraries. Each surface supplies its own colours. */
+.at-search-control {
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+}
+.at-search-control > :is(svg, button) { flex: none; }
+.at-search-control > input {
+  flex: 1;
+  min-inline-size: 0;
+  inline-size: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}
+.at-search-control > input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.at-pill {
+  border-radius: 999px;
+  min-block-size: 44px;
+  touch-action: manipulation;
+}
+.at-control,
+.admin-input {
+  display: block;
+  min-inline-size: 0;
+  inline-size: 100%;
+  min-block-size: 44px;
+  border: 1px solid var(--at-control-line, #041e2d2b);
+  border-radius: var(--at-control-radius, 999px);
+  background: var(--at-control-surface, #fff);
+  color: var(--at-control-ink, #041e2d);
+  padding: .62rem 1rem;
+  font: inherit;
+  line-height: 1.55;
+  transition: border-color .2s, box-shadow .2s;
+}
+:is(.at-control, .admin-input)::placeholder { color: var(--at-control-muted, #5e7380); opacity: 1; }
+:is(.at-control, .admin-input):focus {
+  outline: none;
+  border-color: var(--at-control-accent, #2d85cd);
+  box-shadow: 0 0 0 3px var(--at-control-halo, #2d85cd24);
+}
+textarea:is(.at-control, .admin-input) { border-radius: var(--at-textarea-radius, 1rem); resize: vertical; }

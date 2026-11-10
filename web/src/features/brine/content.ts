@@ -6,16 +6,16 @@ const NET_WEIGHT = '۱۸۰';
 
 export const brineCopy = {
   /* creative */
-  headline: ['یه ذره نمک.', 'یه دنیا مزه.'],
+  headline: ['طعم ماهی،', 'چاشنی با تو.'],
   giant: 'BRINE',
   name: 'کنسرو ماهی تن در آب‌نمک',
   netWeight: NET_WEIGHT,
   /* Product facts from the label; serving suggestions are creative, not tested recipes. */
-  description: 'یه ذره نمک، کنار طعم ماهی. ات‌مت در آب‌نمک، ترکیبی از فیلهٔ روشن ماهی تن، آب و نمک است؛ برای وقتی که می‌خواهی مزهٔ غذایت را خودت بسازی، از یک سالاد رنگی تا ساندویچی به سلیقهٔ خودت.',
+  description: 'فیلهٔ روشن تن ماهی ات‌مت در آب‌نمک را با چاشنی دلخواهت سرو کن. آب‌لیمو و شوید برای سالاد خیار، یا خیارشور و سس مایونز برای ساندویچ با نان برشته.',
   steps: [
     { id: 'fish', numeral: '۰۱', title: 'ماهی', fact: 'فیلهٔ روشن ماهی هوور یا گیدر.' },
-    { id: 'water', numeral: '۰۲', title: 'آب', fact: 'آب آشامیدنی، همراه ماهی و نمک.' },
-    { id: 'salt', numeral: '۰۳', title: 'نمک', fact: 'محلول نمک ۱٫۵٪، مطابق ترکیبات لیبل.' },
+    { id: 'water', numeral: '۰۲', title: 'آب', fact: 'آب آشامیدنی برای تهیهٔ آب‌نمک.' },
+    { id: 'salt', numeral: '۰۳', title: 'نمک', fact: 'محلول نمک ۱٫۵٪، مطابق برچسب قوطی.' },
   ],
   nutrition: {
     serving: 'هر وعده ۶۰ گرم',
@@ -34,20 +34,20 @@ export const brineCopy = {
     ],
   },
   notes: [
-    { figure: '۲۰', unit: 'دقیقه', text: 'قوطی را پیش از مصرف به مدت ۲۰ دقیقه در آب بجوشانید.' },
-    { figure: NET_WEIGHT, unit: 'گرم', text: 'وزن خالص محتویات قوطی، شامل ماهی و آب‌نمک.' },
-    { figure: '۷۲٪', unit: 'وزن آبکش', text: 'با جدا کردن آب‌نمک، حدود ۱۳۰ گرم ماهی تن برای سرو می‌ماند.' },
+    { figure: '۲۰', unit: 'دقیقه', text: 'پیش از مصرف، قوطی را ۲۰ دقیقه در آب بجوشانید.' },
+    { figure: NET_WEIGHT, unit: 'گرم', text: 'وزن ماهی و آب‌نمک داخل قوطی.' },
+    { figure: '۷۲٪', unit: 'وزن آبکش', text: 'پس از جدا کردن آب‌نمک، حدود ۱۳۰ گرم ماهی در هر قوطی می‌ماند.' },
   ],
   storage: 'در جای خشک و خنک نگهداری کنید.',
   warning: 'از مصرف قوطی بادکرده و زنگ‌زده خودداری کنید.',
   origin: 'ساخت ایران',
   recipes: {
-    title: ['باهاش', 'چی بپزیم؟'],
-    note: 'نمونه‌اند، نه رسپی آزمایش‌شده.',
+    title: ['از سالاد خیار', 'تا پاستای گوجه.'],
+    note: 'برای ناهار سرد، تن در آب‌نمک را با خیار و شوید سرو کن. اگر غذای گرم می‌خواهی، پاستای گوجه و سیر را امتحان کن.',
     items: [
-      { id: 'salad', numeral: '۰۱', title: 'سالاد', line: 'برگ تازه، لیمو، تن سرد.', href: '/recipes/tuna-cucumber-salad', image: 'brine-idea-salad' },
-      { id: 'sandwich', numeral: '۰۲', title: 'ساندویچ', line: 'نان برشته، سبزی، تن.', href: '/recipes/tuna-pickle-sandwich', image: 'brine-idea-sandwich' },
-      { id: 'pasta', numeral: '۰۳', title: 'پاستا', line: 'پاستا، گوجه، تن.', href: '/recipes/tuna-tomato-pasta', image: 'brine-idea-pasta' },
+      { id: 'salad', numeral: '۰۱', title: 'سالاد تن و خیار', line: 'خیار و تربچهٔ ترد با شوید تازه و آب‌لیمو.', href: '/recipes/tuna-cucumber-salad', image: 'brine-idea-salad' },
+      { id: 'sandwich', numeral: '۰۲', title: 'ساندویچ خیارشور', line: 'تن ماهی و خیارشور با مایونز، لای نان برشته.', href: '/recipes/tuna-pickle-sandwich', image: 'brine-idea-sandwich' },
+      { id: 'pasta', numeral: '۰۳', title: 'پاستای تن و گوجه', line: 'پنه یا ریگاتونی با گوجهٔ گیلاسی، سیر و جعفری.', href: '/recipes/tuna-tomato-pasta', image: 'brine-idea-pasta' },
     ],
   },
   /* phone and email are printed on the label */

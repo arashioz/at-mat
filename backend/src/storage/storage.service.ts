@@ -1,5 +1,5 @@
-import { CopyObjectCommand, DeleteObjectCommand, PutBucketCorsCommand, PutBucketPolicyCommand, S3Client, CreateBucketCommand, HeadBucketCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { BadRequestException, Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { CopyObjectCommand, DeleteObjectCommand, ListObjectsV2Command, PutBucketCorsCommand, PutBucketPolicyCommand, S3Client, CreateBucketCommand, HeadBucketCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { BadRequestException, Injectable, Logger, NotFoundException, OnModuleInit, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import { mkdir, readFile, writeFile } from 'fs/promises';
@@ -141,10 +141,32 @@ export class StorageService implements OnModuleInit {
     return entry;
   }
 
-  async list(category?: ImageCategory): Promise<ImageEntry[]> {
+  async list(category?: ImageCategory, availableOnly = false): Promise<ImageEntry[]> {
     const manifest = await this.readManifest();
     const images = category ? manifest.images.filter((img) => img.category === category) : manifest.images;
-    return images.map((image) => ({ ...image, url: this.publicUrl(image.key) }));
+    if (!images.length) return [];
+    const available = availableOnly ? await this.availableKeys(images, category) : null;
+    return images.filter(image => !available || available.has(image.key)).map((image) => ({ ...image, url: this.publicUrl(image.key) }));
+  }
+
+  private async availableKeys(images: ImageEntry[], category?: ImageCategory) {
+    const requested = new Set(images.map(image => image.key));
+    const available = new Set<string>();
+    try {
+      let continuation: string | undefined;
+      do {
+        const page = await this.s3.send(new ListObjectsV2Command({
+          Bucket: this.bucket, Prefix: category ? `${category}/` : undefined, ContinuationToken: continuation,
+        }));
+        for (const object of page.Contents ?? []) {
+          if (object.Key && requested.has(object.Key)) available.add(object.Key);
+        }
+        continuation = page.NextContinuationToken;
+      } while (continuation && available.size < requested.size);
+      return available;
+    } catch {
+      throw new ServiceUnavailableException('مخزن تصاویر در دسترس نیست. دوباره تلاش کنید.');
+    }
   }
 
   private publicUrl(key: string): string {

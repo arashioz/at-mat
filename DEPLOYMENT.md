@@ -120,6 +120,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com
 
 ```dotenv
 ATMAT_API_URL=http://127.0.0.1:3010/api
+ATMAT_MEDIA_URL=http://127.0.0.1:9000/at-mat-assets
 NEXT_PUBLIC_API_URL=/api
 NEXT_PUBLIC_SITE_URL=https://example.com
 ```

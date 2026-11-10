@@ -11,11 +11,11 @@ export function BrineNutrition({ nutrition }: { nutrition: ProductNutrition }) {
         <header className="b-nutrition__head">
           <p className="b-kicker" data-reveal><b>۰۲</b>ارزش غذایی</p>
           <h2 id="nutrition-title">
-            <span className="b-mask"><span data-line>روشن و</span></span>
-            <span className="b-mask"><span data-line>ساده.</span></span>
+            <span className="b-mask"><span data-line>روی برچسب</span></span>
+            <span className="b-mask"><span data-line>چه نوشته؟</span></span>
           </h2>
-          <p className="b-nutrition__intro" data-reveal>ارزش غذایی محصول، همان‌طور که روی بسته‌بندی آمده.</p>
-          <p className="b-nutrition__serving" data-reveal><span>مبنای اندازه‌گیری</span><strong>{nutrition.serving}</strong></p>
+          <p className="b-nutrition__intro" data-reveal>عددها و رنگ‌ها همان‌هایی‌اند که روی قوطی می‌بینی.</p>
+          <p className="b-nutrition__serving" data-reveal><span>اندازهٔ وعده</span><strong>{nutrition.serving}</strong></p>
         </header>
         <figure className="b-facts" data-reveal>
           <figcaption id="nutrition-table-title">
