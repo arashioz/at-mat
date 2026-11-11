@@ -1,0 +1,75 @@
+# Application containers (API, admin panel, public site).
+# Run together with the infrastructure file, using the same project name:
+#   docker compose -p atmat -f compose.server.yml -f compose.apps.yml up -d --build --wait
+#
+# Ports are published on loopback only; Nginx on the host is the public entry point.
+# Container-internal addresses (mongo, minio, backend) are set here, so the
+# host-facing values in backend/.env (localhost, 127.0.0.1) are overridden.
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: at-mat/backend:local
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3010
+      MONGO_URI: mongodb://mongo:27017/at_mat_db
+      MINIO_ENDPOINT: http://minio:9000
+    ports:
+      - "127.0.0.1:3010:3010"
+    volumes:
+      # Read-write: the API maintains assets/image-manifest.json.
+      - ./assets:/app/assets
+    depends_on:
+      mongo:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  admin:
+    build:
+      context: .
+      dockerfile: admin-web/Dockerfile
+      args:
+        ATMAT_API_URL: http://backend:3010/api
+        ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+        NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env}
+    image: at-mat/admin:local
+    restart: unless-stopped
+    environment:
+      ATMAT_API_URL: http://backend:3010/api
+      ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env}
+    ports:
+      - "127.0.0.1:3001:3001"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        ATMAT_API_URL: http://backend:3010/api
+        ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env}
+    image: at-mat/web:local
+    restart: unless-stopped
+    environment:
+      ATMAT_API_URL: http://backend:3010/api
+      ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env}
+    ports:
+      - "127.0.0.1:3002:3002"
+    volumes:
+      - ./assets:/app/assets:ro
+    depends_on:
+      backend:
+        condition: service_healthy
