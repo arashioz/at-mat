@@ -4,6 +4,8 @@
 
 نام‌های نمونه را با مقادیر واقعی عوض کنید: `example.com` (سایت)، `admin.example.com` (پنل)، `media.example.com` (تصاویر)، `SERVER_IP` و مسیر `/srv/at-mat`.
 
+> **وضعیت branch.** این فایل‌ها فعلاً روی `feat/docker-deploy` هستند. تا وقتی آن branch در `main` مرج نشده، در دستور `git clone` به‌جای `--branch main` بنویسید `--branch feat/docker-deploy`، یا اول PR را مرج کنید و بعد طبق همین راهنما پیش بروید.
+
 ## ۱. پیش‌نیاز سرور
 
 ```sh
