@@ -13,6 +13,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { RecipesModule } from './recipes/recipes.module';
 import { CollaborationModule } from './collaboration/collaboration.module';
 import { KitchenModule } from './kitchen/kitchen.module';
+import { BrandBookModule } from './brand-book/brand-book.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { KitchenModule } from './kitchen/kitchen.module';
     RecipesModule,
     CollaborationModule,
     KitchenModule,
+    BrandBookModule,
   ],
   controllers: [AppController],
   providers: [AppService],
