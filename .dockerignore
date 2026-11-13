@@ -1,0 +1,33 @@
+# Root build context for backend/web/admin-web images (see compose.apps.yml).
+# Keep assets/ and web/src/fonts/ in the context: they are required at build time.
+**/node_modules
+**/.next
+**/dist
+**/*.tsbuildinfo
+**/*.log
+.git
+.agents
+.vscode
+.idea
+.DS_Store
+
+# Secrets stay on the host; env is passed by compose (env_file / environment).
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Not needed by the application images.
+artifacts
+backups
+uploads
+storage
+data
+docs
+infra
+*.dump
+Brand Assets
+**/Brand Assets
+**/Brand Assets *
