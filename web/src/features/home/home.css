@@ -120,8 +120,7 @@
   background: var(--brine-ice);
 }
 .home-kitchen__edge { inset-block-start: -26px; inset-inline: 0; inline-size: 100%; color: var(--brine-ice); }
-.home-kitchen__grid,
-.home-journal__grid {
+.home-kitchen__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(.85rem, 2vw, 1.65rem);
@@ -137,17 +136,33 @@
   --a-muted: var(--home-muted);
   --a-line: var(--home-line);
 }
+.home-journal__grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 2 * var(--journal-gap)) / 3);
+  gap: var(--journal-gap);
+  --journal-gap: clamp(.85rem, 2vw, 1.65rem);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  padding-block: .25rem .8rem;
+  scrollbar-width: thin;
+  scrollbar-color: #8daaa0 transparent;
+}
 .home-journal .a-card {
   overflow: hidden;
   border: 1px solid var(--home-line);
-  border-radius: 1.4rem;
+  border-radius: 1.25rem;
   background: #fffcf6;
+  scroll-snap-align: start;
 }
-.home-journal .a-card__image { border-radius: 0; }
+.home-journal .a-card__image { border-radius: 0; aspect-ratio: 1.65; }
 .home-journal .a-card__image:empty { display: none; }
 .home-journal .a-card__copy { padding: clamp(1rem, 2vw, 1.5rem); }
 .home-journal .a-card h3 { line-height: 1.45; }
 .home-journal .a-card h3 a:focus-visible { border-radius: .3rem; }
+.home-journal .a-card__read { align-self: flex-start; gap: .65rem; border-block-end: 0; }
+.home-journal .a-card__read::after { content: '←'; font-size: 1rem; }
 .home-journal .a-card__copy > p {
   overflow: hidden;
   display: -webkit-box;
@@ -190,10 +205,14 @@
   .home-kitchen__grid > * { scroll-snap-align: start; }
   .home-story__layout { grid-template-columns: minmax(0, 1fr); }
   .home-story__image { inline-size: min(93%, 27rem); }
-  .home-journal__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.75rem; }
-}
-@media (max-width: 520px) {
-  .home-journal__grid { grid-template-columns: minmax(0, 1fr); }
+  .home-journal__grid {
+    grid-auto-columns: min(77vw, 22rem);
+    margin-inline: calc(-1 * var(--home-gutter));
+    padding-inline: var(--home-gutter);
+    scroll-padding-inline: var(--home-gutter);
+  }
+  .home-journal .a-card h3 { font-size: clamp(1.12rem, 4vw, 1.4rem); }
+  .home-journal .a-card__copy > p { -webkit-line-clamp: 2; }
 }
 
 @media (prefers-reduced-motion: reduce) {

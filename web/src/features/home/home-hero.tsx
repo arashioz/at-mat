@@ -6,7 +6,7 @@ import { BrandEdge } from '@/features/brine/brand-edge';
 import type { BrineImage } from '@/features/brine/types';
 import type { FlavorTheme } from '@/features/products/types';
 import { CanLid } from './can-lid';
-import { ShowcaseDoodles, showcaseColor } from './showcase-doodles';
+import { ShowcaseDoodles, showcaseColor, showcasePalette } from './showcase-doodles';
 import { clamp, coastClearPoint, coastPose, ease, reelPoses, roll } from './showcase-motion';
 import './home-hero.css';
 
@@ -27,8 +27,8 @@ const coastClip = '/media/branding/atmat-home-coast.mp4';
 const stillPreference = '(prefers-reduced-motion: reduce), (max-height: 520px)';
 const sceneProperties = [
   '--can-center', '--coast-line', '--coast-drop', '--coast-drift', '--coast-paper',
-  '--title-opacity', '--cue-opacity', '--stage-enter', '--stage-from', '--stage-to', '--palette-blend',
-  '--copy-out', '--copy-in', '--art-out', '--art-in', '--ink-x', '--ink-y', '--exit',
+  '--title-opacity', '--cue-opacity', '--stage-enter', '--panel-out', '--panel-in',
+  '--copy-out', '--copy-in', '--copy-shift', '--ink-x', '--ink-y', '--exit',
 ];
 const sceneAttributes = [
   'data-animated', 'data-coast-cleared', 'data-coast-past', 'data-title-past', 'data-cue-past', 'data-stage-visible',
@@ -98,7 +98,7 @@ export function HomeHero({ flavors, logo, coast, staticMode }: {
     const preference = window.matchMedia(stillPreference);
     const cans = [...frame.querySelectorAll<HTMLAnchorElement>('[data-reel-slot]')];
     const captions = [...frame.querySelectorAll<HTMLElement>('[data-flavor-caption]')];
-    const illustrations = [...frame.querySelectorAll<HTMLElement>('[data-flavor-art]')];
+    const panels = [...frame.querySelectorAll<HTMLElement>('[data-flavor-panel]')];
     const count = flavors.length;
     const measure = () => {
       const width = frame.clientWidth;
@@ -144,21 +144,19 @@ export function HomeHero({ flavors, logo, coast, staticMode }: {
       const chapter = Math.min(count - 1, Math.floor(flavorProgress));
       const next = Math.min(count - 1, chapter + 1);
       const progress = clamp(flavorProgress - chapter);
-      const exchange = chapter === next ? 0 : roll(clamp((progress - .30) / .70));
+      const exchange = chapter === next ? 0 : roll(clamp((progress - .20) / .80));
       // Keep the last can moving while the scene unpins and the story enters below it.
       const exitProgress = clamp((scroll - exitStart) / metrics.closing);
       const leaving = exitProgress ** 1.6;
       const canCenter = metrics.originY + (metrics.landingY - metrics.originY) * introPose.descent;
       const shoreY = metrics.shoreStart + (metrics.shoreClear - metrics.shoreStart) * introPose.drop
         - (metrics.shoreClear + 56) * introPose.lift;
-      const copySwitch = .42;
-      const copyOut = 1 - ease(clamp((exchange - .08) / (copySwitch - .08)));
-      const copyIn = ease(clamp((exchange - copySwitch) / .28));
-      const artOut = 1 - ease(clamp((exchange - .16) / .31));
-      const artIn = ease(clamp((exchange - .48) / .36));
+      const copySwitch = .5;
+      const copyOut = 1 - ease(clamp((exchange - .11) / (copySwitch - .11)));
+      const copyIn = ease(clamp((exchange - copySwitch) / .36));
       const caption = exchange < copySwitch ? chapter : next;
       const poses = reelPoses({
-        chapter, progress, exchange, leaving, entry: introPose.stage,
+        chapter, exchange, leaving, entry: introPose.stage,
         count, width: metrics.width, diameter: metrics.diameter,
       });
 
@@ -170,13 +168,13 @@ export function HomeHero({ flavors, logo, coast, staticMode }: {
       root.style.setProperty('--title-opacity', String(introPose.title));
       root.style.setProperty('--cue-opacity', String(introPose.cue));
       root.style.setProperty('--stage-enter', String(introPose.stage));
-      root.style.setProperty('--palette-blend', 100 * ease(clamp((exchange - .16) / .61)) + '%');
+      root.style.setProperty('--panel-out', metrics.width * exchange + 'px');
+      root.style.setProperty('--panel-in', metrics.width * (exchange - 1) + 'px');
       root.style.setProperty('--copy-out', String(copyOut));
       root.style.setProperty('--copy-in', String(copyIn));
-      root.style.setProperty('--art-out', String(artOut));
-      root.style.setProperty('--art-in', String(artIn));
-      root.style.setProperty('--ink-x', Math.sin(progress * 2 * Math.PI) * 10 + 'px');
-      root.style.setProperty('--ink-y', (Math.sin(progress * Math.PI) * 10 - (1 - introPose.stage) * 10) + 'px');
+      root.style.setProperty('--copy-shift', String(exchange));
+      root.style.setProperty('--ink-x', Math.sin(progress * 2 * Math.PI) * 8 + 'px');
+      root.style.setProperty('--ink-y', (Math.sin(progress * Math.PI) * 8 - (1 - introPose.stage) * 8) + 'px');
       root.style.setProperty('--exit', String(ease(clamp((exitProgress - .13) / .87))));
       root.toggleAttribute('data-coast-cleared', opening >= coastClearPoint);
       root.toggleAttribute('data-coast-past', opening === 1);
@@ -203,9 +201,7 @@ export function HomeHero({ flavors, logo, coast, staticMode }: {
 
       if (chapter !== lastChapter) {
         lastChapter = chapter;
-        root.style.setProperty('--stage-from', showcaseColor(flavors[chapter].slug));
-        root.style.setProperty('--stage-to', showcaseColor(flavors[next].slug));
-        for (const group of [captions, illustrations]) {
+        for (const group of [captions, panels]) {
           group.forEach((node, index) => {
             node.toggleAttribute('data-from', index === chapter);
             node.toggleAttribute('data-to', index === next && chapter !== next);
@@ -249,7 +245,7 @@ export function HomeHero({ flavors, logo, coast, staticMode }: {
         delete node.dataset.onReel;
         node.removeAttribute('style');
       }
-      for (const node of [...captions, ...illustrations]) {
+      for (const node of [...captions, ...panels]) {
         delete node.dataset.from;
         delete node.dataset.to;
       }
@@ -355,7 +351,8 @@ export function HomeHero({ flavors, logo, coast, staticMode }: {
         </div>
 
         {flavors.map((flavor, index) => (
-          <div key={flavor.slug} className="home-hero__art-layer" data-flavor-art={index} aria-hidden="true">
+          <div key={flavor.slug} className="home-hero__flavor-panel" data-flavor-panel={index}
+            style={showcasePalette(flavor.slug)} aria-hidden="true">
             {artChapter >= 0 && (index === artChapter || index === artChapter + 1) &&
               <ShowcaseDoodles slug={flavor.slug} artwork={flavor.artwork} />}
           </div>

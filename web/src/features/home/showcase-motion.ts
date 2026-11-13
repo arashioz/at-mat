@@ -28,50 +28,41 @@ export function roll(progress: number) {
 
 export type ReelPose = { x: number; turn: number; size: number; opacity: number };
 
-const sideSize = .91;
-const sideOpacity = .82;
-const incomingTurn = -88;
+const sideSize = .9;
+const sideOpacity = .78;
+const incomingTurn = -42;
 
-export function reelPoses({ chapter, progress, exchange, leaving, entry, count, width, diameter }: {
-  chapter: number; progress: number; exchange: number; leaving: number;
+export function reelPoses({ chapter, exchange, leaving, entry, count, width, diameter }: {
+  chapter: number; exchange: number; leaving: number;
   entry: number; count: number; width: number; diameter: number;
 }) {
   const poses = new Map<number, ReelPose>();
   const last = chapter === count - 1;
   const advance = last ? leaving : exchange;
   const gap = Math.max(12, diameter * .045);
-  const peek = Math.max(width / 2 + diameter * .14, diameter * (1 + sideSize) / 2 + gap);
-  const outside = Math.max(peek, (width + diameter) / 2) + 32;
-  const next = (chapter + 1) % count;
-  const previous = (chapter + count - 1) % count;
-  const heroSize = mix(1, sideSize, advance);
-  const heroX = outside * advance;
-  poses.set(chapter, { x: heroX, turn: 360 * ease(clamp(advance / .79)), size: heroSize, opacity: 1 });
-
-  if (count < 2) return poses;
-  if (last) {
-    poses.set(next, {
-      x: -mix(peek, outside, leaving), turn: incomingTurn, size: sideSize, opacity: sideOpacity * (1 - leaving),
-    });
-  } else {
-    // Let the next lid catch up on wide screens while keeping a clear gap between the rims.
-    const arrival = ease(clamp(exchange / .9));
-    const incomingSize = mix(sideSize, 1, arrival);
-    const catchUp = Math.max(0, peek - diameter - gap) * .78 * Math.sin(Math.PI * arrival);
-    const safeX = heroX - diameter * (heroSize + incomingSize) / 2 - gap;
-    const incomingX = Math.min(0, safeX, -peek * (1 - arrival) + catchUp);
-    poses.set(next, {
-      x: mix(-outside, incomingX, entry), turn: incomingTurn * (1 - arrival),
-      size: incomingSize, opacity: mix(sideOpacity, 1, arrival) * entry,
+  const spacing = Math.max(width * (width < 760 ? .58 : .52), diameter + gap);
+  const outside = Math.max(spacing, (width + diameter) / 2) + 32;
+  poses.set(chapter, {
+    x: (last ? outside : spacing) * advance,
+    turn: (last ? 225 : 360) * advance,
+    size: mix(1, sideSize, advance),
+    opacity: mix(1, sideOpacity, advance),
+  });
+  if (!last) {
+    poses.set(chapter + 1, {
+      x: mix(-outside, spacing * (exchange - 1), entry), turn: incomingTurn * (1 - exchange),
+      size: mix(sideSize, 1, exchange), opacity: mix(sideOpacity, 1, exchange) * entry,
     });
   }
-
-  if (previous !== next) {
-    const arrive = chapter === 0 ? entry : ease(clamp(progress / .16));
-    const retreat = ease(clamp(advance / .27));
-    poses.set(previous, {
-      x: mix(outside, peek, arrive * (1 - retreat)), turn: 10, size: sideSize,
-      opacity: sideOpacity * arrive * (1 - retreat),
+  if (chapter > 0) {
+    poses.set(chapter - 1, {
+      x: spacing * (1 + advance), turn: 0, size: sideSize,
+      opacity: sideOpacity * (1 - advance),
+    });
+  }
+  if (chapter + 2 < count) {
+    poses.set(chapter + 2, {
+      x: spacing * (exchange - 2), turn: incomingTurn, size: sideSize, opacity: sideOpacity * exchange * entry,
     });
   }
 

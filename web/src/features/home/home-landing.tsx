@@ -98,7 +98,7 @@ export async function HomeLanding({ staticMode }: { staticMode: boolean }) {
           <SectionHeading id="home-articles-title" label="مجلهٔ ات‌مت" title="قبل از باز کردن قوطی."
             description="از خواندن برچسب تا انتخاب طعم و نگهداری کنسرو، جواب سؤال‌های رایج را در مجله بخوان."
             link={{ href: '/articles', label: 'همهٔ مقاله‌ها' }} />
-          {featuredArticles.length > 0 && <div className="home-journal__grid">
+          {featuredArticles.length > 0 && <div className="home-journal__grid" role="region" aria-label="مقاله‌های منتخب" tabIndex={0}>
             {featuredArticles.map(article => <ArticleCard key={article.slug} article={article} />)}
           </div>}
         </section>
