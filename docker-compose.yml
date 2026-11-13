@@ -1,14 +1,24 @@
+# At-Mat full stack. Single file, no include, no -f flags needed.
+# Start order: mongo + minio -> backend -> admin + web
+#
+# Usage (inside the project folder on the server):
+#   docker compose config --quiet
+#   docker compose up -d --build --wait
+#
+# Ports bind to 127.0.0.1 only. Public traffic goes through host Nginx.
+
+name: atmat
+
 services:
   mongo:
     image: mongo:7
-    container_name: app-mongo
     restart: unless-stopped
     ports:
       - "127.0.0.1:27018:27017"
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand({ping: 1}).ok ? 0 : 1)"]
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 })"]
       interval: 5s
       timeout: 5s
       retries: 30
@@ -18,9 +28,8 @@ services:
     image: at-mat/minio:7aac2a2
     build:
       context: ./infra/minio
-    container_name: app-minio
     restart: unless-stopped
-    command: server /data --console-address ":9001"
+    command: ["server", "/data", "--console-address", ":9001"]
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in the root .env file}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in the root .env file}
@@ -35,6 +44,73 @@ services:
       timeout: 5s
       retries: 30
       start_period: 20s
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: at-mat/backend:local
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3010
+      MONGO_URI: mongodb://mongo:27017/at_mat_db
+      MINIO_ENDPOINT: http://minio:9000
+    ports:
+      - "127.0.0.1:3010:3010"
+    volumes:
+      # Read-write: the API maintains assets/image-manifest.json.
+      - ./assets:/app/assets
+    depends_on:
+      mongo:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  admin:
+    build:
+      context: .
+      dockerfile: admin-web/Dockerfile
+      args:
+        ATMAT_API_URL: http://backend:3010/api
+        ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+        NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
+    image: at-mat/admin:local
+    restart: unless-stopped
+    environment:
+      ATMAT_API_URL: http://backend:3010/api
+      ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
+    ports:
+      - "127.0.0.1:3001:3001"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        ATMAT_API_URL: http://backend:3010/api
+        ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
+    image: at-mat/web:local
+    restart: unless-stopped
+    environment:
+      ATMAT_API_URL: http://backend:3010/api
+      ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
+    ports:
+      - "127.0.0.1:3002:3002"
+    volumes:
+      - ./assets:/app/assets:ro
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   mongo-data:
