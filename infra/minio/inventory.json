@@ -1,703 +1,215 @@
 {
-  "createdDate": "2026-11-08",
+  "kind": "update",
+  "createdDate": "2026-11-13",
+  "baseArchive": "at-mat-deploy-assets-2026-11-08.zip",
+  "requiredBaseKeys": [
+    "branding/61b8c003-8f2c-43f2-91d9-4c242f1357c1.png",
+    "branding/e1485a1e-88b1-4add-a774-6e9fabd32a2e.png",
+    "general/029c42b7-c35a-4388-a5d6-014f42f93910.jpg",
+    "general/063e75d8-faca-42d1-97fb-ca14331f8b31.jpg",
+    "general/0bff1026-fbb9-40d2-8db6-8a9ad33c9e3d.jpg",
+    "general/0f2ec6d6-50aa-4f8b-8791-982c9d094d84.jpg",
+    "general/15a99ab6-c596-4cbb-a2b8-70258336701b.jpg",
+    "general/193a3ceb-0e5f-4e40-b79b-db68ba516a33.jpg",
+    "general/1c4013e9-fa4a-4286-bcee-c8a6e346ae8d.jpg",
+    "general/1ca90683-3897-46cc-a1a7-2269ec89e260.jpg",
+    "general/25bfb27e-b802-441a-a91e-d6e030ca99a4.jpg",
+    "general/2e781544-0ca8-4d7d-bcfc-44066c132e22.jpg",
+    "general/32e7e109-a3a7-4471-a2d1-b053211c1069.jpg",
+    "general/33380732-266c-485d-9ce4-8e8881c30246.jpg",
+    "general/38509e5e-d50c-4dbf-af0f-303775e6c021.jpg",
+    "general/387d6a53-8148-44d9-b084-a4162daf440a.jpg",
+    "general/3b7d98d5-5167-49a2-a030-21ad32cb453d.jpg",
+    "general/3bb5fdaa-2c3f-4378-9ee3-93c7a6beacac.jpg",
+    "general/4599d8c6-48e2-4bba-88e8-c7f7efda72e1.jpg",
+    "general/4696304a-4968-48a3-9050-100006d1b131.jpg",
+    "general/4a8b0ea0-1d37-42d7-b912-670c5eadfc1a.jpg",
+    "general/4b196337-f9ff-4bc5-88b1-111f84fa06a1.jpg",
+    "general/4b273328-4daa-4def-8ba4-86a0f008ae5f.jpg",
+    "general/4b72c600-a377-467c-a90d-386580375349.jpg",
+    "general/5439888d-18b6-40ae-97c8-32147c5aec62.jpg",
+    "general/578f224e-e33b-4cb4-90c4-d2894a7a9032.jpg",
+    "general/5fb0b3b9-0de8-4377-afab-6c98ea03fae4.jpg",
+    "general/60009a50-b86a-4f7c-b9fc-8d89f4b3f929.jpg",
+    "general/602c67a0-79b4-4665-8fed-fc902a72d17f.jpg",
+    "general/61d370a2-3271-4dca-83e5-598e60c50bc6.jpg",
+    "general/627c6557-a741-48c1-9b31-faaf3e524443.jpg",
+    "general/643f3d97-695d-44b7-999f-a244144ec2d6.jpg",
+    "general/652451f6-ba3f-455e-9eb8-d0889f8ab5d3.jpg",
+    "general/66b208a0-f3e2-480d-8f23-465fae849b41.jpg",
+    "general/67da2e69-e934-4008-aad6-cb09d82be29a.jpg",
+    "general/67eda1c0-0b15-4bff-8c8c-683f8f27cdb6.jpg",
+    "general/68e7dd47-adbf-45a1-a60f-af8e9e95235f.jpg",
+    "general/6976d757-6000-4a34-9c5d-8021291d49d2.jpg",
+    "general/6e35e154-6fa8-416e-86e6-c0920befb8b5.jpg",
+    "general/6ebe1d48-a147-4447-8fc1-4569a1280a28.jpg",
+    "general/71125e61-3229-42d6-b5c8-e8e285dfc198.jpg",
+    "general/73d86ee2-54a7-424d-b138-c956e352cbef.jpg",
+    "general/744778dc-1a62-49e1-94fc-29a20b622d73.jpg",
+    "general/772f5375-6b70-4079-80c2-995146b894bb.jpg",
+    "general/7c5524ac-38f3-4082-9065-9e372a0f8be4.jpg",
+    "general/7cf8e88e-3709-4a4b-b4e3-12af4d87a53a.jpg",
+    "general/818ccda7-6ee2-41ae-8380-e19886f2ce85.jpg",
+    "general/872f2c8d-98f9-4515-b51c-f8dab0c0d55d.jpg",
+    "general/8929bf72-38b6-4d17-a72a-85ee4860aefc.jpg",
+    "general/8b50786b-9355-4473-bcd3-427f71e7874a.jpg",
+    "general/8b715c44-ffe9-42f3-8428-c9174c93f798.jpg",
+    "general/8e366a25-9350-4ed0-8a2f-0a5a75ecf71a.jpg",
+    "general/94954837-7b4e-4e27-9731-51b166c3bf91.jpg",
+    "general/94e97d7a-6092-478b-869a-aa7d3bbdfdf2.jpg",
+    "general/989fe315-7626-4b01-80ff-b3cc4cf58b9d.jpg",
+    "general/9a3ced37-779f-437f-8158-37162b6b71b0.jpg",
+    "general/9bbbf3d6-4731-48e7-9c72-615d3199862a.jpg",
+    "general/9ff8bf17-fce5-4eca-ba55-a68de3424c96.jpg",
+    "general/a0c35b80-f4f4-404f-8514-9e70851bd90d.jpg",
+    "general/a117c1d9-b785-4e77-b970-0e830e338ac0.jpg",
+    "general/a2585ae5-7472-4fd0-95ef-e464006d0a5f.jpg",
+    "general/a4c184ea-4387-42ee-9f90-03d381c84bac.jpg",
+    "general/aa1f045d-fb19-454a-bda1-19f3a46abe94.jpg",
+    "general/ac7430b8-4183-4c0e-bbee-64e39dd5b8ff.jpg",
+    "general/af3dbf5c-30d5-4ebc-996f-706092946d3c.jpg",
+    "general/b0bdc929-d841-4036-9acd-6d8720503563.jpg",
+    "general/b496acbc-0ac0-4842-9290-bd1df4061eb6.jpg",
+    "general/b885ad75-5743-420b-ba98-7447d4c82591.jpg",
+    "general/bddd5d73-3691-4209-95d7-5f5189fa9a2a.jpg",
+    "general/c5e639e6-e7a9-479d-8191-e3de1ef3fe4a.jpg",
+    "general/c9831b20-6916-4bc4-8e88-61216c5a5918.jpg",
+    "general/cb103cef-750e-4558-b1da-303951911aa5.jpg",
+    "general/cd195ce0-5baf-464c-959d-02a999391ae4.jpg",
+    "general/ce472a6d-036a-4937-9831-310e9e688bae.jpg",
+    "general/ce830e57-74ba-43ab-aa63-a1743031443a.jpg",
+    "general/d07032f1-84c6-45bc-984a-dfc900702698.jpg",
+    "general/d11fccb6-1e6c-4f27-b20a-38b22457d15a.jpg",
+    "general/d43853f3-420b-4155-94e0-a82821035490.jpg",
+    "general/d92388f9-8a67-49dc-acc4-40977e2d6336.jpg",
+    "general/dbcd983d-4722-4012-94b4-9a7357f1b6a4.jpg",
+    "general/de46a33a-b10c-412c-b8da-72354dc436f3.jpg",
+    "general/e364f278-c31e-4452-9e26-534a23c24021.jpg",
+    "general/e3f15d96-9e1d-408f-b163-43f5d252b32d.jpg",
+    "general/ea53ff8c-cb47-4b29-a0bd-2ff20d574eb9.jpg",
+    "general/ec57735b-0db6-4340-9366-9bf3036cb8e5.jpg",
+    "general/f3915332-7325-442e-b2b9-474509db21d1.jpg",
+    "general/f881f6f4-0d0b-4baa-bc2e-1c92f4eb904e.jpg",
+    "general/fa8f6e1a-42e9-40f7-a832-06bf5a389d81.jpg",
+    "general/fae1151e-2afb-46db-9eb8-60d061f772a5.jpg",
+    "general/fc075c31-e8ec-4727-a983-534ae57b3b7d.jpg",
+    "general/fd67882d-9552-4b99-8b71-32e0418b3a8b.jpg",
+    "general/fe7c73ce-448f-4492-848b-c300712e238e.jpg",
+    "products/056f9181-8b22-4c3c-b78f-d9f8c705749b.jpg",
+    "products/0e848c31-a88a-419d-8f12-9a3d402add5c.jpg",
+    "products/2a682044-99dc-462a-9d65-9db9480f6e77.jpg",
+    "products/34909336-fbac-418f-9c66-bffefb7daa18.jpg",
+    "products/38fc42ad-4407-45e1-99a8-b67ed6e82aae.jpg",
+    "products/3dc35adc-3ac7-4902-99fe-c91e95bc92cf.jpg",
+    "products/50b0337f-839c-4e38-8f5f-a2317a4504e9.jpg",
+    "products/69b9f44d-fb89-4dfa-b5fd-1226fe9e8f7b.jpg",
+    "products/6b4852b3-aa76-4f0b-b174-c62c9e3dbca2.jpg",
+    "products/7fa8e2f7-cb3e-4f7f-9b14-7cbbabbb7167.jpg",
+    "products/82b5c930-cbc1-49cf-ac7d-89fb2e88f4cf.jpg",
+    "products/9240abcf-5f4a-4425-9280-bb45ca5f5852.jpg",
+    "products/aad60882-9c3f-49ec-8645-6057adf6759d.jpg",
+    "products/bd483084-0f2a-48d9-92d1-c2d59bf0f2f1.jpg",
+    "products/c90e86df-fe9b-4b34-a6eb-4cbdfbc9e01d.jpg",
+    "products/ca1e3471-46f4-41b5-83a3-bac6c93e7401.jpg",
+    "products/d00ffc02-0233-4a5f-9127-d0908fe33111.jpg",
+    "products/d5b796cb-c4dc-48e7-ae01-695168a7d0fe.jpg",
+    "products/e4338a87-b29a-48d5-9b7c-c7e4c784f119.jpg",
+    "products/ec559aab-9a4a-4b82-8628-942c3e3d06cf.jpg",
+    "products/f693ab10-91a8-4722-851e-3d947f7f815e.jpg",
+    "products/fd244ea3-b7d2-4abf-ab9c-9bd7a9f0f81f.jpg",
+    "products/fe060f68-f99a-4c1f-a275-10a051ad20be.jpg"
+  ],
   "objects": [
     {
-      "key": "branding/61b8c003-8f2c-43f2-91d9-4c242f1357c1.png",
-      "contentType": "image/png",
-      "bytes": 76405,
-      "sha256": "6824bf2aa69fe82a0a2af0fce4a62eeaf946c4fdbc37de2473174f6edd702ee2"
-    },
-    {
-      "key": "branding/e1485a1e-88b1-4add-a774-6e9fabd32a2e.png",
-      "contentType": "image/png",
-      "bytes": 77944,
-      "sha256": "f02a7db02e803df622010a78ae28643bc5793e7233aed13181b0862b726ba3b0"
-    },
-    {
-      "key": "general/029c42b7-c35a-4388-a5d6-014f42f93910.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 360833,
-      "sha256": "6a5704e1a1ceec4100522ce594b2208227997f885351f6657c02bc73228c5163"
-    },
-    {
-      "key": "general/063e75d8-faca-42d1-97fb-ca14331f8b31.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 429751,
-      "sha256": "e59b0cd1bb6120ca66ecac4e6d7ce96424638b77f99f3f0f2e8aa6e425a1427e"
-    },
-    {
-      "key": "general/0bff1026-fbb9-40d2-8db6-8a9ad33c9e3d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 203331,
-      "sha256": "8b6fb46af425b3f9a8d8d6a01c6357c96b01129bbac06dbdceae0751ed357c69"
-    },
-    {
-      "key": "general/0f2ec6d6-50aa-4f8b-8791-982c9d094d84.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 482217,
-      "sha256": "b129cd690025ebd6bd56961ce9802d7bf2dc10172ec5112cb8cdad08efdadbf3"
-    },
-    {
-      "key": "general/15a99ab6-c596-4cbb-a2b8-70258336701b.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 447467,
-      "sha256": "51e0b0c1fdccb10433da1f5279ca660c2243abe6c5d4a0e72595c629f8b521e6"
-    },
-    {
-      "key": "general/193a3ceb-0e5f-4e40-b79b-db68ba516a33.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 199915,
-      "sha256": "462c6bb39ec1b5b34d3312936c18800fcccbb6270d9da88123a19f3a33c68d6b"
-    },
-    {
-      "key": "general/1c4013e9-fa4a-4286-bcee-c8a6e346ae8d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 312617,
-      "sha256": "197dd0d997e20a816c2613349aefe660726835cbc5636aa13b490b1c29945dcb"
-    },
-    {
-      "key": "general/1ca90683-3897-46cc-a1a7-2269ec89e260.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 227549,
-      "sha256": "939d37dec725d56fe2be4d38f92514d2793aebad3e111d42a60bdc37c096fce1"
-    },
-    {
-      "key": "general/25bfb27e-b802-441a-a91e-d6e030ca99a4.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 110696,
-      "sha256": "fc55fa8c1458043d0921ab516911c767866c251c53facc6713e857f493e41f85"
-    },
-    {
-      "key": "general/2e781544-0ca8-4d7d-bcfc-44066c132e22.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 523604,
-      "sha256": "9570dbd3cb6ef348e30abbd23abe99d09ee3a28b255a2f1364b42032ff86b5da"
-    },
-    {
-      "key": "general/32e7e109-a3a7-4471-a2d1-b053211c1069.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 304554,
-      "sha256": "2c002827b4b5e5bf9c15491748259637dda54074be97a376aadd3b4f05cba6c2"
-    },
-    {
-      "key": "general/33380732-266c-485d-9ce4-8e8881c30246.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 176936,
-      "sha256": "09d02a4bfb7a39fba7c6741a747dbb7ec428455040f8c92d7634b0342bc6fed9"
-    },
-    {
-      "key": "general/38509e5e-d50c-4dbf-af0f-303775e6c021.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 554133,
-      "sha256": "1b235218fba9d3bc858e2a3dd6c26fe1881294056db0ba2cb2dbce44d169e9db"
-    },
-    {
-      "key": "general/387d6a53-8148-44d9-b084-a4162daf440a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 502926,
-      "sha256": "271a584f69fc3b063a4b41f248ff830b3a3009ce16c2249fd3ee11ec00f35f1b"
-    },
-    {
-      "key": "general/3b7d98d5-5167-49a2-a030-21ad32cb453d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 207683,
-      "sha256": "e4b7faacf938946b6e5f764f35318930fc691c2d9799eb0c373ef318340cdc3c"
-    },
-    {
-      "key": "general/3bb5fdaa-2c3f-4378-9ee3-93c7a6beacac.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 222404,
-      "sha256": "f8b18129542a28671a870361c3dff1e742cc1e2e7f8333fd284fbb7c978f8a78"
-    },
-    {
-      "key": "general/4599d8c6-48e2-4bba-88e8-c7f7efda72e1.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 156775,
-      "sha256": "f1b0209e16531b81f64fa7f3a27e39c04d063c4ed469f9243c5dcf38fa0ef789"
-    },
-    {
-      "key": "general/4696304a-4968-48a3-9050-100006d1b131.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 399054,
-      "sha256": "8113f2fc63f6432707287cb0e814c536e69fce40c691b3aa701e4038bf7386c5"
-    },
-    {
-      "key": "general/4a8b0ea0-1d37-42d7-b912-670c5eadfc1a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 559194,
-      "sha256": "a4b60d320ae39d600e526258a468561feefe21d9bfa4e15921d544a1cb454add"
-    },
-    {
-      "key": "general/4b196337-f9ff-4bc5-88b1-111f84fa06a1.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 179738,
-      "sha256": "f268cc3e41e2d57c584fa2101c9f10297d5d5e93ce83762833681a16333a12c6"
-    },
-    {
-      "key": "general/4b273328-4daa-4def-8ba4-86a0f008ae5f.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 573550,
-      "sha256": "55d70094d182340c8fc09790a9842e92b8bd4337af33f631128fca3619cfdf82"
-    },
-    {
-      "key": "general/4b72c600-a377-467c-a90d-386580375349.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 558998,
-      "sha256": "ee76753fed32d1637473cb5d74895643b51d9b6bbd2cbbe2fd73d2fea0ec82aa"
-    },
-    {
-      "key": "general/5439888d-18b6-40ae-97c8-32147c5aec62.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 227725,
-      "sha256": "5fe6c2bdcfd42655d118f6dc9a7c796f99ed961cb54132c8f8efaafa8a67da0e"
-    },
-    {
-      "key": "general/578f224e-e33b-4cb4-90c4-d2894a7a9032.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 195734,
-      "sha256": "0cfb5c883e00515ed2e82dc09178c5e8964ad7af695d8d3d19286244512c1c45"
-    },
-    {
-      "key": "general/5fb0b3b9-0de8-4377-afab-6c98ea03fae4.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 456382,
-      "sha256": "952fb7ff31d9300d76be776cc5f840c4a263fda5199c7a9efb6fbdd9310e0177"
-    },
-    {
-      "key": "general/60009a50-b86a-4f7c-b9fc-8d89f4b3f929.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 560338,
-      "sha256": "105403fb59202d3fde8e81c8e524861892ea060e1eab9385628e2939a4ffde30"
-    },
-    {
-      "key": "general/602c67a0-79b4-4665-8fed-fc902a72d17f.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 518697,
-      "sha256": "000ade1eafce11b9223eea9958f2cd7c0690189c56c1844ae1de6b6fa83cf7f9"
-    },
-    {
-      "key": "general/61d370a2-3271-4dca-83e5-598e60c50bc6.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 203226,
-      "sha256": "d27f6ead8b5de22755154a6ed6767493be25cdb3d3a071915dab3479e4bc04e5"
-    },
-    {
-      "key": "general/627c6557-a741-48c1-9b31-faaf3e524443.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 343122,
-      "sha256": "07a0cc44a8e57eb5d90819e8f39ef9399a078b33abd1f8f5df1d49694478b95e"
-    },
-    {
-      "key": "general/643f3d97-695d-44b7-999f-a244144ec2d6.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 201594,
-      "sha256": "595ebcc52eea35f31d4fdff15c64db8c0e992f9471a3a95552dd7f25b00ca309"
-    },
-    {
-      "key": "general/652451f6-ba3f-455e-9eb8-d0889f8ab5d3.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 174801,
-      "sha256": "48045a954872c870d34dd365a785a96f60c93c8b256a488c2ea21f724936d823"
-    },
-    {
-      "key": "general/66b208a0-f3e2-480d-8f23-465fae849b41.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 197631,
-      "sha256": "b2a6b2a512c2657d07f9fb57304be328cab8ce054e084309f6cfc0023c9f52e6"
-    },
-    {
-      "key": "general/67da2e69-e934-4008-aad6-cb09d82be29a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 252783,
-      "sha256": "a355973db3922c2f23acc26f073e95530bbc3fe6de84716810eb28b19d5f0b5a"
-    },
-    {
-      "key": "general/67eda1c0-0b15-4bff-8c8c-683f8f27cdb6.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 523088,
-      "sha256": "8472439448155c4ae6012e255e166aaac852e0bd0b4afe3be8ccb20d4e6f365f"
-    },
-    {
-      "key": "general/68e7dd47-adbf-45a1-a60f-af8e9e95235f.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 434761,
-      "sha256": "cab9cc9404c0d6e32032831001b19cb4e37a611ab2c85f8592a1fa9eb47ef9ab"
-    },
-    {
-      "key": "general/6976d757-6000-4a34-9c5d-8021291d49d2.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 539972,
-      "sha256": "e410ef6ad866b23e2718e0a8ea421246ca852d1e145aef2c46da6351a22441fd"
-    },
-    {
-      "key": "general/6e35e154-6fa8-416e-86e6-c0920befb8b5.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 204610,
-      "sha256": "f4c787b958da12499a6370033f84a9c10e2842169e986a1bb4d01db2dc1fdf09"
-    },
-    {
-      "key": "general/6ebe1d48-a147-4447-8fc1-4569a1280a28.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 235210,
-      "sha256": "ba7476c7572da882362b88cd71ed42db3d7138aed38b013da8eae7ceff31ac86"
-    },
-    {
-      "key": "general/71125e61-3229-42d6-b5c8-e8e285dfc198.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 194303,
-      "sha256": "c33ccbe662bac037f22030c02862f800e39ecfb8cb4d6287fb109f2ecc941895"
-    },
-    {
-      "key": "general/73d86ee2-54a7-424d-b138-c956e352cbef.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 211718,
-      "sha256": "b3e5ab2e2649667e006b77afe0e86999541e2e0628391ee36a1872b6089f48ea"
-    },
-    {
-      "key": "general/744778dc-1a62-49e1-94fc-29a20b622d73.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 246496,
-      "sha256": "11654a228b1254f1c8217fe69e38222151aaef8b684f02f27de11b4391d1beb7"
-    },
-    {
-      "key": "general/772f5375-6b70-4079-80c2-995146b894bb.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 243521,
-      "sha256": "fd5cd77b2b68db33844b8c53964922a01c27aa5f9902583e6eba0e31b68a128d"
-    },
-    {
-      "key": "general/7c5524ac-38f3-4082-9065-9e372a0f8be4.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 208184,
-      "sha256": "6378fde6c800d4c9fb94f3b65d8050c4c64b47914411702946f12aa16cf64fa1"
-    },
-    {
-      "key": "general/7cf8e88e-3709-4a4b-b4e3-12af4d87a53a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 175949,
-      "sha256": "3fdbd997bfbe211b3a5b32f63b8186a7599a1f8f09ce804da5de188e6d290676"
-    },
-    {
-      "key": "general/818ccda7-6ee2-41ae-8380-e19886f2ce85.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 159033,
-      "sha256": "3fd7074b77f536abf38256bae66aa09d65b779b1442abbd4c065103b17a95394"
-    },
-    {
-      "key": "general/872f2c8d-98f9-4515-b51c-f8dab0c0d55d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 205002,
-      "sha256": "69948d90760a6318f5d909d07e2d4e6b2a3800d4108946abcfa03cdaa300b8b1"
-    },
-    {
-      "key": "general/8929bf72-38b6-4d17-a72a-85ee4860aefc.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 156752,
-      "sha256": "43d695f7d1799d7642b522392544584e88c1cc02b270bcfa0704219dafcf8833"
-    },
-    {
-      "key": "general/8b50786b-9355-4473-bcd3-427f71e7874a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 216140,
-      "sha256": "b1b20ec5f33c7b6970e7c6d3649ca20fdb84ea1ea039d66da9353e0b04a07011"
-    },
-    {
-      "key": "general/8b715c44-ffe9-42f3-8428-c9174c93f798.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 221892,
-      "sha256": "b2fe9d83493e13e1260e1a8ad3ba22b9f86adbad7b2f6f2de405e71b76e8cb72"
-    },
-    {
-      "key": "general/8e366a25-9350-4ed0-8a2f-0a5a75ecf71a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 228084,
-      "sha256": "bcba439b0f29e45b15d15d10a75a263551afcb6d20ea522a44d42108e2d8fd78"
-    },
-    {
-      "key": "general/94954837-7b4e-4e27-9731-51b166c3bf91.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 213836,
-      "sha256": "371d80c9c8d319b21df966cf1734c58ae9d871bb588ca05f816d138cc66dab29"
-    },
-    {
-      "key": "general/94e97d7a-6092-478b-869a-aa7d3bbdfdf2.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 543601,
-      "sha256": "7aee136e051ff58c69f1a763749f43a1f7be05c1f07513549f3c4e268d79a305"
-    },
-    {
-      "key": "general/989fe315-7626-4b01-80ff-b3cc4cf58b9d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 161117,
-      "sha256": "ce184e0dd0c94d5956516d09b6139721d790964e76d6069ce7c01f95b23931c3"
-    },
-    {
-      "key": "general/9a3ced37-779f-437f-8158-37162b6b71b0.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 571642,
-      "sha256": "afeded45af53dfca079cca36653cc217c3580ead430e758618c6393094ef42bc"
-    },
-    {
-      "key": "general/9bbbf3d6-4731-48e7-9c72-615d3199862a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 204660,
-      "sha256": "b8962a0f1d868dea8858809160ed7a8afcfa174eafea7e55833a027b3f811c98"
-    },
-    {
-      "key": "general/9ff8bf17-fce5-4eca-ba55-a68de3424c96.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 394786,
-      "sha256": "5d564633da1741f08981c90f8b6cbebe6109029a713a0eb034e879168e4e43df"
-    },
-    {
-      "key": "general/a0c35b80-f4f4-404f-8514-9e70851bd90d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 486500,
-      "sha256": "8fafbb8e569fbf65aefa45e3fee6db4ae0fd2ebe042fe453973c9ed3466821f3"
-    },
-    {
-      "key": "general/a117c1d9-b785-4e77-b970-0e830e338ac0.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 255614,
-      "sha256": "d98d50e5578b015dd3a2e7bfe03a21f4e31b4460d14814ab4a8c096b6237181e"
-    },
-    {
-      "key": "general/a2585ae5-7472-4fd0-95ef-e464006d0a5f.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 235382,
-      "sha256": "15b1d804fc05de85703fdcb366c46f3a47d74a40193f6871b40a853a8d6ff591"
-    },
-    {
-      "key": "general/a4c184ea-4387-42ee-9f90-03d381c84bac.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 461292,
-      "sha256": "98c59bbe230ae0d2a75c4260ffce7550e801a49b7a321ca35d96a9c374aa9959"
-    },
-    {
-      "key": "general/aa1f045d-fb19-454a-bda1-19f3a46abe94.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 217036,
-      "sha256": "4cfa95b517715255565556a66cc78218ab293234b8b1bf0e479fc2d84cdda46d"
-    },
-    {
-      "key": "general/ac7430b8-4183-4c0e-bbee-64e39dd5b8ff.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 313163,
-      "sha256": "7f13491f97c6f86ae7ef145ff4386c04ca9ca1f5131fd8df744c6ffa19f505e4"
-    },
-    {
-      "key": "general/af3dbf5c-30d5-4ebc-996f-706092946d3c.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 414688,
-      "sha256": "bd2dfeb656f806ff4079cf3ccccc299295702d38f00b4ea8cd2a65f8f92ea139"
-    },
-    {
-      "key": "general/b0bdc929-d841-4036-9acd-6d8720503563.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 238807,
-      "sha256": "03ce1ad4aceb2c15cf624f2784c85b86239242e41e830ba909a3f9de2ae4c829"
-    },
-    {
-      "key": "general/b496acbc-0ac0-4842-9290-bd1df4061eb6.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 156875,
-      "sha256": "91a851b708849bcbffe070da15713a49e4086c70fa4804769effaaf1d78ab48e"
-    },
-    {
-      "key": "general/b885ad75-5743-420b-ba98-7447d4c82591.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 192210,
-      "sha256": "dcacdf6765221e75b9deb0d2445a5fae17f5dd7f7695bfcd6ecb357a4fafec87"
-    },
-    {
-      "key": "general/bddd5d73-3691-4209-95d7-5f5189fa9a2a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 303995,
-      "sha256": "a43889fae4e2c6312efb67c2adb57d9087169d8d8a4dd386c6a2056287d5ace2"
-    },
-    {
-      "key": "general/c5e639e6-e7a9-479d-8191-e3de1ef3fe4a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 552313,
-      "sha256": "c1ce6c6e6127668224d47a29faf0f0b7c67aeb02d335f0d47ec6705798af4a7f"
-    },
-    {
-      "key": "general/c9831b20-6916-4bc4-8e88-61216c5a5918.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 239840,
-      "sha256": "9f79807ddc63f6675cfc69e159bd620787c26656a65d02d847645e82f7b59da5"
-    },
-    {
-      "key": "general/cb103cef-750e-4558-b1da-303951911aa5.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 223296,
-      "sha256": "e239b8ba4335a7b2652fead5d8cd25824bfbca65133979dc7a1f7a7a13c2c7b3"
-    },
-    {
-      "key": "general/cd195ce0-5baf-464c-959d-02a999391ae4.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 207543,
-      "sha256": "7fc24eb42e2cdc2a9051aa0399aa8fda57664f2eafecc642d282cc606bb59ad3"
-    },
-    {
-      "key": "general/ce472a6d-036a-4937-9831-310e9e688bae.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 199196,
-      "sha256": "5771a837ff482808c6ad237de2344474a5687cbafb324012ba35b995dbc1f925"
-    },
-    {
-      "key": "general/ce830e57-74ba-43ab-aa63-a1743031443a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 149064,
-      "sha256": "faeb0358e1312043c096dade4af64504e7c5ae36042ce1595b4bcffed908f12a"
-    },
-    {
-      "key": "general/d07032f1-84c6-45bc-984a-dfc900702698.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 188696,
-      "sha256": "bd6f81caa9cadd592d78bd06fc2d08c411cf6ef1d03b95b35bb65debc12dcf95"
-    },
-    {
-      "key": "general/d11fccb6-1e6c-4f27-b20a-38b22457d15a.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 228115,
-      "sha256": "508097533ed19f40f79cf6f0936cbfc657c5c00f35893f16b7fc6c9e3cf34861"
-    },
-    {
-      "key": "general/d43853f3-420b-4155-94e0-a82821035490.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 161256,
-      "sha256": "253f888d3e222cd7d7bf418f7343df314dea477657920ac3b59ce05646581c06"
-    },
-    {
-      "key": "general/d92388f9-8a67-49dc-acc4-40977e2d6336.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 585074,
-      "sha256": "dd71df38e0a32c9dc737e0076f761f921966cf20c95702ef6602e63ff4b3f948"
-    },
-    {
-      "key": "general/dbcd983d-4722-4012-94b4-9a7357f1b6a4.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 161595,
-      "sha256": "453308412a6872016e0e13efc09f6c6f54875b9a155c06ab562d1d61e80cd924"
-    },
-    {
-      "key": "general/de46a33a-b10c-412c-b8da-72354dc436f3.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 157694,
-      "sha256": "02c0be8a7978a5fe6b8c8f549566de03e3511a0e2a15932501e0bac3ec3dc0d7"
-    },
-    {
-      "key": "general/e364f278-c31e-4452-9e26-534a23c24021.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 537879,
-      "sha256": "baabee069d65d297cdb97c97b924c67861b9f4969c9b9eb3cffedc19eb0b8f76"
-    },
-    {
-      "key": "general/e3f15d96-9e1d-408f-b163-43f5d252b32d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 470091,
-      "sha256": "1a55ff4025cee094e7a120ac84af00ca97932cc63f4e0de722b1f2cdf830bd0c"
-    },
-    {
-      "key": "general/ea53ff8c-cb47-4b29-a0bd-2ff20d574eb9.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 194024,
-      "sha256": "e9e8d9d78d4868bca691529bd7c96b1792a1971c5b0e0e6a7e0e8484adb7e224"
-    },
-    {
-      "key": "general/ec57735b-0db6-4340-9366-9bf3036cb8e5.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 468657,
-      "sha256": "c8721792bcb3da0c6931e119359ec46d59a0969b67e5d2c4a3c0ffa6fd491ea2"
-    },
-    {
-      "key": "general/f3915332-7325-442e-b2b9-474509db21d1.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 403820,
-      "sha256": "e966de1a7b9944791448f803a17f2397ed010d7c3d365a358676fdb0172f4b9e"
-    },
-    {
-      "key": "general/f881f6f4-0d0b-4baa-bc2e-1c92f4eb904e.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 170182,
-      "sha256": "911e0a0a22d6bd6f2167cfc0f0f84b41b3d0d2d17a90770ab3168a6a6edbee44"
-    },
-    {
-      "key": "general/fa8f6e1a-42e9-40f7-a832-06bf5a389d81.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 331519,
-      "sha256": "9a49d629d9dc9bf5071086be7fbaf63ac2d00d64928db31c74ea43a5705c9cdb"
-    },
-    {
-      "key": "general/fae1151e-2afb-46db-9eb8-60d061f772a5.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 187206,
-      "sha256": "6225956bb9c38342a78d504ab6a858e342c4fbd6b32b3015fea215016ca24dab"
-    },
-    {
-      "key": "general/fc075c31-e8ec-4727-a983-534ae57b3b7d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 194407,
-      "sha256": "2ef7e9fb3c724a03b7f4cdfc041d514f82c368e34436ae524ec4065dcb5653c7"
-    },
-    {
-      "key": "general/fd67882d-9552-4b99-8b71-32e0418b3a8b.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 466146,
-      "sha256": "cd19c562b045d30b9a6d8629ab2b0d6811962a889ab543f2b6a10ac9469061d8"
-    },
-    {
-      "key": "general/fe7c73ce-448f-4492-848b-c300712e238e.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 439985,
-      "sha256": "173eb7eadb37595e4b34ee093b9718feac784b489f31d40d25669ae5f1eaa4b1"
-    },
-    {
-      "key": "products/056f9181-8b22-4c3c-b78f-d9f8c705749b.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 1043981,
-      "sha256": "8bcab4585af7d700d3a940b60ef1280f3ac6e26984fee689137831a0c6e5cfef"
-    },
-    {
-      "key": "products/0e848c31-a88a-419d-8f12-9a3d402add5c.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 266103,
-      "sha256": "919699b8f20ddf243a5b3d270d95b8fffb2d1b7f4058804ca36eff5b2f3f9677"
-    },
-    {
-      "key": "products/2a682044-99dc-462a-9d65-9db9480f6e77.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 343539,
-      "sha256": "d30e9e35bfc6915f7f72c329f0ef1df0c2097c56665dac7564e27fc80e674281"
-    },
-    {
-      "key": "products/34909336-fbac-418f-9c66-bffefb7daa18.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 429248,
-      "sha256": "b3d1e5ed639417bb0c2faf698ff214931fea2fa2e9bdc2c5cf2d2aef3c809f4f"
-    },
-    {
-      "key": "products/38fc42ad-4407-45e1-99a8-b67ed6e82aae.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 709732,
-      "sha256": "69e7d892b4fed53ac1c9a8810724ee3e95cbce08a5e215dfb3850b6a2c6e070f"
-    },
-    {
-      "key": "products/3dc35adc-3ac7-4902-99fe-c91e95bc92cf.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 304684,
-      "sha256": "50bb039583d71c31450eff675ece8dcd7bcaae54229974973ac749796e7538c3"
-    },
-    {
-      "key": "products/50b0337f-839c-4e38-8f5f-a2317a4504e9.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 529178,
-      "sha256": "35250685f3ae9ad06d85d5e1a63fbb20d0be6787a14f54948a0a2e1d77bae4b4"
-    },
-    {
-      "key": "products/69b9f44d-fb89-4dfa-b5fd-1226fe9e8f7b.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 317856,
-      "sha256": "779c516b26aba80271faf3fe1b5d6239d46404dba93c4b02572b44854e79d12f"
-    },
-    {
-      "key": "products/6b4852b3-aa76-4f0b-b174-c62c9e3dbca2.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 1052816,
-      "sha256": "73dadb57b4c50c28b1c52a9a38a4b9316d90beadca844fc7bf0aa6e50d510f1f"
-    },
-    {
-      "key": "products/7fa8e2f7-cb3e-4f7f-9b14-7cbbabbb7167.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 377931,
-      "sha256": "f353c377cfba45dd7ff5552637479b6467cbad06a180bf424f84a5a9b7140212"
-    },
-    {
-      "key": "products/82b5c930-cbc1-49cf-ac7d-89fb2e88f4cf.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 835320,
-      "sha256": "f061bbeb900601f6ae869a240410674acbc9656865eb5e998fae603abe426ccf"
-    },
-    {
-      "key": "products/9240abcf-5f4a-4425-9280-bb45ca5f5852.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 363970,
-      "sha256": "cf5261e609bc6b1051c8da1073e57ede008fd9f775296f3da2c5d35b68b15ab3"
-    },
-    {
-      "key": "products/aad60882-9c3f-49ec-8645-6057adf6759d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 359276,
-      "sha256": "26030ef2eaba53771314cec2037ac02714d97beb435b7ae95cb338460806d245"
-    },
-    {
-      "key": "products/bd483084-0f2a-48d9-92d1-c2d59bf0f2f1.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 391036,
-      "sha256": "d3085fd6da7f48c569bfce9503a42692a65cd901be8336c514299a540135201e"
-    },
-    {
-      "key": "products/c90e86df-fe9b-4b34-a6eb-4cbdfbc9e01d.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 617035,
-      "sha256": "7e72af8dc44045f05084bbc5389b4e4715893e5633d59c57761e6b1d0a72cef3"
-    },
-    {
-      "key": "products/ca1e3471-46f4-41b5-83a3-bac6c93e7401.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 4099686,
-      "sha256": "b5caed28973bad252cd59d3ede82d9b32956b49ed2049163c56c66c1b583f53a"
-    },
-    {
-      "key": "products/d00ffc02-0233-4a5f-9127-d0908fe33111.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 557698,
-      "sha256": "f3f6437d74c8c3ea95bd339757654b6c5affe8cb4f08cd770e60034ad5c55ac8"
-    },
-    {
-      "key": "products/d5b796cb-c4dc-48e7-ae01-695168a7d0fe.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 562553,
-      "sha256": "bcbc7837e899181fb836025dc4c71247e3dda3ff1a15a2081212acec51e8c57d"
-    },
-    {
-      "key": "products/e4338a87-b29a-48d5-9b7c-c7e4c784f119.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 1137681,
-      "sha256": "0d7024b7dc4ac6afa8008a2fcf1b3cf32179587a97cfc059ce4a39d4903aa085"
-    },
-    {
-      "key": "products/ec559aab-9a4a-4b82-8628-942c3e3d06cf.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 200210,
-      "sha256": "b8d55141aa37867844ab10487b196627dc7e5960e3d007eea29517561bcf5c7a"
-    },
-    {
-      "key": "products/f693ab10-91a8-4722-851e-3d947f7f815e.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 996296,
-      "sha256": "a73a361033a615e17b329a457d9269d50a9e39dba2e0f8b4887a04219ae1806d"
-    },
-    {
-      "key": "products/fd244ea3-b7d2-4abf-ab9c-9bd7a9f0f81f.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 170402,
-      "sha256": "8960cdf7f7ba4ec45a98a6f06ff033f7d4186c7e2ad78f28db6ecce99b228554"
-    },
-    {
-      "key": "products/fe060f68-f99a-4c1f-a275-10a051ad20be.jpg",
-      "contentType": "image/jpeg",
-      "bytes": 302578,
-      "sha256": "07fad54ec8ce7c960441d8d53d5806905d1ad0d0e4a64900aa29053faaccc364"
+      "key": "branding/82cd3da2-38db-4700-807f-0bd5dbc60299.webp",
+      "contentType": "image/webp",
+      "bytes": 146774,
+      "description": "atmat-home-coast",
+      "mediaPath": "/media/branding/82cd3da2-38db-4700-807f-0bd5dbc60299.webp",
+      "sha256": "97942bcb394c8d69be1956744c8e8ffd5ef878fe2f5fc574bde57766fe7e80aa"
+    },
+    {
+      "key": "branding/c909feaf-a581-46dc-99f5-db2e1c183e4b.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 363754,
+      "description": "atmat-home-shore-poster",
+      "mediaPath": "/media/branding/c909feaf-a581-46dc-99f5-db2e1c183e4b.jpg",
+      "sha256": "93fd68692a75b3041b78ca869b0ffe1a23ed8c4ba941db02f05fbc1762e18c75"
+    },
+    {
+      "key": "branding/b46bdb51-c617-428d-9999-eb63ded893fe.webp",
+      "contentType": "image/webp",
+      "bytes": 196828,
+      "description": "atmat-showcase-brine-ink",
+      "mediaPath": "/media/branding/b46bdb51-c617-428d-9999-eb63ded893fe.webp",
+      "sha256": "ff2b2cb10868d690e212271b84fc2ab847fbb30d85344341d5b46aedd2561464"
+    },
+    {
+      "key": "branding/78d470b8-e192-41d5-8b6c-9bc552b56cc4.webp",
+      "contentType": "image/webp",
+      "bytes": 235012,
+      "description": "atmat-showcase-sunflower-ink",
+      "mediaPath": "/media/branding/78d470b8-e192-41d5-8b6c-9bc552b56cc4.webp",
+      "sha256": "076ae5cf1139c8faeba4b01c92add045195c4b20963fdca1e88eea1d02e826eb"
+    },
+    {
+      "key": "branding/e73a5e38-74a1-4fdc-994a-74fe0466652b.webp",
+      "contentType": "image/webp",
+      "bytes": 294102,
+      "description": "atmat-showcase-olive-oil-ink",
+      "mediaPath": "/media/branding/e73a5e38-74a1-4fdc-994a-74fe0466652b.webp",
+      "sha256": "454b69f4db8f7e7790a00849a2f8a75c02fc318e18a6c4b93a70bc2241b0f4e2"
+    },
+    {
+      "key": "branding/f25346f2-e858-4793-bdce-06f2aaa90d56.webp",
+      "contentType": "image/webp",
+      "bytes": 279858,
+      "description": "atmat-showcase-pepper-ink",
+      "mediaPath": "/media/branding/f25346f2-e858-4793-bdce-06f2aaa90d56.webp",
+      "sha256": "581750b2ad90dbe3d2c5c2f840bd19080c90b9cc9d9d520ca9aa697090f0a83d"
+    },
+    {
+      "key": "branding/b6dd5588-25af-4003-b998-619f37362e23.webp",
+      "contentType": "image/webp",
+      "bytes": 284242,
+      "description": "atmat-showcase-smoked-ink",
+      "mediaPath": "/media/branding/b6dd5588-25af-4003-b998-619f37362e23.webp",
+      "sha256": "d4d6cea720af5a13ed4d6c9b2e7127889330cea18b89fbcd1c82f852dd900536"
+    },
+    {
+      "key": "branding/a80527bb-9fbb-4766-b3df-78a8eed41beb.webp",
+      "contentType": "image/webp",
+      "bytes": 349670,
+      "description": "atmat-showcase-dill-ink",
+      "mediaPath": "/media/branding/a80527bb-9fbb-4766-b3df-78a8eed41beb.webp",
+      "sha256": "b9e893f81ef982a782d5745332a2988762e8e81ee550433199cf9285fa7beef8"
+    },
+    {
+      "key": "branding/d68e9c28-b92e-4346-aab9-b279952fd40d.webp",
+      "contentType": "image/webp",
+      "bytes": 36906,
+      "description": "atmat-showcase-tuna-pattern",
+      "mediaPath": "/media/branding/d68e9c28-b92e-4346-aab9-b279952fd40d.webp",
+      "sha256": "49ea7708a73e7cf3b38b71678539d4fe67356894c2a00cc8b6749c39674b0c61"
+    },
+    {
+      "key": "branding/atmat-home-coast.mp4",
+      "contentType": "video/mp4",
+      "bytes": 758533,
+      "description": "atmat-home-coast-video",
+      "mediaPath": "/media/branding/atmat-home-coast.mp4",
+      "sha256": "068e98dd4165c7335c41ad7092d4629ea34718e54601b1da2ff560b50e0b431d"
     }
   ],
   "missingObjects": [
-    {
-      "key": "products/f7a75897-87ae-4ff1-86f4-e284e543e811.png",
-      "description": "تست",
-      "status": 404
-    }
+    "products/f7a75897-87ae-4ff1-86f4-e284e543e811.png"
   ],
-  "publicArticles": 10
+  "publicArticles": 13,
+  "newArticleSlugs": [
+    "homemade-tuna-stovetop",
+    "canned-tuna-benefits-and-risks",
+    "canned-tuna-nutrition"
+  ],
+  "coastVideoSource": "https://mixkit.co/free-stock-video/waves-coming-to-the-beach-5016/",
+  "sourceCommit": "0e28c7849877741d0651dc66095a60502b31c7e1"
 }

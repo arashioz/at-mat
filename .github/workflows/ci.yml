@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Backend build
+        working-directory: backend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Validate Docker compose files
+        run: |
+          printf 'NEXT_PUBLIC_SITE_URL=https://example.com\nMINIO_ROOT_USER=ci-user\nMINIO_ROOT_PASSWORD=ci-password-123\n' > .env
+          docker compose -p atmat -f compose.server.yml -f compose.apps.yml config --quiet
