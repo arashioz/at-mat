@@ -1,4 +1,5 @@
 import 'server-only';
+import { cache } from 'react';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { BrineImage } from '../brine/types';
@@ -9,14 +10,30 @@ export interface FlavorMedia {
 }
 
 interface ManifestEntry { key?: string; url?: string; description?: string }
+type ImageDetails = Pick<BrineImage, 'width' | 'height' | 'alt'>;
 
-/** Asset keys always come from the upload API's manifest, never guessed URLs. */
-export async function getFlavorMedia(prefix: string): Promise<FlavorMedia> {
+const readManifest = cache(async () => {
   const manifest = JSON.parse(await readFile(path.join(process.cwd(), '..', 'assets', 'image-manifest.json'), 'utf8')) as { images: ManifestEntry[] };
+  return manifest.images;
+});
+
+function findImage(images: ManifestEntry[], description: string, details: ImageDetails): BrineImage | undefined {
+  const entry = images.findLast(item => item.description === description);
+  if (!entry?.key || !entry.url || !/^https?:\/\//.test(entry.url)) return;
+  return { key: entry.key, url: `/media/${entry.key.split('/').map(encodeURIComponent).join('/')}`, ...details };
+}
+
+/** Asset keys always come from the upload API's manifest. */
+export async function getUploadedImage(description: string, details: ImageDetails) {
+  return findImage(await readManifest(), description, details);
+}
+
+export const getFlavorMedia = cache(async (prefix: string): Promise<FlavorMedia> => {
+  const images = await readManifest();
   const pick = (description: string, width: number, height: number, alt: string): BrineImage => {
-    const entry = [...manifest.images].reverse().find(item => item.description === description);
-    if (!entry?.key || !entry.url || !/^https?:\/\//.test(entry.url)) throw new Error(`Missing uploaded product asset: ${description}`);
-    return { key: entry.key, url: `/media/${entry.key.split('/').map(encodeURIComponent).join('/')}`, width, height, alt };
+    const image = findImage(images, description, { width, height, alt });
+    if (!image) throw new Error(`Missing uploaded product asset: ${description}`);
+    return image;
   };
   const ideas = {
     'brine-idea-salad': pick('brine-idea-salad', 1024, 1536, 'تصویر مفهومی ایده سرو سالاد، نه عکس محصول'),
@@ -31,4 +48,4 @@ export async function getFlavorMedia(prefix: string): Promise<FlavorMedia> {
     logoLatin: pick('atmat-logo-en', 692, 450, 'At Mat'),
     ideas,
   };
-}
+});

@@ -5,7 +5,8 @@ import { recipeCopy, recipeGalleryCaptions, resolvePageText } from '../../../../
 import { getRecipeAssets, toRecipeCard, flavorPages, faNumber } from '@/features/recipes/data';
 import { RecipeShell } from '@/features/recipes/recipe-shell';
 import { RecipeCard } from '@/features/recipes/recipe-card';
-import { RecipeClockIcon, RecipeServingsIcon, RecipeDifficultyIcon, RecipeDownIcon } from '@/features/recipes/recipe-icons';
+import { RecipeComments } from '@/features/recipes/recipe-comments';
+import { RecipeClockIcon, RecipeServingsIcon, RecipeDifficultyIcon } from '@/features/recipes/recipe-icons';
 import { BrandEdge } from '@/features/brine/brand-edge';
 import { RecipeSectionNav } from '@/features/recipes/recipe-section-nav';
 import { ArticlesForRecipe } from '@/features/articles/related-to-recipe';
@@ -65,7 +66,7 @@ export default async function RecipePage({ params }: Props) {
                   {recipe.timing && recipe.timing !== recipe.duration && <p className="r-detail-timing">{recipe.timing}</p>}
                 </div>
                 <div className="r-detail-actions">
-                  <a className="r-hero-cta" href="#ingredients-title">{text.startCooking} <span><RecipeDownIcon /></span></a>
+                  <a className="r-hero-cta" href="#ingredients-title">{text.startCooking} <span></span></a>
                 </div>
               </div>
               {cover && <div className="r-detail-hero__visual" data-recipe-photo>
@@ -94,7 +95,7 @@ export default async function RecipePage({ params }: Props) {
                 <li key={index}><label><input type="checkbox" name={`ingredient-${index}`} /><span>{item}</span></label></li>
               ))}</ul>
               {flavorPages[recipe.flavor] && <Link className="r-product-link" href={flavorPages[recipe.flavor]}>
-                بسته‌بندی و مشخصات تن {recipe.flavorLabel} <span aria-hidden="true">↗</span>
+                بسته‌بندی و مشخصات تن {recipe.flavorLabel}
               </Link>}
             </aside>
             <div className="r-method" id="method">
@@ -148,7 +149,7 @@ export default async function RecipePage({ params }: Props) {
         {related.length > 0 && <section className="r-related" aria-labelledby="related-title">
           <div className="r-related__head">
             <h2 id="related-title"><HeadingText value={text.relatedRecipesTitle} /></h2>
-            <Link href="/recipes" className="r-text-link">همهٔ رسپی‌ها ←</Link>
+            <Link href="/recipes" className="r-text-link">همهٔ رسپی‌ها</Link>
           </div>
           <div className="r-grid" data-related-cards>
             {related.map(item => <div className="r-related-card" key={item.slug}>
@@ -157,6 +158,7 @@ export default async function RecipePage({ params }: Props) {
           </div>
         </section>}
         <ArticlesForRecipe slug={recipe.slug} selected={recipe.relatedArticleSlugs} label={text.relatedArticlesLabel} title={text.relatedArticlesTitle} />
+        <RecipeComments key={`comments-${recipe.slug}`} slug={recipe.slug} />
       </main>
     </RecipeShell>
   );

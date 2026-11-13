@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  devIndicators: { position: 'top-left' },
+  devIndicators: false,
   agentRules: false,
   turbopack: { root: fileURLToPath(new URL('..', import.meta.url)) },
   outputFileTracingRoot: fileURLToPath(new URL('..', import.meta.url)),
@@ -14,6 +14,7 @@ const config: NextConfig = {
     const api = (process.env.ATMAT_API_URL ?? 'http://127.0.0.1:3010/api').replace(/\/$/, '');
     return [
       { source: '/api/collaboration', destination: `${api}/public/collaboration` },
+      { source: '/api/recipes/:slug/comments', destination: `${api}/public/recipes/:slug/comments` },
       {
         source: '/media/:path*',
         destination: `${media}/:path*`,

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties, type SyntheticEvent } from 'react';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import { usePathname } from 'next/navigation';
+import { CanArtwork } from '@/features/products/can-artwork';
 import { NavIcon } from './nav-icons';
 import { siteLinks, type SiteSection } from './site-links';
 
@@ -12,9 +13,10 @@ const productShortcuts = [
   { href: '#recipes', label: 'ایدهٔ سرو', icon: 'serving' },
 ] as const;
 
+const homeShortcuts = [{ href: '#products', label: 'محصولات', icon: 'products' }] as const;
+
 function CanThumbnail({ product }: { product: NavProduct }) {
-  const style = { '--can-wrap': `url("${product.wrap}")`, '--can-lid': `url("${product.lid}")` } as CSSProperties;
-  return <span className="site-can" style={style} aria-hidden="true"><span className="site-can__body" /><span className="site-can__lid" /></span>;
+  return <CanArtwork className="site-can" wrap={product.wrap} lid={product.lid} />;
 }
 
 export function BottomNavigation({ logo, products, flavor, section }: {
@@ -24,13 +26,32 @@ export function BottomNavigation({ logo, products, flavor, section }: {
   const [activeShortcut, setActiveShortcut] = useState<string>();
   const pathname = usePathname();
   const current = products.find(product => product.slug === flavor) ?? products[0];
-  const productPath = section ? `/flavors/${current.slug}` : '';
+  const shortcuts = section === 'home' ? homeShortcuts : productShortcuts;
+  const productPath = section && section !== 'home' ? `/flavors/${current.slug}` : '';
 
   useEffect(() => {
     const element = nav.current;
     if (!element) return;
+    const footer = document.getElementById('site-footer');
     const closeMenus = () => element.querySelectorAll<HTMLDetailsElement>('details[open]').forEach(menu => { menu.open = false; });
     closeMenus();
+    let footerObserver: IntersectionObserver | undefined;
+    const observeFooter = () => {
+      if (!footer) return;
+      footerObserver?.disconnect();
+      const bottom = Number.parseFloat(getComputedStyle(element).insetBlockEnd) || 0;
+      const overlap = Math.max(0, Math.round(element.offsetHeight + bottom - 12));
+      footerObserver = new IntersectionObserver(([entry]) => {
+        element.toggleAttribute('data-at-footer', entry.isIntersecting);
+        if (entry.isIntersecting) closeMenus();
+      }, { rootMargin: `0px 0px -${overlap}px 0px` });
+      footerObserver.observe(footer);
+    };
+    const resize = new ResizeObserver(observeFooter);
+    if (footer) {
+      observeFooter();
+      resize.observe(element);
+    }
     const outside = (event: PointerEvent) => { if (!element.contains(event.target as Node)) closeMenus(); };
     const escape = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
@@ -40,14 +61,17 @@ export function BottomNavigation({ logo, products, flavor, section }: {
     document.addEventListener('pointerdown', outside);
     document.addEventListener('keydown', escape);
     return () => {
+      resize.disconnect();
+      footerObserver?.disconnect();
+      delete element.dataset.atFooter;
       document.removeEventListener('pointerdown', outside);
       document.removeEventListener('keydown', escape);
     };
   }, [pathname]);
 
   useEffect(() => {
-    if (section) return;
-    const targets = productShortcuts.flatMap(({ href }) => {
+    if (productPath) return;
+    const targets = shortcuts.flatMap(({ href }) => {
       const element = document.getElementById(href.slice(1));
       return element ? [{ href, element }] : [];
     });
@@ -71,7 +95,7 @@ export function BottomNavigation({ logo, products, flavor, section }: {
       window.removeEventListener('scroll', scheduleUpdate);
       window.removeEventListener('resize', scheduleUpdate);
     };
-  }, [pathname, section]);
+  }, [pathname, productPath, shortcuts]);
 
   const closeOnNavigate = (event: SyntheticEvent<HTMLElement>) => {
     if ((event.target as Element).closest('a')) nav.current?.querySelectorAll<HTMLDetailsElement>('details[open]').forEach(menu => { menu.open = false; });
@@ -79,9 +103,9 @@ export function BottomNavigation({ logo, products, flavor, section }: {
 
   return (
     <nav ref={nav} className="site-nav" aria-label="منوی اصلی سایت" onClick={closeOnNavigate}>
-      <a className="site-nav__logo" href="/" aria-label="ات‌مت، صفحهٔ اصلی"><img src={logo} alt="" width={700} height={447} /></a>
+      <a className="site-nav__logo" href="/" aria-label="ات‌مت، صفحهٔ اصلی" aria-current={section === 'home' ? 'page' : undefined}><img src={logo} alt="" width={700} height={447} /></a>
       <div className="site-nav__links">
-        {productShortcuts.map(link => <a key={link.href} href={productPath + link.href} aria-current={!section && activeShortcut === link.href ? 'location' : undefined}>
+        {shortcuts.map(link => <a key={link.href} href={productPath + link.href} aria-current={!productPath && activeShortcut === link.href ? 'location' : undefined}>
           <NavIcon name={link.icon} /><span>{link.label}</span>
         </a>)}
         {siteLinks.slice(2, 4).map(link => <a key={link.href} href={link.href} aria-current={section && link.href === `/${section}` ? 'page' : undefined}><NavIcon name={link.href === '/recipes' ? 'recipes' : 'articles'} /><span>{link.label}</span></a>)}
@@ -97,7 +121,7 @@ export function BottomNavigation({ logo, products, flavor, section }: {
           <ul>{products.map(product => <li key={product.slug}>
             <a href={`/flavors/${product.slug}`} aria-current={product.slug === flavor ? 'page' : undefined}>
               <CanThumbnail product={product} /><span>{product.label}</span>
-              <span className="site-flavors__check" aria-hidden="true">{product.slug === flavor ? '✓' : '‹'}</span>
+              <span className="site-flavors__check" aria-hidden="true">{product.slug === flavor ? '✓' : ''}</span>
             </a>
           </li>)}</ul>
         </div>

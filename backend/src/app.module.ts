@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { ArticlesModule } from './articles/articles.module';
 import { RecipesModule } from './recipes/recipes.module';
 import { CollaborationModule } from './collaboration/collaboration.module';
+import { KitchenModule } from './kitchen/kitchen.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CollaborationModule } from './collaboration/collaboration.module';
     ArticlesModule,
     RecipesModule,
     CollaborationModule,
+    KitchenModule,
   ],
   controllers: [AppController],
   providers: [AppService],

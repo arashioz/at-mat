@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import '@/styles/actions.css';
 
 const peyda = localFont({
   src: [

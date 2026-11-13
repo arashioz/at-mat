@@ -56,6 +56,28 @@ try {
       assert.equal(stored.images[2].key, uploaded.key);
       assert.equal((await service.list('products')).length, 2);
     });
+    await t.test('parallel uploads keep every entry and leave the manifest readable', async () => {
+      const before = await service.list();
+      const file = { buffer: Buffer.from('fixture'), originalname: 'parallel.png', mimetype: 'image/png', size: 7 };
+      const uploaded = await Promise.all(Array.from({ length: 8 }, () => service.upload(file, 'branding', 'test-actor')));
+      const after = await service.list();
+      assert.equal(after.length, before.length + uploaded.length);
+      for (const item of uploaded) assert(after.some(entry => entry.key === item.key));
+    });
+    await t.test('an unreadable manifest is preserved and a later write can succeed', async () => {
+      const manifest = await readFile(manifestPath, 'utf8');
+      const unreadable = '{unfinished';
+      const file = { buffer: Buffer.from('fixture'), originalname: 'retry.png', mimetype: 'image/png', size: 7 };
+      const actions = [];
+      service.s3.send = async command => { actions.push(command.constructor.name); return {}; };
+      await writeFile(manifestPath, unreadable);
+      await assert.rejects(() => service.upload(file, 'branding', 'test-actor'), { status: 503 });
+      assert.deepEqual(actions, ['PutObjectCommand', 'DeleteObjectCommand']);
+      assert.equal(await readFile(manifestPath, 'utf8'), unreadable);
+      await writeFile(manifestPath, manifest);
+      const uploaded = await service.upload(file, 'branding', 'test-actor');
+      assert((await service.list()).some(entry => entry.key === uploaded.key));
+    });
   });
 } finally {
   service.s3.destroy();

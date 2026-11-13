@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { normalizePhone, toAsciiDigits } from '../../../backend/src/common/utils/phone.util';
 import { AdminIcon } from '../../components/AdminIcon';
 import { AdminSearch, CollectionState, faCount, normalizeQuery } from '../../components/AdminForms';
 import { AdminRecords, type AdminRecordColumn } from '../../components/AdminRecords';
@@ -11,7 +12,6 @@ import { useCollection } from '../../lib/use-collection';
 
 const TYPES: Record<string, string> = { store: 'فروشگاه', supermarket: 'سوپرمارکت', wholesaler: 'عمده‌فروش', restaurant: 'رستوران', other: 'سایر' };
 const initial = { name: '', type: 'store', phone: '', city: '', address: '' };
-const digits = (value: string) => value.replace(/[۰-۹٠-٩]/g, digit => String(digit.charCodeAt(0) % 16));
 const columns: AdminRecordColumn<Customer>[] = [
   { label: 'نوع', value: item => TYPES[item.type] ?? item.type },
   { label: 'موبایل', value: item => <bdi>{item.phone}</bdi> },
@@ -37,7 +37,7 @@ function Customers() {
     setSaving(true); setNotice(''); setSaveError('');
     try {
       const customer = await apiFetch<Customer>('/customers', token, { method: 'POST', body: JSON.stringify({
-        ...form, name: form.name.trim(), phone: digits(form.phone).replace(/[\s-]/g, ''),
+        ...form, name: form.name.trim(), phone: normalizePhone(form.phone),
         city: form.city.trim() || undefined, address: form.address.trim() || undefined,
       }) });
       setItems(previous => [customer, ...previous.filter(item => item._id !== customer._id)]);
@@ -47,7 +47,8 @@ function Customers() {
     finally { setSaving(false); }
   }
 
-  const visible = items.filter(item => normalizeQuery([item.name, TYPES[item.type], item.phone, item.city].join(' ')).includes(normalizeQuery(digits(query))));
+  const search = normalizeQuery(toAsciiDigits(query));
+  const visible = items.filter(item => normalizeQuery([item.name, TYPES[item.type], item.phone, item.city].join(' ')).includes(search));
   return <div className="admin-section-stack">
     {edit && <details className="admin-panel admin-disclosure">
       <summary><span><AdminIcon name="customers" />ثبت مشتری جدید</span><AdminIcon name="plus" size={17} /></summary>

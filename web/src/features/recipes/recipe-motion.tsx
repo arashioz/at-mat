@@ -24,15 +24,6 @@ export function RecipeMotion({ children, className = '', style }: { children: Re
       if (lines.length) intro.from(lines, { yPercent: 115, duration: 1, stagger: 0.1 }, 0.1);
       if (photos.length) intro.from(photos, { y: 24, opacity: 0, duration: 1.1 }, 0.18);
       animateBrandEdges(page);
-      const logo = page.querySelector('.b-footer__logo img');
-      if (logo) {
-        const pulse = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2.2 })
-          .to(logo, { scale: 1.05, duration: 0.24, ease: 'power2.out' })
-          .to(logo, { scale: 1, duration: 0.24, ease: 'sine.inOut' })
-          .to(logo, { scale: 1.025, duration: 0.2, ease: 'sine.out' })
-          .to(logo, { scale: 1, duration: 0.4, ease: 'sine.inOut' });
-        ScrollTrigger.create({ trigger: logo.parentElement, start: 'top 80%', end: 'bottom top', onToggle: self => self.isActive ? pulse.restart() : pulse.pause(0) });
-      }
     });
     media.add({ motion: '(prefers-reduced-motion: no-preference)', stack: '(max-width: 899px) and (min-height: 580px)' }, ({ conditions }) => {
       const list = page.querySelector<HTMLElement>('[data-related-cards]');

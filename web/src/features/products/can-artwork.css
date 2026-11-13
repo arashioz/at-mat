@@ -1,0 +1,40 @@
+.can-artwork {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  inline-size: var(--can-artwork-width, 100%);
+  aspect-ratio: 56 / 53;
+  container-type: inline-size;
+}
+.can-artwork__body,
+.can-artwork__lid {
+  position: absolute;
+  inset-inline: 0;
+}
+.can-artwork__body {
+  inset-block-start: 24.5%;
+  block-size: 68%;
+  border-radius: 0 0 50% 50% / 0 0 26% 26%;
+  background:
+    linear-gradient(90deg, rgb(4 30 45 / .45), transparent 25%, rgb(255 255 255 / .12) 45%, transparent 68%, rgb(4 30 45 / .38)),
+    var(--can-wrap) 110% 50% / 200% 100% repeat-x;
+  border-inline: 1px solid rgb(4 30 45 / .15);
+  box-shadow: inset 0 -4.4cqw 0 #d9e2e7, inset 0 -6.6cqw 0 #879ba7;
+}
+.can-artwork__body::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 28%;
+  border-block-end: max(1px, 1.5cqw) solid #eff4f6;
+  border-radius: 50%;
+}
+.can-artwork__lid {
+  inset-block-start: 5.7%;
+  block-size: 37.7%;
+  border-radius: 50%;
+  background: var(--can-lid) center / 100% 100% no-repeat, #cfd8de;
+  border: max(1px, 1cqw) solid #a8b8c2;
+  box-shadow: 0 1.5cqw 0 #687e8c, inset 0 0 0 2.2cqw #edf2f5, inset 0 0 0 4.4cqw #9fafb9;
+}

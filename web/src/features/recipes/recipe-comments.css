@@ -1,0 +1,136 @@
+.r-comments {
+  --r-comment-line: color-mix(in srgb, var(--r-deep) 16%, transparent);
+  --r-comment-accent: color-mix(in srgb, var(--r-accent) 32%, var(--r-deep));
+  padding: clamp(2.75rem, 6vw, 6rem) var(--r-gutter) clamp(4.6rem, 9vw, 7.4rem);
+  background: var(--r-paper);
+}
+.r-comments__inner { max-inline-size: 75rem; margin-inline: auto; }
+:is(.r-related, .a-related):has(+ .r-comments) { padding-block-end: clamp(1.5rem, 4vw, 3.5rem); }
+.r-comments__head {
+  margin-block-end: clamp(1.35rem, 3vw, 2.45rem);
+  padding-inline-start: clamp(.85rem, 2vw, 1.45rem);
+  border-inline-start: 3px solid var(--r-accent);
+}
+.r-comments__head h2 {
+  font-size: clamp(2.1rem, 4.5vw, 4.05rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+.r-comments__head p {
+  color: var(--r-muted);
+  font-size: clamp(.94rem, 1.7vw, 1.08rem);
+  margin-block-start: .55rem;
+}
+.r-comments__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(.9rem, 2.5vw, 2.1rem);
+}
+.r-comments__form {
+  display: grid;
+  gap: 1.05rem;
+  min-inline-size: 0;
+  padding: clamp(1.15rem, 3.3vw, 2rem);
+  border: 1px solid var(--r-comment-line);
+  border-radius: clamp(1.25rem, 3vw, 1.9rem);
+  background: color-mix(in srgb, white 85%, var(--r-paper));
+  box-shadow: 0 .9rem 2.5rem rgb(4 30 45 / .055);
+}
+.r-comments__form fieldset {
+  display: grid;
+  gap: .95rem;
+  min-inline-size: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.r-comments__field {
+  display: grid;
+  gap: .38rem;
+  min-inline-size: 0;
+  font-size: .9rem;
+  font-weight: 750;
+}
+.r-comments__field .at-control {
+  --at-control-accent: var(--r-comment-accent);
+  --at-control-line: var(--r-comment-line);
+  --at-control-radius: .9rem;
+  --at-textarea-radius: .9rem;
+  min-block-size: 3rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+}
+.r-comments__field .at-control:placeholder-shown { direction: rtl; }
+.r-comments__field textarea { min-block-size: 7.5rem; }
+.r-comments__form-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .55rem; }
+.r-comments__form-actions .r-comments__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .65rem 1.15rem;
+  border: 0;
+  color: #fff;
+  background: var(--r-deep);
+  font-size: .93rem;
+  font-weight: 750;
+  transition: background-color .22s var(--ease-out);
+}
+.r-comments__submit svg { inline-size: 1.1rem; block-size: 1.1rem; }
+.r-comments__form-actions .r-comments__submit:hover:not(:disabled) { background: var(--r-comment-accent); }
+.r-comments button:disabled { opacity: .65; cursor: default; }
+.r-comments__limit { color: var(--r-muted); font-size: .76rem; }
+.r-comments__feedback { font-size: .86rem; color: #16634d; }
+.r-comments__feedback[data-kind='error'] { color: #9a2525; }
+
+.r-comments__thread { min-inline-size: 0; }
+.r-comments__note {
+  padding: 1.2rem;
+  border: 1px solid var(--r-comment-line);
+  border-radius: 1.25rem;
+  color: var(--r-muted);
+  background: color-mix(in srgb, white 36%, var(--r-paper));
+  font-size: .93rem;
+}
+.r-comments__list { display: grid; gap: .75rem; padding: 0; margin: 0; list-style: none; }
+.r-comments__item {
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--r-comment-line);
+  border-radius: 1.15rem;
+  background: color-mix(in srgb, white 65%, var(--r-paper));
+}
+.r-comments__byline { display: flex; align-items: center; gap: .6rem; min-inline-size: 0; }
+.r-comments__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 2.3rem;
+  block-size: 2.3rem;
+  border-radius: 50%;
+  color: var(--r-deep);
+  background: color-mix(in srgb, var(--r-accent) 20%, white);
+  font-size: .9rem;
+  font-weight: 800;
+}
+.r-comments__byline strong { overflow-wrap: anywhere; font-size: .94rem; }
+.r-comments__byline time { flex: none; margin-inline-start: auto; color: var(--r-muted); font-size: .72rem; }
+.r-comments__item p { margin-block-start: .65rem; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .97rem; }
+.r-comments__thread .r-comments__more {
+  min-block-size: 44px;
+  margin-block-start: .55rem;
+  padding: .25rem 0;
+  border: 0;
+  border-block-end: 1px solid var(--r-comment-line);
+  color: var(--r-comment-accent);
+  background: transparent;
+  font-size: .88rem;
+  font-weight: 750;
+}
+
+@media (max-width: 759px) {
+  .r-comments__layout { grid-template-columns: 1fr; }
+  .r-comments__byline { gap: .45rem; }
+}
+@media print { .r-comments { display: none !important; } }

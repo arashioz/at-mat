@@ -1,0 +1,44 @@
+/* Shared filled actions, with contrast supplied by the surrounding section. */
+html:root :is(.home-text-link, .home-hero__about, .r-text-link, .r-hero-cta, .r-product-link,
+  .a-link, .a-card__read, .company-text-link, .r-featured-recipe__read, .r-card__read) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-block-size: 44px;
+  padding: .65rem 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--action-surface, #dcebe3);
+  color: var(--action-ink, #125a42);
+  text-decoration: none;
+  font-weight: 800;
+  line-height: 1.5;
+  text-align: center;
+  transition: background-color .2s, box-shadow .2s;
+}
+html:root :is(.home-text-link, .home-hero__about, .r-text-link, .r-hero-cta, .r-product-link,
+  .a-link, .a-card__read, .company-text-link):hover {
+  color: var(--action-ink, #125a42);
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+:is(.home-hero, .home-kitchen, .r-site) { --action-surface: #d3e8f5; --action-ink: #103f5a; }
+:is(.a-site, .home-journal, .home-story) { --action-surface: #dcebe3; --action-ink: #125a42; }
+:is(.company-hero--about, .a-index-hero, .a-detail-hero, .r-index-hero, .r-detail-hero) {
+  --action-surface: #f4e4b6; --action-ink: #223a32;
+}
+.home-story .home-text-link { margin-block-start: .35rem; }
+.home-hero .home-text-link:hover { color: var(--action-ink); }
+html:root .r-index-hero .r-hero-cta { border: 0; padding: .65rem 1.2rem; }
+.company-text-link:hover { text-decoration: none; }
+html:root :is(.a-section p, .a-sources) a {
+  text-decoration: none;
+  border-radius: .6rem;
+  background: #e3ede1;
+  color: #125a42;
+  padding: .1rem .35rem;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+html:root .a-search { border: 1px solid var(--a-line); border-radius: 999px; padding-inline: 1rem; }

@@ -74,23 +74,6 @@ export function BrineMotion({ children, staticMode = false, className = '', styl
       });
 
       animateBrandEdges(page);
-
-      const footerLogo = select('.b-footer__logo img')[0];
-      if (footerLogo) {
-        const heartbeat = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 2.2 })
-          .to(footerLogo, { scale: 1.06, duration: 0.24, ease: 'power2.out' })
-          .to(footerLogo, { scale: 1, duration: 0.24, ease: 'sine.inOut' })
-          .to(footerLogo, { scale: 1.03, duration: 0.2, ease: 'sine.out' })
-          .to(footerLogo, { scale: 1, duration: 0.4, ease: 'sine.inOut' });
-        ScrollTrigger.create({
-          // Measure the stable link, so the pulse cannot move its own trigger.
-          // Let the entire logo arrive before the first beat.
-          trigger: footerLogo.parentElement, start: 'bottom 92%', end: 'bottom top',
-          onToggle: ({ isActive }) => { if (isActive) heartbeat.restart(); else heartbeat.pause(0); },
-        });
-      }
-
-
       return () => {
         window.removeEventListener(INTRO_EVENT, onIntro);
       };

@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  ParseFilePipe,
   Query,
   UploadedFile,
   UseGuards,
@@ -47,7 +48,7 @@ export class StorageController {
   @Roles(Role.ADMIN, Role.SALES_MANAGER, Role.MARKETER)
   @UseInterceptors(FileInterceptor('file', { storage: memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }))
   upload(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(new ParseFilePipe({ errorHttpStatusCode: HttpStatus.BAD_REQUEST })) file: Express.Multer.File,
     @Body() dto: UploadImageDto,
     @CurrentUser() actor: UserDocument,
   ): Promise<ImageEntry> {

@@ -18,9 +18,7 @@ export class CreateCollaborationDto {
   @MaxLength(100)
   name: string;
 
-  @Transform(({ value }) => typeof value === 'string'
-    ? normalizePhone(value.replace(/[۰-۹٠-٩]/g, digit => String(digit.charCodeAt(0) % 16)).replace(/[\s()-]/g, ''))
-    : value)
+  @Transform(({ value }) => typeof value === 'string' ? normalizePhone(value) : value)
   @Matches(PHONE_REGEX, { message: 'شمارهٔ موبایل را با ۰۹ یا ‎+۹۸ وارد کنید.' })
   phone: string;
 

@@ -1,6 +1,6 @@
 # دپلوی یکپارچه ات‌مت روی Ubuntu
 
-این راهنما برای یک سرور تازهٔ Ubuntu 24.04، کاربر `deploy` با دسترسی sudo و اجرای هر سه برنامه روی همان سرور است. سورس مبنا آخرین نسخهٔ `main` شامل `compose.server.yml` و `infra/minio/Dockerfile` است. بستهٔ دارایی‌ها همان `at-mat-deploy-assets-2026-11-08.zip` است و همچنان با این نسخه سازگار است. اصلاح‌های آدرس تصاویر، ساخت MinIO و bind داخلی API در سورس اعمال شده‌اند؛ روی سرور فقط تنظیمات محیط و دامنه‌ها را انجام می‌دهید. اجرای نهایی روی سرور مقصد به DNS و TLS همان محیط وابسته است. راه‌اندازی روی چند کانتینر برنامه یا چند ماشین به تنظیمات دیگری نیاز دارد.
+این راهنما برای یک سرور تازهٔ Ubuntu 24.04، کاربر `deploy` با دسترسی sudo و اجرای هر سه برنامه روی همان سرور است. نصب تازه به بستهٔ پایه و همهٔ بسته‌های افزایشی مربوط به کامیت نوشته‌شده در `SOURCE-COMMIT.txt` نیاز دارد. تصاویر و ویدیوی صفحهٔ اصلی در بستهٔ افزایشی‌اند. اجرای نهایی روی سرور مقصد به DNS و TLS همان محیط وابسته است.
 
 نام‌های نمونه را قبل از اجرا با مقادیر واقعی جایگزین کنید:
 
@@ -9,7 +9,8 @@
 - `media.example.com`: دسترسی خواندنی به تصاویر.
 - `SERVER_IP`: IP عمومی سرور.
 - مسیر پروژه: `/srv/at-mat`.
-- مسیر بستهٔ استخراج‌شده: `/home/deploy/at-mat-deploy-assets`.
+- مسیر بستهٔ پایه: `/home/deploy/at-mat-deploy-assets`.
+- مسیر بستهٔ افزایشی: `/home/deploy/at-mat-assets-update`.
 
 API روی `127.0.0.1:3010`، ادمین روی `127.0.0.1:3001` و سایت روی `127.0.0.1:3002` اجرا می‌شوند. MongoDB و MinIO در Docker هستند و فقط پورت‌های loopback دارند. Nginx درخواست‌های عمومی را به سرویس مناسب می‌فرستد. سایت از API داخلی می‌خواند و پنل با `/api` به همان API متصل می‌شود.
 
@@ -37,10 +38,11 @@ sudo docker compose version
 
 ## ۲. انتقال زیپ و دریافت سورس
 
-این دستور فقط روی مک مبدأ اجرا می‌شود:
+بستهٔ پایه و بستهٔ افزایشی را از مسیر تحویل روی مک به سرور منتقل کنید:
 
 ```sh
-scp ~/Desktop/at-mat-deploy-assets-2026-11-08.zip deploy@SERVER_IP:/home/deploy/
+scp /path/to/at-mat-deploy-assets-2026-11-08.zip deploy@SERVER_IP:/home/deploy/
+scp /path/to/at-mat-assets-update.zip deploy@SERVER_IP:/home/deploy/at-mat-assets-update.zip
 ```
 
 بقیهٔ دستورها روی سرور و با کاربر `deploy` اجرا می‌شوند مگر جایی که sudo آمده است:
@@ -51,11 +53,12 @@ git clone --branch main https://github.com/arashioz/at-mat.git /srv/at-mat
 cd /srv/at-mat
 git rev-parse --short HEAD
 unzip /home/deploy/at-mat-deploy-assets-2026-11-08.zip -d /home/deploy/
-cd /home/deploy/at-mat-deploy-assets
-sha256sum -c SHA256SUMS
+unzip /home/deploy/at-mat-assets-update.zip -d /home/deploy/
+(cd /home/deploy/at-mat-deploy-assets && sha256sum -c SHA256SUMS)
+(cd /home/deploy/at-mat-assets-update && sha256sum -c SHA256SUMS)
 ```
 
-فایل SOURCE-COMMIT داخل زیپ نسخهٔ اولیهٔ بسته را ثبت کرده است؛ دارایی‌ها با آخرین `main` سازگارند. بعد از clone باید فایل‌های `compose.server.yml`، `infra/minio/Dockerfile` و `scripts/restore-assets.mjs` موجود باشند. اگر مخزن خصوصی است، از deploy key فقط‌خواندنی یا روش امن ورود GitHub استفاده کنید؛ توکن را داخل URL ننویسید.
+هش کامیت clone را با `SOURCE-COMMIT.txt` بستهٔ افزایشی مقایسه کنید. بعد از clone باید فایل‌های `compose.server.yml`، `infra/minio/Dockerfile` و `scripts/restore-assets.mjs` موجود باشند. اگر مخزن خصوصی است، از deploy key فقط‌خواندنی یا روش امن ورود GitHub استفاده کنید. توکن را داخل URL ننویسید.
 
 تمام checksumها باید `OK` باشند. سپس:
 
@@ -159,18 +162,19 @@ build نخست MinIO از سورس می‌تواند زمان و حافظهٔ ق
 
 روی این سرور **همیشه** از `-p atmat -f compose.server.yml` استفاده کنید. دستور `npm run db:up` برای محیط توسعه است؛ نام پروژه و volumeهای محیط توسعه با این روش فرق دارد. نام پروژهٔ Compose را بعداً تغییر ندهید؛ نام volumeها به آن وابسته است. MongoDB این پیکربندی auth ندارد و عمداً فقط روی loopback منتشر شده است؛ برای دسترسی از ماشین‌های دیگر این تنظیم کافی نیست.
 
-## ۶. بازیابی تصاویر از زیپ با کلیدهای اصلی
+## ۶. بازیابی رسانه از زیپ با کلیدهای اصلی
 
 این مرحله بازیابی بکاپ اشیایی است که قبلاً از API آپلود شده‌اند؛ آن‌ها را مجدداً با نام تصادفی آپلود نکنید، چون مقاله‌ها و manifest به کلیدهای اصلی ارجاع دارند.
 
-اسکریپت آمادهٔ مخزن، ابتدا checksum تمام تصاویر را بررسی می‌کند و سپس آن‌ها را با کلید اصلی و Content-Type ثبت‌شده بازیابی می‌کند. رمزها از env بک‌اند خوانده می‌شوند:
+اسکریپت آمادهٔ مخزن، ابتدا checksum همهٔ اشیای `inventory.json` را بررسی می‌کند و سپس آن‌ها را با کلید اصلی و Content-Type ثبت‌شده بازیابی می‌کند. برای بررسی بدون اتصال به مقصد، `ATMAT_ASSET_BUNDLE=/home/deploy/at-mat-deploy-assets node scripts/restore-assets.mjs --verify-only` را از ریشهٔ مخزن اجرا کنید. بازیابی، رمزها را از env بک‌اند می‌خواند:
 
 ```sh
 cd /srv/at-mat
 ATMAT_ASSET_BUNDLE=/home/deploy/at-mat-deploy-assets npm run assets:restore
+ATMAT_ASSET_BUNDLE=/home/deploy/at-mat-assets-update npm run assets:restore
 ```
 
-در اجرای اولیهٔ این بسته، باید ۱۱۵ تصویر بازیابی شود. این دستور برای بازیابی اولیه است و اشیای دارای همان کلید را در مقصد بازنویسی می‌کند؛ آن را بدون قصد بازیابی روی محیط فعال تکرار نکنید. یک ورودی قدیمی و بدون استفاده در manifest در مبدأ هم فایل ندارد؛ جزئیات در README داخل زیپ ثبت شده است. manifest را برای حذف این مورد دستی تغییر ندهید.
+تعداد اشیا را با `inventory.json` هر بسته مقایسه کنید. بستهٔ پایه در بازیابی اولیه اشیای هم‌کلید را بازنویسی می‌کند. بستهٔ افزایشی به دارایی‌های پایه متکی است، تصاویر تازه را به manifest مقصد اضافه می‌کند و ویدیوی ساحل را با کلید `branding/atmat-home-coast.mp4` و نوع `video/mp4` برمی‌گرداند. برای به‌روزرسانی محیط فعال، دستورهای بستهٔ افزایشی را دنبال کنید.
 
 ## ۷. Build هر سه بخش
 
@@ -244,12 +248,12 @@ sudo journalctl -u atmat-backend -n 80 --no-pager
 
 ```sh
 cd /srv/at-mat
-ATMAT_ARTICLE_SEED_FILE=/home/deploy/at-mat-deploy-assets/content/published-articles.json npm run seed:articles
+ATMAT_ARTICLE_SEED_FILE=/home/deploy/at-mat-assets-update/content/published-articles.json npm run seed:articles
 sudo systemctl enable --now atmat-admin atmat-web
 npm run check:integration
 ```
 
-این فرمان snapshot عمومی داخل زیپ را می‌خواند و فایل seed یا هیچ فایل سورس دیگری را روی سرور تغییر نمی‌دهد. انتظار: ۱۰ مقاله وارد و منتشر شوند و بررسی اتصال موفق شود. seed موارد موجود را بر اساس slug رد می‌کند و روی دیتابیس موجود ویرایش‌ها را جایگزین نمی‌کند. اگر اجرای اولیه نیمه‌کاره ماند، وضعیت draft/published را از پنل بررسی کنید؛ اجرای دوباره، draftهای موجود را خودکار منتشر نمی‌کند.
+این فرمان snapshot عمومی بستهٔ افزایشی را می‌خواند. روی دیتابیس خالی، ۱۳ مقاله وارد و منتشر می‌شوند. seed موارد موجود را بر اساس slug رد می‌کند. اگر اجرای اولیه نیمه‌کاره ماند، وضعیت draft/published را از پنل بررسی کنید.
 
 اطلاعات کاربران و CRM در این زیپ نیست. برای شروع تازه، ادمین از `ADMIN_EMAIL` و `ADMIN_PASSWORD` ساخته می‌شود؛ انتقال کاربران و داده‌های عملیاتی موجود به بکاپ خصوصی MongoDB نیاز دارد. تغییر رمز env، رمز ادمینی را که قبلاً در دیتابیس ساخته شده تغییر نمی‌دهد.
 
@@ -370,12 +374,13 @@ cd /srv/at-mat
 sudo systemctl stop atmat-web atmat-admin atmat-backend
 git pull --ff-only origin main
 npm run install:all
-npm run build
 sudo docker compose -p atmat -f compose.server.yml up -d --build --wait
+ATMAT_ASSET_BUNDLE=/home/deploy/at-mat-assets-update npm run assets:restore
+npm run build
 sudo systemctl start atmat-backend atmat-admin atmat-web
 npm run check:integration
 ```
 
-این روش روی همان مسیر فعال و دارای downtime است. اگر هر دستور شکست خورد، قبل از ادامه خطا را برطرف کنید یا نسخهٔ قبلی را بازیابی کنید. seed و کپی دارایی‌های اولیه را هنگام هر به‌روزرسانی تکرار نکنید. برای استقرار بدون downtime باید از مسیرهای release جدا و manifest مشترک استفاده شود.
+این روش روی همان مسیر فعال و دارای downtime است. خطای هر مرحله را پیش از ادامه برطرف کنید یا نسخهٔ قبلی را بازیابی کنید. اگر سه مقالهٔ جدید هنوز در مقصد نیستند، پس از بالا آمدن API و طبق راهنمای بستهٔ افزایشی snapshot عمومی را وارد کنید. برای استقرار بدون downtime از مسیرهای release جدا و manifest مشترک استفاده کنید.
 
 هیچ‌وقت برای به‌روزرسانی معمول `docker compose down -v` اجرا نکنید؛ `-v` volumeهای داده را حذف می‌کند. دستورهای Docker این راهنما باید همواره با پروژهٔ ثابت `atmat` و فایل `compose.server.yml` اجرا شوند.

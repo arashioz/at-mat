@@ -96,7 +96,7 @@ export default async function ArticlePage({ params }: Props) {
                   <span>{article.readingMinutes.toLocaleString('fa-IR')} دقیقه مطالعه</span>
                   <span>{article.wordCount.toLocaleString('fa-IR')} کلمه</span>
                 </div>
-                <a className="a-link" href="#article-content">{text.startReading} <span aria-hidden="true">↓</span></a>
+                <a className="a-link" href="#article-content">{text.startReading}</a>
               </div>
               {article.cover && <figure>
                 <img src={article.cover.url} alt={article.cover.alt} width={article.cover.width} height={article.cover.height} fetchPriority="high" />
@@ -136,7 +136,7 @@ export default async function ArticlePage({ params }: Props) {
                 <ol>{article.sources.map((source, index) => (
                   <li key={index} id={`source-${index + 1}`}>
                     <a href={source.url} {...(source.url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
-                      {source.title} <span aria-hidden="true">↗</span>
+                      {source.title}
                     </a>
                   </li>
                 ))}</ol>
@@ -146,7 +146,7 @@ export default async function ArticlePage({ params }: Props) {
               <div className="a-tags" aria-label="موضوع‌های مقاله">{article.tags.map((tag, index) => <span key={index}>{tag}</span>)}</div>
               {products.length > 0 && <div className="a-product-links">
                 <p>{text.productsTitle}</p>
-                {products.map(product => <Link key={product.slug} href={`/flavors/${product.slug}`}>مشخصات تن ماهی {product.label} <span aria-hidden="true">↗</span></Link>)}
+                {products.map(product => <Link key={product.slug} href={`/flavors/${product.slug}`}>مشخصات تن ماهی {product.label}</Link>)}
               </div>}
             </div>
           </div>
@@ -154,13 +154,13 @@ export default async function ArticlePage({ params }: Props) {
         {recipes.length > 0 && <section className="a-related-recipes">
           <div className="a-section-heading">
             <div><p className="a-eyebrow">{text.relatedRecipesLabel}</p><h2>{text.relatedRecipesTitle}</h2></div>
-            <Link href="/recipes" className="a-link">همهٔ رسپی‌ها ←</Link>
+            <Link href="/recipes" className="a-link">همهٔ رسپی‌ها</Link>
           </div>
           <div className="r-grid">{recipes.map(recipe => <RecipeCard key={recipe.slug} recipe={toRecipeCard(recipe)} />)}</div>
         </section>}
         {related.length > 0 && <section className="a-related">
           <div className="a-section-heading">
-            <h2>{text.relatedArticlesTitle}</h2><Link className="a-link" href="/articles">همهٔ مقاله‌ها ←</Link>
+            <h2>{text.relatedArticlesTitle}</h2><Link className="a-link" href="/articles">همهٔ مقاله‌ها</Link>
           </div>
           <div className="a-grid">{related.map(item => <ArticleCard key={item.slug} article={item} />)}</div>
         </section>}

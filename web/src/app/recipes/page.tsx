@@ -27,7 +27,7 @@ export default async function RecipesPage() {
           {featured && cover && <div className="r-hero-composition" data-recipe-photo>
             <Link className="r-featured-recipe" href={`/recipes/${featured.slug}`} aria-label={featured.title}>
               <img src={cover.url} alt={cover.alt} width={cover.width} height={cover.height} fetchPriority="high" />
-              <div className="r-featured-recipe__caption"><span>پیشنهاد امروز · {featured.duration}</span><h2>{featured.title}</h2><span className="r-featured-recipe__read">دیدن دستور <span aria-hidden="true">←</span></span></div>
+              <div className="r-featured-recipe__caption"><span>پیشنهاد امروز · {featured.duration}</span><h2>{featured.title}</h2><span className="r-featured-recipe__read">دیدن دستور</span></div>
             </Link>
           </div>}
           <BrandEdge id="recipe-index-edge" className="r-index-hero__edge" fillBelow />

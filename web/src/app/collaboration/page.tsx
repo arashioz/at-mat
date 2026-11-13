@@ -24,7 +24,7 @@ export default async function CollaborationPage({ searchParams }: {
             <p className="company-kicker">همکاری با ات‌مت</p>
             <h1 id="collaboration-title">با هم کار کنیم.</h1>
             <p>اگر می‌خواهی محصولات ات‌مت را در شهر خودت عرضه کنی یا به تیم ما بپیوندی، از همین‌جا شروع کن.</p>
-            <a className="company-button" href="#application">انتخاب مسیر همکاری <span aria-hidden="true">↓</span></a>
+            <a className="company-button" href="#application">انتخاب مسیر همکاری</a>
           </div>
           <div className="company-packshots" aria-hidden="true">
             <img src={brine.lid.url} width={brine.lid.width} height={brine.lid.height} alt="" />

@@ -20,6 +20,13 @@
   backdrop-filter: blur(16px) saturate(1.25);
   -webkit-backdrop-filter: blur(16px) saturate(1.25);
   box-shadow: 0 16px 34px -18px rgb(4 30 45 / .5), 0 2px 8px rgb(4 30 45 / .09);
+  transition: opacity .24s var(--ease-out), translate .24s var(--ease-out), visibility .24s;
+}
+.site-nav[data-at-footer]:not(:has(:focus-visible)) {
+  opacity: 0;
+  translate: 0 .6rem;
+  visibility: hidden;
+  pointer-events: none;
 }
 .b-page[data-can='loading'] .site-nav { visibility: hidden; }
 .site-nav__logo {
@@ -71,10 +78,7 @@
 .site-disclosure__panel a:hover { background: #f2efe6; }
 .site-disclosure__panel a[aria-current] { background: var(--nav-active); color: var(--nav-accent); font-weight: 750; }
 .site-flavors__check { margin-inline-start: auto; color: var(--nav-accent); font-size: .95rem; }
-.site-can { position: relative; display: inline-block; flex: none; inline-size: 2.8rem; block-size: 2.65rem; rotate: -11deg; filter: drop-shadow(1px 3px 2px rgb(4 30 45 / .2)); }
-.site-can__body { position: absolute; inset-inline: 0; inset-block-start: .65rem; block-size: 1.8rem; border-radius: 0 0 50% 50% / 0 0 26% 26%; background: linear-gradient(90deg, rgb(4 30 45 / .45), transparent 25%, rgb(255 255 255 / .12) 45%, transparent 68%, rgb(4 30 45 / .38)), var(--can-wrap) 110% 50% / 200% 100% repeat-x; border-inline: 1px solid rgb(4 30 45 / .15); box-shadow: inset 0 -2px 0 #d9e2e7, inset 0 -3px 0 #879ba7; }
-.site-can__body::after { content: ''; position: absolute; inset-inline: 0; inset-block-end: 0; block-size: .5rem; border-block-end: 1px solid #eff4f6; border-radius: 50%; }
-.site-can__lid { position: absolute; inset-inline: 0; inset-block-start: .15rem; block-size: 1rem; border-radius: 50%; background: var(--can-lid) center / 100% 100% no-repeat, #cfd8de; border: 1px solid #a8b8c2; box-shadow: 0 1px 0 #687e8c, inset 0 0 0 1px #edf2f5, inset 0 0 0 2px #9fafb9; }
+.site-can { --can-artwork-width: 2.8rem; rotate: -11deg; filter: drop-shadow(1px 3px 2px rgb(4 30 45 / .2)); }
 .r-site .b-footer { --footer-edge-color: var(--r-paper); }
 .b-footer__edge { inset-block-start: -1px; inset-inline: 0; inline-size: 100%; color: var(--footer-edge-color, var(--brine-cream)); }
 .b-footer__about { margin-block-start: 1rem; max-inline-size: 30rem; font-size: .85rem; color: rgb(244 251 254 / .65); }
@@ -124,18 +128,27 @@
   padding-block-end: clamp(2.5rem, 7svh, 4.5rem);
 }
 .b-footer__logo img { display: block; inline-size: clamp(7.5rem, 13vw, 11.5rem); block-size: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  .b-footer__logo[data-beating] img { animation: atmat-footer-heartbeat 3.35s ease-in-out infinite; }
+}
+@keyframes atmat-footer-heartbeat {
+  0%, 15%, 33%, 100% { scale: 1; }
+  7% { scale: 1.055; }
+  21% { scale: 1.027; }
+}
 .b-footer__line { display: grid; font-size: clamp(1.9rem, 3.8vw, 3.6rem); font-weight: 900; line-height: 1.1; }
 .b-footer__line span:last-child { color: var(--brine-yellow); }
 .b-footer__up {
   display: grid;
   place-items: center;
-  inline-size: clamp(4rem, 6vw, 5.25rem);
+  inline-size: clamp(2.875rem, 5vw, 3.35rem);
   aspect-ratio: 1;
+  border: 1px solid rgb(244 251 254 / .36);
   border-radius: 50%;
-  box-shadow: inset 0 0 0 1.5px rgb(244 251 254 / 0.3);
-  transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  transition: background-color .22s var(--ease-out), color .22s var(--ease-out);
 }
-.b-footer__up:hover { background: var(--brine-yellow); color: var(--brine-ink); box-shadow: none; }
+.b-footer__up:hover { background: var(--brine-foam); color: var(--brine-ink); }
+.b-footer__up svg { display: block; }
 .b-footer__grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr);
@@ -186,4 +199,8 @@
   .b-footer__up { grid-column: 2; grid-row: 1; justify-self: end; }
   .b-footer__top > div { grid-column: 1 / -1; }
   .b-footer__grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav, .b-footer__up { transition: none; }
+  .site-nav[data-at-footer] { translate: none; }
 }

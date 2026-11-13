@@ -6,13 +6,13 @@ const admin = process.env.ATMAT_ADMIN_URL ?? 'http://127.0.0.1:3001';
 let checks = 0;
 const renderedPages = [];
 
-async function check(base, route, { status = 200, json = false, method = 'GET', image = false } = {}) {
+async function check(base, route, { status = 200, json = false, method = 'GET', contentType } = {}) {
   const response = await fetch(new URL(route, `${base}/`), {
     method, signal: AbortSignal.timeout(30000), redirect: 'follow',
   });
   if (response.status !== status) throw new Error(`${route}: expected ${status}, received ${response.status}`);
-  if (image && !response.headers.get('content-type')?.startsWith('image/')) {
-    throw new Error(`${route}: storage proxy did not return an image`);
+  if (contentType && !response.headers.get('content-type')?.startsWith(contentType)) {
+    throw new Error(`${route}: storage proxy did not return ${contentType}`);
   }
   const body = json ? await response.json() : await response.text();
   if (base === site && method === 'GET' && typeof body === 'string') renderedPages.push(body);
@@ -39,6 +39,7 @@ try {
   for (const route of ['/', '/recipes', '/articles', '/about', '/collaboration', ...['brine', 'sunflower', 'olive-oil', 'pepper', 'smoked', 'dill'].map(slug => `/flavors/${slug}`)]) {
     await check(site, route);
   }
+  await check(site, '/media/branding/atmat-home-coast.mp4', { method: 'HEAD', contentType: 'video/mp4' });
   for (const recipe of recipes) await check(site, `/recipes/${recipe.slug}`);
   for (const article of articles) {
     await check(api, `public/articles/${article.slug}`, { json: true });
@@ -47,7 +48,7 @@ try {
   const manifest = JSON.parse(await readFile(new URL('../assets/image-manifest.json', import.meta.url), 'utf8'));
   const logo = manifest.images.findLast(entry => entry.description === 'atmat-logo-fa');
   if (!logo) throw new Error('The uploaded Persian logo is missing from the manifest.');
-  await check(admin, `/media/${logo.key.split('/').map(encodeURIComponent).join('/')}`, { method: 'HEAD', image: true });
+  await check(admin, `/media/${logo.key.split('/').map(encodeURIComponent).join('/')}`, { method: 'HEAD', contentType: 'image/' });
   const missingUnused = [];
   let requiredImages = 0;
   for (const { key } of manifest.images) {
@@ -55,7 +56,7 @@ try {
     const used = renderedPages.some(html => html.includes(`/media/${encodedKey}`));
     if (used) requiredImages++;
     try {
-      await check(site, `/media/${encodedKey}`, { method: 'HEAD', image: true });
+      await check(site, `/media/${encodedKey}`, { method: 'HEAD', contentType: 'image/' });
     } catch (error) {
       if (used) throw error;
       missingUnused.push(key);
