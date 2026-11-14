@@ -7,6 +7,9 @@ COPY backend/package.json backend/package-lock.json ./
 RUN npm ci
 
 COPY backend/ ./
+
+# recipes.service.ts reads ../../../web/src/features/recipes/content.json relative to dist/.
+COPY web/src/features/recipes/content.json /app/web/src/features/recipes/content.json
 RUN npm run build \
  && npm prune --omit=dev \
  && npm cache clean --force \

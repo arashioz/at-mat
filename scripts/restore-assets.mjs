@@ -37,6 +37,8 @@ for (const item of inventory.objects) {
   if (bytes.length !== item.bytes || createHash('sha256').update(bytes).digest('hex') !== item.sha256) {
     throw new Error(`Checksum failed: ${item.key}`);
   }
+  if (!item.contentType?.startsWith('image/') && !item.contentType?.startsWith('video/')) throw new Error(`Invalid Content-Type: ${item.key}`);
+
 }
 if (mode === '--verify-only') {
   console.log(`Verified ${inventory.objects.length} media objects and their checksums.`);
