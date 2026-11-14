@@ -1,9 +1,12 @@
 # At-Mat full stack. Single file, no include, no -f flags needed.
 # Start order: mongo + minio -> backend -> admin + web
 #
-# Usage (inside the project folder on the server):
-#   docker compose config --quiet
-#   docker compose up -d --build --wait
+# Ports (Customized):
+#   - MongoDB: 27019 (internal 27017)
+#   - MinIO API: 9002 (internal 9000), Console: 9003 (internal 9001)
+#   - Backend API: 3020 (internal 3010)
+#   - Admin Panel: 3021 (internal 3001)
+#   - Public Site: 3022 (internal 3002)
 #
 # Ports bind to 127.0.0.1 only. Public traffic goes through host Nginx.
 
@@ -12,9 +15,10 @@ name: atmat
 services:
   mongo:
     image: mongo:7
+    container_name: atmat-mongo
     restart: unless-stopped
     ports:
-      - "127.0.0.1:27018:27017"
+      - "127.0.0.1:27019:27017"
     volumes:
       - mongo-data:/data/db
     healthcheck:
@@ -28,14 +32,15 @@ services:
     image: at-mat/minio:7aac2a2
     build:
       context: ./infra/minio
+    container_name: atmat-minio
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER in the root .env file}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in the root .env file}
     ports:
-      - "127.0.0.1:9000:9000"
-      - "127.0.0.1:9001:9001"
+      - "127.0.0.1:9002:9000"
+      - "127.0.0.1:9003:9001"
     volumes:
       - minio-data:/data
     healthcheck:
@@ -50,6 +55,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     image: at-mat/backend:local
+    container_name: atmat-backend
     restart: unless-stopped
     env_file:
       - ./backend/.env
@@ -59,7 +65,7 @@ services:
       MONGO_URI: mongodb://mongo:27017/at_mat_db
       MINIO_ENDPOINT: http://minio:9000
     ports:
-      - "127.0.0.1:3010:3010"
+      - "127.0.0.1:3020:3010"
     volumes:
       # Read-write: the API maintains assets/image-manifest.json.
       - ./assets:/app/assets
@@ -79,13 +85,14 @@ services:
         NEXT_PUBLIC_API_URL: /api
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
     image: at-mat/admin:local
+    container_name: atmat-admin
     restart: unless-stopped
     environment:
       ATMAT_API_URL: http://backend:3010/api
       ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
     ports:
-      - "127.0.0.1:3001:3001"
+      - "127.0.0.1:3021:3001"
     depends_on:
       backend:
         condition: service_healthy
@@ -99,13 +106,14 @@ services:
         ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
     image: at-mat/web:local
+    container_name: atmat-web
     restart: unless-stopped
     environment:
       ATMAT_API_URL: http://backend:3010/api
       ATMAT_MEDIA_URL: http://minio:9000/at-mat-assets
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in the root .env file}
     ports:
-      - "127.0.0.1:3002:3002"
+      - "127.0.0.1:3022:3002"
     volumes:
       - ./assets:/app/assets:ro
     depends_on:
@@ -115,3 +123,4 @@ services:
 volumes:
   mongo-data:
   minio-data:
+
