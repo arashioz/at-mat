@@ -22,6 +22,8 @@ COPY web/ ./
 COPY backend/src/common /app/backend/src/common
 COPY backend/src/recipes/recipe.types.ts /app/backend/src/recipes/recipe.types.ts
 COPY backend/src/recipes/recipe-publication.ts /app/backend/src/recipes/recipe-publication.ts
+COPY backend/src/recipes/recipe-comments.contract.ts /app/backend/src/recipes/recipe-comments.contract.ts
+
 # Manifest is read from ../assets at build (tracing) and at runtime.
 COPY assets /app/assets
 RUN npm run build \
