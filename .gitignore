@@ -14,7 +14,7 @@ Brand Assets/
 Brand Assets */
 **/Brand Assets/
 **/Brand Assets */
-
+./object.txt
 # Assets are delivered separately, including the API-managed image manifest.
 /assets/
 /web/src/fonts/
