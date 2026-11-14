@@ -17,8 +17,8 @@ COPY web/package.json web/package-lock.json ./
 RUN npm ci
 
 COPY web/ ./
-# Copy entire backend source to the root so relative imports like ../../../../backend/src/common work
-COPY backend/src /backend/src
+# Relative imports like ../../../../backend/src/... resolve to /app/backend/src from /app/web/src/features/recipes
+COPY backend/src /app/backend/src
 
 # Manifest is read from ../assets at build (tracing) and at runtime.
 COPY assets /app/assets
