@@ -22,7 +22,7 @@ for (const item of inventory.objects) {
   if (createHash('sha256').update(bytes).digest('hex') !== item.sha256) {
     throw new Error(`Checksum failed: ${item.key}`);
   }
-  if (!item.contentType?.startsWith('image/')) throw new Error(`Invalid image Content-Type: ${item.key}`);
+  if (!item.contentType?.startsWith('image/') && !item.contentType?.startsWith('video/')) throw new Error(`Invalid Content-Type: ${item.key}`);
 }
 const client = new S3Client({
   endpoint: process.env.MINIO_ENDPOINT,
