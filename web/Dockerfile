@@ -17,12 +17,8 @@ COPY web/package.json web/package-lock.json ./
 RUN npm ci
 
 COPY web/ ./
-# Shared pure-TS types/copy imported by web/src via ../../backend/src/common and recipes.
-# Only these files are needed, so the server code is not copied into the site image.
-COPY backend/src/common /app/backend/src/common
-COPY backend/src/recipes/recipe.types.ts /app/backend/src/recipes/recipe.types.ts
-COPY backend/src/recipes/recipe-publication.ts /app/backend/src/recipes/recipe-publication.ts
-COPY backend/src/recipes/recipe-comments.contract.ts /app/backend/src/recipes/recipe-comments.contract.ts
+# Copy entire backend source to satisfy relative imports like ../../../../backend/src/common
+COPY backend/src /app/backend/src
 
 # Manifest is read from ../assets at build (tracing) and at runtime.
 COPY assets /app/assets
