@@ -17,6 +17,11 @@
  */
 
 const icons = {
+  up: <path d="M12 19V5m-6 6 6-6 6 6" />,
+  products: <>
+    <ellipse cx="12" cy="6" rx="8" ry="3" />
+    <path d="M4 6v12a8 3 0 0 0 16 0V6M4 14a8 3 0 0 0 16 0" />
+  </>,
   details: <>
     <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />

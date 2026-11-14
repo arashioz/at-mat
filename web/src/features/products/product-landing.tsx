@@ -123,7 +123,7 @@ export async function ProductLanding({ product, staticMode }: { product: FlavorD
                 </li>
               );
             })}
-          </ol> : <p className="b-recipes__note"><a href="/recipes" className="r-text-link">همهٔ دستورهای پخت ←</a></p>}
+          </ol> : <p className="b-recipes__note"><a href="/recipes" className="r-text-link">همهٔ دستورهای پخت</a></p>}
         </section>
       </main>
 

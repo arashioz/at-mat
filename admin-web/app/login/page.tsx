@@ -66,7 +66,7 @@ export default function LoginPage() {
           <h1>ورود به میز کار</h1>
           <p className="admin-description">با حساب کاربری ات‌مت وارد شوید.</p>
 
-          <form className="admin-login-form" onSubmit={submit} aria-busy={checking || loading}>
+          <form className="admin-login-form" method="post" onSubmit={submit} aria-busy={checking || loading}>
             <label className="admin-field">
               <span>ایمیل یا شماره موبایل</span>
               <input className="admin-input" name="username" type="text" dir="ltr" autoComplete="username" value={identifier} onChange={e => setIdentifier(e.target.value)} placeholder="name@example.com" required disabled={checking || loading} />

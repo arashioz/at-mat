@@ -1,9 +1,9 @@
-import { CopyObjectCommand, DeleteObjectCommand, ListObjectsV2Command, PutBucketCorsCommand, PutBucketPolicyCommand, S3Client, CreateBucketCommand, HeadBucketCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, ListObjectsV2Command, PutBucketCorsCommand, PutBucketPolicyCommand, S3Client, CreateBucketCommand, HeadBucketCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { BadRequestException, Injectable, Logger, NotFoundException, OnModuleInit, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
-import { mkdir, readFile, writeFile } from 'fs/promises';
-import { dirname, extname, join, resolve } from 'path';
+import { mkdir, readFile, rename, unlink, writeFile } from 'fs/promises';
+import { dirname, extname, resolve } from 'path';
 
 export const IMAGE_CATEGORIES = ['products', 'customers', 'branding', 'general'] as const;
 export type ImageCategory = (typeof IMAGE_CATEGORIES)[number];
@@ -34,6 +34,7 @@ export class StorageService implements OnModuleInit {
   private readonly s3: S3Client;
   private readonly bucket: string;
   private readonly publicBaseUrl: string;
+  private manifestWrites = Promise.resolve();
 
   constructor(private readonly configService: ConfigService) {
     this.bucket = this.configService.get<string>('MINIO_BUCKET', 'at-mat-assets');
@@ -135,9 +136,14 @@ export class StorageService implements OnModuleInit {
       uploadedBy,
       uploadedAt: new Date().toISOString(),
     };
-    const manifest = await this.readManifest();
-    manifest.images.push(entry);
-    await this.writeManifest(manifest);
+    try {
+      await this.updateManifest(manifest => { manifest.images.push(entry); });
+    } catch (error) {
+      await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key })).catch(() => {
+        this.logger.warn(`پاک‌سازی فایل ثبت‌نشده انجام نشد: ${key}`);
+      });
+      throw error;
+    }
     return entry;
   }
 
@@ -174,26 +180,46 @@ export class StorageService implements OnModuleInit {
   }
 
   async remove(key: string): Promise<void> {
-    const manifest = await this.readManifest();
-    const index = manifest.images.findIndex((img) => img.key === key);
-    if (index === -1) {
-      throw new NotFoundException('عکس پیدا نشد');
-    }
-    await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
-    manifest.images.splice(index, 1);
-    await this.writeManifest(manifest);
+    await this.updateManifest(async manifest => {
+      const index = manifest.images.findIndex(image => image.key === key);
+      if (index === -1) throw new NotFoundException('عکس پیدا نشد');
+      await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
+      manifest.images.splice(index, 1);
+    });
   }
 
   private async readManifest(): Promise<Manifest> {
     try {
-      return JSON.parse(await readFile(MANIFEST_PATH, 'utf8')) as Manifest;
-    } catch {
-      return { version: 1, categories: IMAGE_CATEGORIES, images: [] };
+      const manifest = JSON.parse(await readFile(MANIFEST_PATH, 'utf8')) as Manifest;
+      if (Array.isArray(manifest?.images)) return manifest;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        return { version: 1, categories: IMAGE_CATEGORIES, images: [] };
+      }
     }
+    throw new ServiceUnavailableException('فهرست تصاویر فعلاً در دسترس نیست.');
+  }
+
+  private updateManifest(update: (manifest: Manifest) => void | Promise<void>) {
+    // The backend runs as one process. Queue changes so each one reads the latest manifest.
+    const task = this.manifestWrites.then(async () => {
+      const manifest = await this.readManifest();
+      await update(manifest);
+      await this.writeManifest(manifest);
+    });
+    this.manifestWrites = task.catch(() => {});
+    return task;
   }
 
   private async writeManifest(manifest: Manifest): Promise<void> {
-    await mkdir(dirname(MANIFEST_PATH), { recursive: true });
-    await writeFile(MANIFEST_PATH, JSON.stringify(manifest, null, 2), 'utf8');
+    const temporaryPath = `${MANIFEST_PATH}.${randomUUID()}.tmp`;
+    try {
+      await mkdir(dirname(MANIFEST_PATH), { recursive: true });
+      await writeFile(temporaryPath, JSON.stringify(manifest, null, 2), 'utf8');
+      await rename(temporaryPath, MANIFEST_PATH);
+    } catch {
+      await unlink(temporaryPath).catch(() => {});
+      throw new ServiceUnavailableException('ثبت فهرست تصاویر انجام نشد. دوباره تلاش کنید.');
+    }
   }
 }

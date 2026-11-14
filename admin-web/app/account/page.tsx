@@ -38,7 +38,7 @@ function Account() {
     </section>
     <section className="admin-panel">
       <div className="admin-panel-head"><div><h2>تغییر رمز عبور</h2><p>رمز فعلی و رمز جدید حساب را وارد کن.</p></div></div>
-      <form className="admin-form-grid" onSubmit={updatePassword}>
+      <form className="admin-form-grid" method="post" onSubmit={updatePassword}>
         <label className="admin-field"><span>رمز فعلی</span><input className="admin-input" name="current-password" type="password" autoComplete="current-password" dir="ltr" value={oldPassword} onChange={e => setOldPassword(e.target.value)} required /></label>
         <label className="admin-field"><span>رمز جدید</span><input className="admin-input" name="new-password" type="password" autoComplete="new-password" dir="ltr" value={newPassword} onChange={e => setNewPassword(e.target.value)} minLength={6} required /></label>
         <label className="admin-field"><span>تکرار رمز جدید</span><input className="admin-input" name="confirm-password" type="password" autoComplete="new-password" dir="ltr" value={repeat} onChange={e => setRepeat(e.target.value)} minLength={6} required /></label>

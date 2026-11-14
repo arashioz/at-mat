@@ -21,7 +21,7 @@ export function ArticleReaderNav({ sections, questionsTitle, sourcesTitle }: {
     <aside className="a-toc">
       <div className="a-reading-track" aria-hidden="true"><div ref={progress} /></div>
       <details open>
-        <summary>توی این مقاله <span aria-hidden="true">↓</span></summary>
+        <summary>توی این مقاله</summary>
         <nav aria-label="فهرست مقاله"><ol>
           {sections.map(section => <li key={section.id}><a href={`#${section.id}`}>{section.title}</a></li>)}
           {questionsTitle && <li><a href="#article-faq">{questionsTitle}</a></li>}

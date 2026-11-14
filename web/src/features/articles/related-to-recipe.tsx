@@ -20,7 +20,7 @@ export async function ArticlesForRecipe({ slug, selected, label, title }: {
     <section className="a-site a-related" aria-labelledby="recipe-articles-title">
       <div className="a-section-heading">
         <div><p className="a-eyebrow">{label}</p><h2 id="recipe-articles-title">{title}</h2></div>
-        <Link href="/articles" className="a-link">همهٔ مقاله‌ها ←</Link>
+        <Link href="/articles" className="a-link">همهٔ مقاله‌ها</Link>
       </div>
       <div className="a-grid">{related.map(article => <ArticleCard key={article.slug} article={article} />)}</div>
     </section>

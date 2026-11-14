@@ -27,8 +27,8 @@ export default async function AboutPage() {
             <h1 id="about-title">از یک قوطی<br />تا سفرهٔ تو.</h1>
             <p>ات‌مت خانواده‌ای از کنسرو ماهی تن است. طعم را متناسب با غذای امروزت انتخاب کن و برای سرو، از آشپزخانهٔ ات‌مت ایده بگیر.</p>
             <div className="company-actions">
-              <a className="company-button company-button--light" href="#flavors">آشنایی با طعم‌ها <span aria-hidden="true">↓</span></a>
-              <a className="company-text-link" href="/collaboration">همکاری با ات‌مت <span aria-hidden="true">←</span></a>
+              <a className="company-button company-button--light" href="#flavors">آشنایی با طعم‌ها</a>
+              <a className="company-text-link" href="/collaboration">همکاری با ات‌مت</a>
             </div>
           </div>
           <figure className="company-hero__photo">
@@ -62,7 +62,7 @@ export default async function AboutPage() {
                 <img src={media.lid.url} width={media.lid.width} height={media.lid.height} alt="" loading="lazy" />
                 <h3>{label}</h3>
                 <p>{copy.headline.join(' ')}</p>
-                <span aria-hidden="true">←</span>
+
               </a>
             </li>
           ))}
@@ -79,13 +79,13 @@ export default async function AboutPage() {
             <NavIcon name="recipes" />
             <h3>آشپزخانهٔ ات‌مت</h3>
             <p>سالاد، ساندویچ یا غذای گرم را بر اساس طعم انتخاب کن.</p>
-            <span className="company-text-link">دیدن رسپی‌ها <span aria-hidden="true">←</span></span>
+            <span className="company-text-link">دیدن رسپی‌ها</span>
           </a>
           <a href="/articles">
             <NavIcon name="articles" />
             <h3>مجلهٔ ات‌مت</h3>
             <p>دربارهٔ برچسب، تغذیه و نگهداری کنسرو ماهی بخوان.</p>
-            <span className="company-text-link">دیدن مقاله‌ها <span aria-hidden="true">←</span></span>
+            <span className="company-text-link">دیدن مقاله‌ها</span>
           </a>
         </div>
       </section>
@@ -97,7 +97,7 @@ export default async function AboutPage() {
           <p>برای پرسش دربارهٔ محصولات تماس بگیر یا درخواست همکاری‌ات را ثبت کن.</p>
         </div>
         <div className="company-actions">
-          <a className="company-button" href="/collaboration">همکاری با ات‌مت <span aria-hidden="true">←</span></a>
+          <a className="company-button" href="/collaboration">همکاری با ات‌مت</a>
           <a className="company-text-link" href={brineCopy.contact.phone.href}><bdi>{brineCopy.contact.phone.label}</bdi></a>
         </div>
       </section>

@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 import { CustomerType } from '../../common/enums/customer-type.enum';
-import { PHONE_REGEX } from '../../common/utils/phone.util';
+import { normalizePhone, PHONE_REGEX } from '../../common/utils/phone.util';
 
 export class CreateCustomerDto {
   @ApiProperty({ example: 'فروشگاه رضایی' })
@@ -14,6 +15,7 @@ export class CreateCustomerDto {
   type: CustomerType;
 
   @ApiProperty({ example: '09120000000' })
+  @Transform(({ value }) => typeof value === 'string' ? normalizePhone(value) : value)
   @Matches(PHONE_REGEX, { message: 'شماره موبایل معتبر نیست (مثال: 09120000000)' })
   phone: string;
 

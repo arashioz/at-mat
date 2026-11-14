@@ -1,7 +1,9 @@
 import { BrandEdge } from '@/features/brine/brand-edge';
 import { brineCopy, brineSocial } from '@/features/brine/content';
-import { ArrowUpIcon, InstagramIcon, LinkedinIcon, MailIcon, PhoneIcon, XIcon } from '@/features/brine/icons';
+import { InstagramIcon, LinkedinIcon, MailIcon, PhoneIcon, XIcon } from '@/features/brine/icons';
 import { flavors } from '@/features/products/catalog';
+import { FooterLogo } from './footer-logo';
+import { NavIcon } from './nav-icons';
 import { siteLinks } from './site-links';
 import './site-chrome.css';
 
@@ -15,12 +17,12 @@ export function SiteFooter({ logo, flavor, headline = brineCopy.headline }: {
     <footer className="b-footer" id="site-footer">
       <BrandEdge id="footer-logo-start" className="b-footer__edge" />
       <div className="b-footer__top" id="site-about">
-        <a className="b-footer__logo" href="/" aria-label="ات‌مت، صفحهٔ اصلی"><img src={logo} alt="" width={700} height={447} loading="lazy" /></a>
+        <FooterLogo src={logo} />
         <div><p className="b-footer__line">{headline.map(line => <span key={line}>{line}</span>)}</p><p className="b-footer__about">کنسرو ماهی تن ات‌مت؛ طعم‌های مختلف، به سلیقهٔ تو.</p></div>
-        <a className="b-footer__up" href="#main-content" aria-label="بالای صفحه"><ArrowUpIcon /></a>
+        <a className="b-footer__up" href="#main-content" aria-label="بالای صفحه"><NavIcon name="up" /></a>
       </div>
       <div className="b-footer__grid">
-        <div className="b-footer__col"><h2>دسترسی راحت</h2><ul className="b-footer__pages">{siteLinks.map(link => <li key={link.href}><a href={link.href}>{link.label}</a></li>)}</ul></div>
+        <div className="b-footer__col"><h2>دسترسی راحت</h2><ul className="b-footer__pages">{[...siteLinks, { href: '/kitchen', label: 'همراه آشپزی' }, { href: '/account', label: 'آشپزخانهٔ من' }].map(link => <li key={link.href}><a href={link.href}>{link.label}</a></li>)}</ul></div>
         <div className="b-footer__col" id="site-flavors"><h2>طعم‌های ات‌مت</h2><ul className="b-footer__pages">{flavors.map(product => <li key={product.slug}><a href={`/flavors/${product.slug}`} aria-current={product.slug === flavor ? 'page' : undefined}>{product.label}</a></li>)}</ul></div>
         <div className="b-footer__col"><h2>ارتباط با ما</h2><ul className="b-footer__icons">
           <li><a href={contact.phone.href} aria-label={`تماس تلفنی، ${contact.phone.label}`} title={contact.phone.label}><PhoneIcon /></a></li>
