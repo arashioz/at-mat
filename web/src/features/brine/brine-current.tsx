@@ -12,8 +12,7 @@ export function BrineCurrent({ phase, staticMode = false, lightColor = [0.67, 0.
   useEffect(() => {
     const node = canvas.current;
     if (!node) return;
-    const light = createCurrentLight(node, lightColor);
-    if (!light) return;
+    let light: ReturnType<typeof createCurrentLight> | undefined;
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     let ready = phase !== 'hero' || !!node.closest('.b-page')?.hasAttribute('data-intro');
@@ -25,8 +24,10 @@ export function BrineCurrent({ phase, staticMode = false, lightColor = [0.67, 0.
     const draw = (now: number) => {
       const { clientWidth, clientHeight } = node;
       if (!visible || !clientWidth || !clientHeight) return;
+      // The compact layout hides the canvas and uses the CSS light.
+      if (light === undefined) light = createCurrentLight(node, lightColor);
       const seconds = staticMode || reduce.matches ? 0 : now * 0.001;
-      light.draw(clientWidth, clientHeight, seconds);
+      light?.draw(clientWidth, clientHeight, seconds);
       lastDraw = now;
     };
     const tick = (now: number) => {
@@ -60,7 +61,7 @@ export function BrineCurrent({ phase, staticMode = false, lightColor = [0.67, 0.
       window.removeEventListener(INTRO_EVENT, onIntro);
       reduce.removeEventListener('change', play);
       node.removeEventListener('webglcontextlost', onContextLost);
-      light.dispose();
+      light?.dispose();
     };
   }, [phase, staticMode, lightColor[0], lightColor[1], lightColor[2]]);
 

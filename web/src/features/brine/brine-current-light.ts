@@ -57,7 +57,7 @@ const FRAGMENT = `
     float ray = (uv.x - 0.18) / (0.7 + depth) - depth * 0.3;
     float shafts = pow(0.5 + 0.5 * sin(ray * 15.0 + uTime * 0.29), 3.0);
     light += 0.09 * shafts * pool * (1.0 - depth);
-    gl_FragColor = vec4(uColor, light);
+    gl_FragColor = vec4(uColor * light, light);
   }
 `;
 
@@ -72,7 +72,7 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
 }
 
 export function createCurrentLight(canvas: HTMLCanvasElement, color: readonly [number, number, number] = [0.67, 0.95, 1]) {
-  const gl = canvas.getContext('webgl', { alpha: true, antialias: false, depth: false, premultipliedAlpha: false });
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: false, depth: false, premultipliedAlpha: true });
   if (!gl) return null;
   const vertex = compile(gl, gl.VERTEX_SHADER, VERTEX);
   const fragment = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT);

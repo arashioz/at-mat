@@ -381,5 +381,9 @@ html.is-grabbing, html.is-grabbing * { cursor: grabbing; user-select: none; }
     radial-gradient(ellipse at 55% 48%, transparent 32%, color-mix(in srgb, var(--brine-navy) 38%, transparent) 100%);
 }
 
+@media (max-width: 899px), (pointer: coarse) {
+  .b-page .brine-current canvas { display: none; }
+}
+
 .b-loader__count { color: var(--hero-ink, var(--brine-foam)); }
 .b-note__figure b, .b-notes__small { color: var(--brine-navy); }
