@@ -22,10 +22,14 @@ export async function downloadSource(token: string, id: SourceId) {
     const data = await response.json().catch(() => null);
     throw new ApiError(data?.message ?? 'دریافت فایل انجام نشد.', response.status);
   }
-  const url = URL.createObjectURL(await response.blob());
+  saveDownload(await response.blob(), sourceFiles[id]);
+}
+
+export function saveDownload(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = sourceFiles[id];
+  link.download = filename;
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

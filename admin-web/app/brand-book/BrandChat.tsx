@@ -5,7 +5,7 @@ import { AdminIcon } from '../../components/AdminIcon';
 import { apiFetch } from '../../lib/api';
 import type { Answer, Source } from './brand-book-api';
 
-const prompts = ['جوهره و شعار ات‌مت چیست؟', 'پایلوت چهار هفته‌ای چگونه اجرا می‌شود؟', 'لحن نوشتاری برند چگونه است؟', 'مسیر QR قوطی به رسپی چیست؟'];
+const prompts = ['جوهره و شعار ات‌مت چیست؟', 'پایلوت چهار هفته‌ای چگونه اجرا می‌شود؟', 'لحن نوشتاری برند چگونه است؟', 'استاندارد قفسه و فروش چیست؟'];
 type Exchange = { question: string; matches: Answer[] };
 
 export function BrandChat({ token, sources, onClose, onChapter }: {

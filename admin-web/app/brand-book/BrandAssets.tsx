@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { AdminSearch, faCount, normalizeQuery } from '../../components/AdminForms';
+import { downloadAssetArchive } from './brand-asset-archive';
 import { AdminIcon } from '../../components/AdminIcon';
 import { mediaHref, MEDIA_ACCEPT, uploadMedia, type MediaAsset } from '../../lib/media';
 
@@ -57,6 +58,8 @@ export function BrandAssets({ token, assets, captions, onCaption, onUpload, edit
   const [limit, setLimit] = useState(18);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [archiveCount, setArchiveCount] = useState<number | null>(null);
+  const [archiveError, setArchiveError] = useState('');
   const visible = assets.map(asset => ({ asset, ...details(asset) })).sort((a, b) =>
     groups.findIndex(item => item.id === a.group) - groups.findIndex(item => item.id === b.group) ||
     Number(b.asset.description?.startsWith('brand-book-packaging-') ?? false) -
@@ -78,15 +81,32 @@ export function BrandAssets({ token, assets, captions, onCaption, onUpload, edit
     }
   }
 
-  return <section className="admin-panel brand-assets" aria-labelledby="brand-assets-title">
+  async function downloadAll() {
+    setArchiveCount(0);
+    setArchiveError('');
+    try {
+      await downloadAssetArchive(assets, setArchiveCount);
+    } catch (problem) {
+      setArchiveError(problem instanceof Error ? problem.message : 'آماده‌سازی فایل ZIP انجام نشد.');
+    } finally {
+      setArchiveCount(null);
+    }
+  }
+
+  return <div className="brand-assets">
     <header className="admin-panel-head">
       <div><h2 id="brand-assets-title">کتابخانهٔ دارایی‌های برند</h2><p>نشان‌ها، رنگ چاپ، لیبل و درب، تصویرسازی و عکس‌های ات‌مت</p></div>
+      <button className="admin-button admin-button--primary" disabled={archiveCount !== null || assets.length === 0} type="button" onClick={() => void downloadAll()}>
+        <AdminIcon name="download" size={18} />{archiveCount === null ? 'دانلود همهٔ تصاویر (ZIP)' : 'در حال آماده‌سازی ZIP…'}
+      </button>
       {editing && <label className="admin-field"><span>افزودن تصویر به کتابخانه</span><input className="admin-input" type="file" accept={MEDIA_ACCEPT} disabled={uploading || disabled} onChange={event => {
         const file = event.target.files?.[0];
         event.target.value = '';
         if (file) void upload(file);
       }} /><small>بارگذاری مستقیماً در کتابخانهٔ رسانه ثبت می‌شود.</small></label>}
     </header>
+    {archiveCount !== null && <p className="brand-archive-progress" role="status">{faCount(archiveCount)} از {faCount(assets.length)} تصویر آماده شد</p>}
+    {archiveError && <p className="admin-alert admin-alert--error" role="alert">{archiveError}</p>}
     <div className="brand-asset-tools">
       <div className="brand-filters" aria-label="گروه دارایی‌ها">{groups.map(item => <button type="button" key={item.id} aria-pressed={item.id === group} onClick={() => { setGroup(item.id); setLimit(18); }}>{item.label}</button>)}</div>
       <AdminSearch value={query} label="جست‌وجوی دارایی‌ها" placeholder="نام دارایی یا طعم" onChange={value => { setQuery(value); setLimit(18); }} />
@@ -113,5 +133,5 @@ export function BrandAssets({ token, assets, captions, onCaption, onUpload, edit
       })}
     </ul>
     {limit < visible.length && <button className="admin-button admin-button--secondary" type="button" onClick={() => setLimit(value => value + 18)}>دارایی‌های بیشتر</button>}
-  </section>;
+  </div>;
 }

@@ -46,7 +46,7 @@ export class BrandBookService {
     const saved = await this.books.findById(BOOK_ID).lean().exec();
     return {
       cover: saved?.cover ?? BRAND_COVER,
-      chapters: saved?.chapters ?? BRAND_CHAPTERS,
+      chapters: (saved?.chapters ?? BRAND_CHAPTERS).filter(chapter => chapter.id !== 'digital'),
       assetCaptions: saved?.assetCaptions ?? [],
       revision: saved?.revision ?? 0,
       updatedAt: saved?.updatedAt ?? null,
